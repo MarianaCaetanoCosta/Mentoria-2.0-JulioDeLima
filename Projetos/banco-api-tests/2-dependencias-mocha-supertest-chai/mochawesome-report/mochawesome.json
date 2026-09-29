@@ -1,0 +1,119 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-09-29T21:38:37.647Z",
+    "end": "2026-09-29T21:38:37.734Z",
+    "duration": 87,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "e0d49782-dbec-4e69-bc40-84f99fb21d1d",
+      "title": "",
+      "fullFile": "C:\\Workspace\\1 - Mentoria Teste de Software  2.0 - Julio de Lima - 09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
+      "file": "\\test\\login.test.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e8ea1ca8-9f63-47b4-9f4c-f678c5b0ce06",
+          "title": "Login",
+          "fullFile": "C:\\Workspace\\1 - Mentoria Teste de Software  2.0 - Julio de Lima - 09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
+          "file": "\\test\\login.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "c2b7f23b-e7b1-4bd4-af42-9639c926fcea",
+              "title": "POST /login",
+              "fullFile": "C:\\Workspace\\1 - Mentoria Teste de Software  2.0 - Julio de Lima - 09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
+              "file": "\\test\\login.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Deve retornar 200 com um token em string quando usar credenciais válidas",
+                  "fullTitle": "Login POST /login Deve retornar 200 com um token em string quando usar credenciais válidas",
+                  "timedOut": false,
+                  "duration": 66,
+                  "state": "passed",
+                  "speed": "medium",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "//Supertest - Requisição via POST com credenciais válidas\nconst resposta = await request('http://localhost:3000')\n    .post('/login')\n    .set('Content-Type', 'application/json')\n    .send({\n        'username': 'julio.lima',\n        'senha': '123456'\n    })\n//Chai - Verificação da resposta\nconsole.log(resposta.status)\nconsole.log(resposta.body)\nexpect(resposta.status).to.equal(200)\nexpect(resposta.body.token).to.be.a('string')",
+                  "err": {},
+                  "uuid": "4a7d65df-e867-4cc6-b191-53ce06a6fece",
+                  "parentUUID": "c2b7f23b-e7b1-4bd4-af42-9639c926fcea",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "4a7d65df-e867-4cc6-b191-53ce06a6fece"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 66,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 200000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 200000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 200000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "12.0.2"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.3.2"
+    }
+  }
+}
