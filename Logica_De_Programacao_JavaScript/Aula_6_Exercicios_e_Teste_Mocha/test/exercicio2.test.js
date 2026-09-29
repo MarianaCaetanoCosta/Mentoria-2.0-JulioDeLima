@@ -44,5 +44,4 @@ describe("Exercício 2 - Relatório de testes", function () {
         assert.strictEqual(resultado.falhas, 3);
         assert.strictEqual(resultado.passRate, 0);
     });
-
 });
