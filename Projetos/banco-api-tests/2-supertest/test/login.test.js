@@ -1,21 +1,24 @@
 import request from 'supertest'
 import { expect } from 'chai'
+import 'dotenv/config'
+
+import postLogin from '../fixtures/postLogin.json' with { type: 'json' }
 
 //Mocha: para estruturação e execução dos testes
 describe('Login', () => {
     describe('POST /login', () => {
         it('Deve retornar 200 com um token em string quando usar credenciais válidas', async () => {
+
+            //clonar o postLogin
+            const bodyLogin = { ...postLogin }
+
             //Supertest - Requisição via POST com credenciais válidas
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL)
                 .post('/login')
                 .set('Content-Type', 'application/json')
-                .send({
-                    'username': 'julio.lima',
-                    'senha': '123456'
-                })
+                .send(bodyLogin)
+
             //Chai - Verificação da resposta
-            console.log(resposta.status)
-            console.log(resposta.body)
             expect(resposta.status).to.equal(200)
             expect(resposta.body.token).to.be.a('string')
         })
