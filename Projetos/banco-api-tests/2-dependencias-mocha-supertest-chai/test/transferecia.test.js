@@ -1,12 +1,13 @@
 import request from 'supertest'
 import { expect } from 'chai'
+require('dotenv').config()
 
 //Mocha: para estruturação e execução dos testes
 describe('Transferências', () => {
     describe('POST /transferencias', () => {
         it('Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00', async () => {
             //Captura Token
-            const respostaLogin = await request('http://localhost:3000')
+            const respostaLogin = await request(process.env.BASE_URL)
                 .post('/login')
                 .set('Content-Type', 'application/json')
                 .send({
@@ -16,7 +17,7 @@ describe('Transferências', () => {
             const token = respostaLogin.body.token
 
             //Supertest - Requisição via POST com dados válidos
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL)
                 .post('/transferencias')
                 .set('Content-Type', 'application/json')
                 .set('Authorization', `Bearer ${token}`)
@@ -32,7 +33,7 @@ describe('Transferências', () => {
         
         it('Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00', async () => {
                         //Captura Token
-            const respostaLogin = await request('http://localhost:3000')
+            const respostaLogin = await request(process.env.BASE_URL)
                 .post('/login')
                 .set('Content-Type', 'application/json')
                 .send({
@@ -42,7 +43,7 @@ describe('Transferências', () => {
             const token = respostaLogin.body.token
 
             //Supertest - Requisição via POST com dados válidos
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL)
                 .post('/transferencias')
                 .set('Content-Type', 'application/json')
                 .set('Authorization', `Bearer ${token}`)
