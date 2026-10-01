@@ -1,6 +1,6 @@
 import request from 'supertest'
 import { expect } from 'chai'
-require('dotenv').config()
+import 'dotenv/config'
 
 //Mocha: para estruturação e execução dos testes
 describe('Login', () => {

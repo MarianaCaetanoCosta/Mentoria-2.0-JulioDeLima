@@ -1,23 +1,176 @@
 {
   "stats": {
-    "suites": 0,
-    "tests": 0,
-    "passes": 0,
+    "suites": 4,
+    "tests": 3,
+    "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2026-10-01T17:34:26.631Z",
-    "end": "2026-10-01T17:34:26.635Z",
-    "duration": 4,
-    "testsRegistered": 0,
-    "passPercent": null,
-    "pendingPercent": null,
+    "start": "2026-10-01T18:01:37.358Z",
+    "end": "2026-10-01T18:01:37.458Z",
+    "duration": 100,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
     "other": 0,
     "hasOther": false,
     "skipped": 0,
     "hasSkipped": false
   },
   "results": [
-    false
+    {
+      "uuid": "dcbe83b6-05d0-4626-8a29-db4368393762",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "7b266910-ee84-4c1e-9e13-33bc12ac8c81",
+          "title": "Login",
+          "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
+          "file": "\\test\\login.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "20e3d482-5754-40cb-8cc0-ae6da6ee1b62",
+              "title": "POST /login",
+              "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
+              "file": "\\test\\login.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Deve retornar 200 com um token em string quando usar credenciais válidas",
+                  "fullTitle": "Login POST /login Deve retornar 200 com um token em string quando usar credenciais válidas",
+                  "timedOut": false,
+                  "duration": 33,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "//Supertest - Requisição via POST com credenciais válidas\nconst resposta = await request(process.env.BASE_URL)\n    .post('/login')\n    .set('Content-Type', 'application/json')\n    .send({\n        'username': 'julio.lima',\n        'senha': '123456'\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(200)\nexpect(resposta.body.token).to.be.a('string')",
+                  "err": {},
+                  "uuid": "43351959-2ae9-48e1-992c-bc8edc390b53",
+                  "parentUUID": "20e3d482-5754-40cb-8cc0-ae6da6ee1b62",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "43351959-2ae9-48e1-992c-bc8edc390b53"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 33,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 200000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 200000
+        },
+        {
+          "uuid": "865f9ada-010c-46b9-beaf-98a57dc988c2",
+          "title": "Transferências",
+          "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\transferecia.test.js",
+          "file": "\\test\\transferecia.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+              "title": "POST /transferencias",
+              "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\transferecia.test.js",
+              "file": "\\test\\transferecia.test.js",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00",
+                  "fullTitle": "Transferências POST /transferencias Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00",
+                  "timedOut": false,
+                  "duration": 34,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "//Captura Token\nconst respostaLogin = await request(process.env.BASE_URL)\n    .post('/login')\n    .set('Content-Type', 'application/json')\n    .send({\n        'username': 'julio.lima',\n        'senha': '123456'\n    })\nconst token = respostaLogin.body.token\n//Supertest - Requisição via POST com dados válidos\nconst resposta = await request(process.env.BASE_URL)\n    .post('/transferencias')\n    .set('Content-Type', 'application/json')\n    .set('Authorization', `Bearer ${token}`)\n    .send({\n        'contaOrigem': 1,\n        'contaDestino': 2,\n        'valor': 11,\n        'token': \"\"\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(201)",
+                  "err": {},
+                  "uuid": "1d084b73-886a-44e9-bd3a-738c0eed2ce0",
+                  "parentUUID": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00",
+                  "fullTitle": "Transferências POST /transferencias Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00",
+                  "timedOut": false,
+                  "duration": 11,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "//Captura Token\n            const respostaLogin = await request(process.env.BASE_URL)\n                .post('/login')\n                .set('Content-Type', 'application/json')\n                .send({\n                    'username': 'julio.lima',\n                    'senha': '123456'\n                })\n            const token = respostaLogin.body.token\n\n            //Supertest - Requisição via POST com dados válidos\n            const resposta = await request(process.env.BASE_URL)\n                .post('/transferencias')\n                .set('Content-Type', 'application/json')\n                .set('Authorization', `Bearer ${token}`)\n                .send({\n                    'contaOrigem': 1,\n                    'contaDestino': 3,\n                    'valor': 8,\n                    'token': ''\n                })\n            //Chai - Verificação da resposta\n            expect(resposta.status).to.equal(422)",
+                  "err": {},
+                  "uuid": "0eb7f237-cf88-4bd5-9fe6-ec59a7f8523a",
+                  "parentUUID": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "1d084b73-886a-44e9-bd3a-738c0eed2ce0",
+                "0eb7f237-cf88-4bd5-9fe6-ec59a7f8523a"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 45,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 200000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 200000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 200000
+    }
   ],
   "meta": {
     "mocha": {
