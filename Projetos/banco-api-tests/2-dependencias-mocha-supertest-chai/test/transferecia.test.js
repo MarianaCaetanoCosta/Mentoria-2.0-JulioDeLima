@@ -6,10 +6,14 @@ import { obterToken } from '../helpers/autenticacao.js'
 //Mocha: para estruturação e execução dos testes
 describe('Transferências', () => {
     describe('POST /transferencias', () => {
-        it('Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00', async () => {
-            //Captura Token
-            const token = await obterToken('julio.lima', '123456')
+        
+        let token
 
+        beforeEach(async () => {
+            //Captura Token
+            token = await obterToken('julio.lima', '123456')
+        })
+        it('Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00', async () => {
             //Supertest - Requisição via POST com dados válidos
             const resposta = await request(process.env.BASE_URL)
                 .post('/transferencias')
@@ -22,13 +26,10 @@ describe('Transferências', () => {
                     'token': ""
                 })
             //Chai - Verificação da resposta
-            expect(resposta.status).to.equal(201)            
+            expect(resposta.status).to.equal(201)
         })
-        
-        it('Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00', async () => {
-            //Captura Token
-            const token = await obterToken('julio.lima', '123456')
 
+        it('Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00', async () => {
             //Supertest - Requisição via POST com dados válidos
             const resposta = await request(process.env.BASE_URL)
                 .post('/transferencias')
@@ -41,7 +42,7 @@ describe('Transferências', () => {
                     'token': ''
                 })
             //Chai - Verificação da resposta
-            expect(resposta.status).to.equal(422)            
+            expect(resposta.status).to.equal(422)
         })
-    }); 
+    });
 });
