@@ -1,20 +1,14 @@
 import request from 'supertest'
 import { expect } from 'chai'
 import 'dotenv/config'
+import { obterToken } from '../helpers/autenticacao.js'
 
 //Mocha: para estruturação e execução dos testes
 describe('Transferências', () => {
     describe('POST /transferencias', () => {
         it('Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00', async () => {
             //Captura Token
-            const respostaLogin = await request(process.env.BASE_URL)
-                .post('/login')
-                .set('Content-Type', 'application/json')
-                .send({
-                    'username': 'julio.lima',
-                    'senha': '123456'
-                })
-            const token = respostaLogin.body.token
+            const token = await obterToken('julio.lima', '123456')
 
             //Supertest - Requisição via POST com dados válidos
             const resposta = await request(process.env.BASE_URL)
@@ -32,15 +26,8 @@ describe('Transferências', () => {
         })
         
         it('Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00', async () => {
-                        //Captura Token
-            const respostaLogin = await request(process.env.BASE_URL)
-                .post('/login')
-                .set('Content-Type', 'application/json')
-                .send({
-                    'username': 'julio.lima',
-                    'senha': '123456'
-                })
-            const token = respostaLogin.body.token
+            //Captura Token
+            const token = await obterToken('julio.lima', '123456')
 
             //Supertest - Requisição via POST com dados válidos
             const resposta = await request(process.env.BASE_URL)

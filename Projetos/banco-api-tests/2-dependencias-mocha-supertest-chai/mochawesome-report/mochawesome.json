@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2026-10-01T18:01:37.358Z",
-    "end": "2026-10-01T18:01:37.458Z",
-    "duration": 100,
+    "start": "2026-10-01T18:47:03.294Z",
+    "end": "2026-10-01T18:47:03.404Z",
+    "duration": 110,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "dcbe83b6-05d0-4626-8a29-db4368393762",
+      "uuid": "914a5e68-efd6-4258-99f2-4513f50eb421",
       "title": "",
       "fullFile": "",
       "file": "",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "7b266910-ee84-4c1e-9e13-33bc12ac8c81",
+          "uuid": "7c8bdb33-7848-41f0-84cd-fd3582ba7fcb",
           "title": "Login",
           "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
           "file": "\\test\\login.test.js",
@@ -36,7 +36,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "20e3d482-5754-40cb-8cc0-ae6da6ee1b62",
+              "uuid": "af52e239-af4e-4b78-b639-43669002c236",
               "title": "POST /login",
               "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\login.test.js",
               "file": "\\test\\login.test.js",
@@ -47,7 +47,7 @@
                   "title": "Deve retornar 200 com um token em string quando usar credenciais válidas",
                   "fullTitle": "Login POST /login Deve retornar 200 com um token em string quando usar credenciais válidas",
                   "timedOut": false,
-                  "duration": 33,
+                  "duration": 34,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
@@ -56,20 +56,20 @@
                   "context": null,
                   "code": "//Supertest - Requisição via POST com credenciais válidas\nconst resposta = await request(process.env.BASE_URL)\n    .post('/login')\n    .set('Content-Type', 'application/json')\n    .send({\n        'username': 'julio.lima',\n        'senha': '123456'\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(200)\nexpect(resposta.body.token).to.be.a('string')",
                   "err": {},
-                  "uuid": "43351959-2ae9-48e1-992c-bc8edc390b53",
-                  "parentUUID": "20e3d482-5754-40cb-8cc0-ae6da6ee1b62",
+                  "uuid": "9c740c13-c278-4c87-98e2-5657cf69a3b7",
+                  "parentUUID": "af52e239-af4e-4b78-b639-43669002c236",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "43351959-2ae9-48e1-992c-bc8edc390b53"
+                "9c740c13-c278-4c87-98e2-5657cf69a3b7"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 33,
+              "duration": 34,
               "root": false,
               "rootEmpty": false,
               "_timeout": 200000
@@ -85,7 +85,7 @@
           "_timeout": 200000
         },
         {
-          "uuid": "865f9ada-010c-46b9-beaf-98a57dc988c2",
+          "uuid": "8e69b204-b14d-488f-9b09-e87f9576790f",
           "title": "Transferências",
           "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\transferecia.test.js",
           "file": "\\test\\transferecia.test.js",
@@ -94,7 +94,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+              "uuid": "70623e71-a19a-494a-a6e2-e88246447f24",
               "title": "POST /transferencias",
               "fullFile": "C:\\Workspace\\1-Mentoria-Teste-Software-2.0-JulioDeLima-09-2026\\Mentoria-2.0-JulioDeLima\\Projetos\\banco-api-tests\\2-dependencias-mocha-supertest-chai\\test\\transferecia.test.js",
               "file": "\\test\\transferecia.test.js",
@@ -105,17 +105,17 @@
                   "title": "Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00",
                   "fullTitle": "Transferências POST /transferencias Deve retornar sucesso 201 com 201 quando o valor da transferencia for igual ou acima de R$ 10.00",
                   "timedOut": false,
-                  "duration": 34,
+                  "duration": 35,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
-                  "code": "//Captura Token\nconst respostaLogin = await request(process.env.BASE_URL)\n    .post('/login')\n    .set('Content-Type', 'application/json')\n    .send({\n        'username': 'julio.lima',\n        'senha': '123456'\n    })\nconst token = respostaLogin.body.token\n//Supertest - Requisição via POST com dados válidos\nconst resposta = await request(process.env.BASE_URL)\n    .post('/transferencias')\n    .set('Content-Type', 'application/json')\n    .set('Authorization', `Bearer ${token}`)\n    .send({\n        'contaOrigem': 1,\n        'contaDestino': 2,\n        'valor': 11,\n        'token': \"\"\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(201)",
+                  "code": "//Captura Token\nconst token = await obterToken('julio.lima', '123456')\n//Supertest - Requisição via POST com dados válidos\nconst resposta = await request(process.env.BASE_URL)\n    .post('/transferencias')\n    .set('Content-Type', 'application/json')\n    .set('Authorization', `Bearer ${token}`)\n    .send({\n        'contaOrigem': 1,\n        'contaDestino': 2,\n        'valor': 11,\n        'token': \"\"\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(201)",
                   "err": {},
-                  "uuid": "1d084b73-886a-44e9-bd3a-738c0eed2ce0",
-                  "parentUUID": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+                  "uuid": "6fdf820e-ce3a-4712-893d-65006b3423bf",
+                  "parentUUID": "70623e71-a19a-494a-a6e2-e88246447f24",
                   "isHook": false,
                   "skipped": false
                 },
@@ -123,30 +123,30 @@
                   "title": "Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00",
                   "fullTitle": "Transferências POST /transferencias Deve retornar erro 422 com mensagem de erro quando o valor da transferencia for abaixo de R$ 10.00",
                   "timedOut": false,
-                  "duration": 11,
+                  "duration": 19,
                   "state": "passed",
                   "speed": "fast",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
-                  "code": "//Captura Token\n            const respostaLogin = await request(process.env.BASE_URL)\n                .post('/login')\n                .set('Content-Type', 'application/json')\n                .send({\n                    'username': 'julio.lima',\n                    'senha': '123456'\n                })\n            const token = respostaLogin.body.token\n\n            //Supertest - Requisição via POST com dados válidos\n            const resposta = await request(process.env.BASE_URL)\n                .post('/transferencias')\n                .set('Content-Type', 'application/json')\n                .set('Authorization', `Bearer ${token}`)\n                .send({\n                    'contaOrigem': 1,\n                    'contaDestino': 3,\n                    'valor': 8,\n                    'token': ''\n                })\n            //Chai - Verificação da resposta\n            expect(resposta.status).to.equal(422)",
+                  "code": "//Captura Token\nconst token = await obterToken('julio.lima', '123456')\n//Supertest - Requisição via POST com dados válidos\nconst resposta = await request(process.env.BASE_URL)\n    .post('/transferencias')\n    .set('Content-Type', 'application/json')\n    .set('Authorization', `Bearer ${token}`)\n    .send({\n        'contaOrigem': 1,\n        'contaDestino': 3,\n        'valor': 8,\n        'token': ''\n    })\n//Chai - Verificação da resposta\nexpect(resposta.status).to.equal(422)",
                   "err": {},
-                  "uuid": "0eb7f237-cf88-4bd5-9fe6-ec59a7f8523a",
-                  "parentUUID": "26a3db6e-de61-4fc0-a3d1-c351344c2f22",
+                  "uuid": "37a4f77c-79aa-4b59-bf60-de64e2eb3e9e",
+                  "parentUUID": "70623e71-a19a-494a-a6e2-e88246447f24",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "1d084b73-886a-44e9-bd3a-738c0eed2ce0",
-                "0eb7f237-cf88-4bd5-9fe6-ec59a7f8523a"
+                "6fdf820e-ce3a-4712-893d-65006b3423bf",
+                "37a4f77c-79aa-4b59-bf60-de64e2eb3e9e"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 45,
+              "duration": 54,
               "root": false,
               "rootEmpty": false,
               "_timeout": 200000
