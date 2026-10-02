@@ -1,0 +1,28 @@
+* Criar projeto
+
+npm install -y
+npm install --save-dev mocha chai mochawesome
+npm test
+
+"scripts": {
+  "test": "npx mocha --reporter mochawesome"
+}
+
+
+---------------------------------------------------------------
+* Baixou projeto JavaScript
+
+Ele instala automatico todas as dependências listadas no json
+
+npm install
+npm test
+
+---------------------------------------------------------------
+* Geração de Relatório
+
+npm install -D mochawesome
+
+"scripts": {
+  "test": "npx mocha --reporter mochawesome"
+}
+---------------------------------------------------------------
