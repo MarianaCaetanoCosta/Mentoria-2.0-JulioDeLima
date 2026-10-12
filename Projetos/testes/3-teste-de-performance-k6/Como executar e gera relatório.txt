@@ -1,0 +1,23 @@
+* Executar
+
+- Abra o terminal
+
+- Clique no login.test.js > botão direito > copiar caminho relativo
+
+- Cole no terminal: 
+    - k6 run tests/clearlogin.test.js
+    - k6 run tests\transferencia.test.js
+
+* Gerar Relatório
+
+Terminal:
+
+> PostLogin
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run tests/login.test.js
+
+> postTransferencia
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html k6 run tests\transferencia.test.js
+
+K6 Dashboard: http://127.0.0.1:5665/ui/?endpoint=/
+
+Html report: 
