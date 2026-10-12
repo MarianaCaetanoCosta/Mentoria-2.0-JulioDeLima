@@ -18,26 +18,8 @@ export const options = {
     }
 }
 
+//Testes
 export default function () {
-    //Testes
-    const url = 'http://localhost:3000/login';
-
-    postLogin.username = 'junior.lima';
-    console.log(postLogin);
-
-    const payload = JSON.stringify(postLogin);
-
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    const resposta = http.post(url, payload, params)
-
-    console.log(`Status HTTP: ${resposta.status}`);
-    console.log(`Corpo da resposta: ${resposta.body}`);
-
     check(resposta, {
         'Valida que o Status é 200': (r) => r.status === 200,
         'Valida que o Token é string': (r) => typeof r.json().token === 'string'
