@@ -40,7 +40,7 @@ Projeto de testes de performance desenvolvido com [k6](https://grafana.com/docs/
 
 | Arquivo | Descrição |
 | --- | --- |
-| `tests/login.test.js` | Executa o teste de carga do endpoint `POST /login), validando status e token. |
+| `tests/login.test.js` | Executa o teste de carga do endpoint `POST /login`, validando status e token. |
 | `tests/transferencia.test.js` | Obtém um token, envia uma transferência para `POST /transferencias` e valida o status `201`. |
 | `helpers/autenticacao.js` | Centraliza a chamada de login e retorna o token para outros testes. |
 | `fixtures/postLogin.json` | Armazena os dados utilizados na autenticação. |
