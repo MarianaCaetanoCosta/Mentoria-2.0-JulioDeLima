@@ -3,3 +3,4 @@ mochawesome-report/
 
 # Cypress
 cypress/screenshots
+cypress/reports
