@@ -1,0 +1,20 @@
+* Iniciar
+npm init -y
+
+* Instalação
+npm install --save-dev cypress
+
+* Executar interface
+npx cypress open
+
+* Executar linha de comando
+
+> headless (sem cabeça)
+npx cypress run
+
+> headed (com cabeça) abre a interface executa e fecha
+npx cypress run --headed
+
+* Vinculando o script no package.json
+npm run cy:headed
+npm run cy:open
