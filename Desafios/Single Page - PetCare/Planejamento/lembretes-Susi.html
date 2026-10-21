@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lembretes • Seu tempo, em ordem</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #111214;
+            --panel: #1b1c20;
+            --line: #303137;
+            --text: #f5f3ef;
+            --muted: #a6a5aa;
+            --orange: #ff9b54
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 15px system-ui, sans-serif
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit
+        }
+
+        button {
+            cursor: pointer
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--orange);
+            outline-offset: 3px
+        }
+
+        header {
+            border-bottom: 1px solid var(--line);
+            padding: 22px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 750
+        }
+
+        .logo {
+            display: inline-grid;
+            place-items: center;
+            background: var(--orange);
+            color: #24160d;
+            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            margin-right: 10px
+        }
+
+        main {
+            max-width: 1120px;
+            margin: auto;
+            padding: 45px 24px
+        }
+
+        h1 {
+            font-size: clamp(30px, 5vw, 44px);
+            letter-spacing: -1.5px;
+            margin: 10px 0
+        }
+
+        p {
+            color: var(--muted);
+            line-height: 1.6
+        }
+
+        .eyebrow {
+            color: var(--orange);
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 700
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px
+        }
+
+        .primary {
+            background: var(--orange);
+            color: #27180e;
+            border: 0;
+            font-weight: 700;
+            padding: 13px 20px;
+            border-radius: 10px
+        }
+
+        .secondary,
+        .small {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 9px
+        }
+
+        .small {
+            font-size: 13px;
+            padding: 8px 12px
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px
+        }
+
+        .stat {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            background: var(--panel)
+        }
+
+        .stat b {
+            font-size: 28px;
+            display: block;
+            margin-top: 8px
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px
+        }
+
+        .tabs {
+            display: flex;
+            padding: 4px;
+            background: var(--panel);
+            border-radius: 10px
+        }
+
+        .tabs button {
+            background: none;
+            border: 0;
+            color: var(--muted);
+            padding: 10px 18px;
+            border-radius: 7px
+        }
+
+        .tabs .active {
+            background: #36302a;
+            color: var(--orange)
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid #414147;
+            background: #15161a;
+            color: var(--text);
+            padding: 12px;
+            border-radius: 9px
+        }
+
+        #search {
+            max-width: 260px
+        }
+
+        .card {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 12px
+        }
+
+        .datebox {
+            width: 58px;
+            flex-shrink: 0;
+            text-align: center;
+            background: #34271f;
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--orange)
+        }
+
+        .datebox b {
+            display: block;
+            font-size: 25px
+        }
+
+        .datebox span {
+            font-size: 11px;
+            text-transform: uppercase
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0
+        }
+
+        .content h3 {
+            margin: 0 0 7px;
+            font-size: 17px;
+            overflow-wrap: anywhere
+        }
+
+        .content p {
+            margin: 0 0 12px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 14px
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .pill {
+            background: #2d2925;
+            color: #e6b590;
+            padding: 4px 8px;
+            border-radius: 6px
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            border: 1px dashed var(--line);
+            border-radius: 14px
+        }
+
+        .empty-icon {
+            font-size: 36px;
+            color: var(--orange)
+        }
+
+        footer {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+            margin-top: 28px
+        }
+
+        .alert {
+            background: #3b271b;
+            border: 1px solid #ac6637;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 15px
+        }
+
+        .alert h3 {
+            margin-top: 0
+        }
+
+        .alert p {
+            color: #e2c8b6
+        }
+
+        .alert input {
+            max-width: 230px;
+            margin: 8px 8px 8px 0
+        }
+
+        .alert .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px
+        }
+
+        dialog {
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid #454249;
+            border-radius: 18px;
+            padding: 28px;
+            width: min(520px, calc(100% - 28px));
+            max-height: 90vh
+        }
+
+        dialog::backdrop {
+            background: #000b;
+            backdrop-filter: blur(4px)
+        }
+
+        dialog h2 {
+            margin: 0 0 8px;
+            font-size: 25px
+        }
+
+        .dialog-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: start
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #cfccd0;
+            margin: 18px 0 7px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px
+        }
+
+        .check {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .check input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--orange)
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: end;
+            gap: 10px;
+            margin-top: 24px
+        }
+
+        .error {
+            color: #ffb49e;
+            font-size: 13px;
+            min-height: 18px
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f2dbc6;
+            color: #281b10;
+            padding: 12px 20px;
+            border-radius: 10px;
+            z-index: 10;
+            display: none;
+            max-width: 90%
+        }
+
+        .danger {
+            color: #ffb39b
+        }
+
+        #sound.active {
+            color: var(--orange);
+            border-color: #99613b
+        }
+
+        @media(max-width:650px) {
+            header {
+                padding: 16px
+            }
+
+            .brand {
+                font-size: 18px
+            }
+
+            main {
+                padding: 28px 16px
+            }
+
+            .hero {
+                align-items: start;
+                flex-direction: column
+            }
+
+            .hero .primary {
+                width: 100%
+            }
+
+            .stats {
+                gap: 8px
+            }
+
+            .stat {
+                padding: 14px 10px
+            }
+
+            .stat b {
+                font-size: 24px
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column
+            }
+
+            #search {
+                max-width: none
+            }
+
+            .tabs button {
+                flex: 1
+            }
+
+            .card {
+                padding: 16px;
+                flex-wrap: wrap;
+                gap: 12px
+            }
+
+            .actions {
+                margin-left: 70px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .meta {
+                gap: 7px
+            }
+
+            dialog {
+                padding: 20px
+            }
+
+            #sound {
+                font-size: 12px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand"><span class="logo">◷</span>Lembretes<span style="color:var(--orange)">.</span></div><button
+            id="sound" class="secondary">♧ Ativar sons</button>
+    </header>
+    <main>
+        <div class="hero">
+            <div>
+                <div class="eyebrow">UM TEMPO PARA CADA COISA</div>
+                <h1>Seu tempo, em ordem.</h1>
+                <p>Deixe aqui o que você precisa lembrar. Cuide do que importa agora.</p>
+            </div><button class="primary" id="new">＋ Novo lembrete</button>
+        </div>
+        <div class="stats">
+            <div class="stat"><span>Próximos lembretes</span><b id="futureCount">0</b></div>
+            <div class="stat"><span>Para hoje</span><b id="todayCount">0</b></div>
+            <div class="stat"><span>Aguardando você</span><b id="pendingCount" style="color:var(--orange)">0</b></div>
+        </div>
+        <section id="alerts" aria-live="polite"></section>
+        <div class="toolbar">
+            <div class="tabs"><button class="active" data-tab="future">Próximos</button><button
+                    data-tab="past">Histórico</button></div><input id="search" aria-label="Buscar lembretes"
+                placeholder="⌕ Buscar lembretes">
+        </div>
+        <section id="list"></section>
+        <footer>● Salvo neste navegador · Horários no fuso local do dispositivo.<br>Mantenha esta página aberta para
+            receber alertas. Sons precisam ser ativados e podem ser limitados pelo navegador em segundo plano. Ao
+            voltar, os lembretes vencidos aparecem aqui.</footer>
+    </main>
+    <dialog id="editor">
+        <form id="form">
+            <div class="dialog-head">
+                <div>
+                    <h2 id="formTitle">Novo lembrete</h2>
+                    <p style="margin:0">Um pequeno registro, uma preocupação a menos.</p>
+                </div><button type="button" class="small" id="close" aria-label="Fechar">✕</button>
+            </div><label for="title">Título</label><input id="title" required maxlength="120"
+                placeholder="Ex.: Revisar o planejamento"><label for="description">Descrição</label><textarea
+                id="description" rows="3" maxlength="2000"
+                placeholder="Os detalhes que você quer ter por perto"></textarea>
+            <div class="grid">
+                <div><label for="when">Data e hora</label><input type="datetime-local" id="when" required></div>
+                <div><label for="repeat">Recorrência</label><select id="repeat">
+                        <option value="none">Não repetir</option>
+                        <option value="day">Todos os dias</option>
+                        <option value="week">Toda semana</option>
+                        <option value="month">Todo mês</option>
+                    </select></div>
+            </div><label for="advance">Avisar antes</label><select id="advance"></select><label class="check"><input
+                    type="checkbox" id="bell" checked> Tocar som até eu resolver o lembrete</label>
+            <p style="font-size:12px">Escolha um horário pelo menos 1 minuto à frente. Na recorrência, apenas a próxima
+                ocorrência fica agendada. Meses sem o dia escolhido usam o último dia do mês.</p>
+            <div class="error" id="error" role="alert"></div>
+            <div class="form-actions"><button type="button" class="secondary" id="cancel">Cancelar</button><button
+                    class="primary">Salvar lembrete</button></div>
+        </form>
+    </dialog>
+    <dialog id="deletion">
+        <h2>Excluir lembrete?</h2>
+        <p id="deleteText"></p><label class="check" id="seriesLabel"><input type="checkbox" id="deleteSeries"> Encerrar
+            a recorrência e excluir as próximas ocorrências</label>
+        <p style="font-size:12px">O histórico é preservado.</p>
+        <div class="form-actions"><button class="secondary" id="cancelDelete">Cancelar</button><button class="primary"
+                id="confirmDelete">Excluir</button></div>
+    </dialog>
+    <div id="toast" role="status"></div>
+    <script>
+        'use strict';
+        const $ = id => document.getElementById(id), KEY = 'lembretes.v1', options = [[0, 'Nenhum aviso'], [15, '15 minutos antes'], [30, '30 minutos antes'], [60, '1 hora antes'], [1440, '1 dia antes']], repeatNames = { day: 'Diário', week: 'Semanal', month: 'Mensal' };
+        let data = { events: [], series: [], sound: false }, tab = 'future', editing = null, deleting = null, ctx = null, lastTone = 0, storageOK = true;
+        try { const raw = localStorage.getItem(KEY); if (raw) { const parsed = JSON.parse(raw); if (Array.isArray(parsed.events) && Array.isArray(parsed.series)) data = parsed; } } catch (e) { storageOK = false; }
+        const uid = () => crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+        const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const localValue = t => { const d = new Date(t); return new Date(t - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16) };
+        const format = t => new Date(t).toLocaleString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        function toast(msg) { $('toast').textContent = msg; $('toast').style.display = 'block'; clearTimeout(toast.timer); toast.timer = setTimeout(() => $('toast').style.display = 'none', 4500) }
+        function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); storageOK = true } catch (e) { storageOK = false; toast('Não foi possível salvar. Verifique o armazenamento do navegador.') } }
+        function nextTime(t, s) { const d = new Date(t); if (s.kind === 'month') { d.setDate(1); d.setMonth(d.getMonth() + 1); const max = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); d.setDate(Math.min(s.anchorDay, max)) } else d.setDate(d.getDate() + (s.kind === 'week' ? 7 : 1)); return d.getTime() }
+        function generate(e) { if (!e.seriesId || e.generated) return; const s = data.series.find(s => s.id === e.seriesId); e.generated = true; if (!s || !s.active) return; const t = nextTime(e.due, s); data.events.push({ id: uid(), seriesId: s.id, title: s.title, description: s.description, due: t, bell: s.bell, advance: s.advance, status: 'scheduled', preSeen: false, generated: false }); }
+        function tick() { const now = Date.now(); let changed = false; for (let i = 0; i < data.events.length; i++) { const e = data.events[i]; if (e.status === 'scheduled' && e.due <= now) { e.status = 'due'; generate(e); changed = true; } } if (changed) { save(); render() } let active = data.events.some(e => e.status === 'due' && e.bell); let early = data.events.some(e => e.status === 'scheduled' && e.advance && !e.preSeen && e.due - e.advance * 60000 <= now && e.bell); if (data.sound && (active || early) && now - lastTone > (active ? 2400 : 5500)) { tone(active); lastTone = now } if (!changed) renderAlerts(); updateStats(); }
+        function tone(due) { if (!ctx || ctx.state !== 'running') return; const t = ctx.currentTime;[0, .22, .44].slice(0, due ? 3 : 2).forEach((offset, i) => { const osc = ctx.createOscillator(), g = ctx.createGain(); osc.type = 'sine'; osc.frequency.value = due ? (i % 2 ? 660 : 880) : 440 + i * 110; g.gain.setValueAtTime(0, t + offset); g.gain.linearRampToValueAtTime(.16, t + offset + .025); g.gain.exponentialRampToValueAtTime(.001, t + offset + .18); osc.connect(g); g.connect(ctx.destination); osc.start(t + offset); osc.stop(t + offset + .2) }) }
+        function updateStats() { const now = Date.now(), f = data.events.filter(e => e.status === 'scheduled' && e.due > now); $('futureCount').textContent = f.length; $('todayCount').textContent = f.filter(e => new Date(e.due).toDateString() === new Date().toDateString()).length; $('pendingCount').textContent = data.events.filter(e => e.status === 'due').length; $('sound').textContent = data.sound ? (ctx && ctx.state === 'running' ? '♧ Sons ativados' : '♧ Liberar sons') : '♧ Ativar sons'; $('sound').classList.toggle('active', data.sound && ctx?.state === 'running'); }
+        function renderAlerts() { const now = Date.now(), events = data.events.filter(e => e.status === 'due' || e.status === 'scheduled' && e.advance && !e.preSeen && e.due - e.advance * 60000 <= now).sort((a, b) => a.due - b.due); const signature = events.map(e => e.id + e.status).join('|'); if ($('alerts').dataset.signature === signature) return; $('alerts').dataset.signature = signature; $('alerts').innerHTML = events.map(e => `<article class="alert"><div class="eyebrow">${e.status === 'due' ? 'CHEGOU A HORA' : 'DAQUI A POUCO'}</div><h3>${esc(e.title)}</h3><p>${esc(e.description)}<br>${format(e.due)}</p>${e.status === 'due' ? `<div class="row"><button class="primary" data-seen="${e.id}">✓ Marcar como visto</button><input type="datetime-local" aria-label="Nova data e hora para ${esc(e.title)}" id="post-${e.id}" min="${localValue(now + 120000)}"><button class="secondary" data-post="${e.id}">Postergar</button></div>` : `<button class="secondary" data-early="${e.id}">Entendi</button>`}</article>`).join('') }
+        function render() { updateStats(); renderAlerts(); const q = $('search').value.toLocaleLowerCase('pt-BR'), now = Date.now(); let rows = data.events.filter(e => (tab === 'future' ? e.status === 'scheduled' && e.due > now : e.due <= now || e.status === 'seen' || e.status === 'postponed') && (e.title + ' ' + e.description).toLocaleLowerCase('pt-BR').includes(q)).sort((a, b) => tab === 'future' ? a.due - b.due : b.due - a.due); $('list').innerHTML = rows.length ? rows.map(e => { const d = new Date(e.due); return `<article class="card"><div class="datebox"><b>${d.getDate()}</b><span>${d.toLocaleDateString('pt-BR', { month: 'short' })}</span></div><div class="content"><h3>${esc(e.title)}</h3>${e.description ? `<p>${esc(e.description)}</p>` : ''}<div class="meta"><span>◷ ${format(e.due)}</span>${e.seriesId ? `<span class="pill">↻ ${repeatNames[data.series.find(s => s.id === e.seriesId)?.kind] || 'Recorrente'}</span>` : ''}${e.advance ? `<span>${options.find(o => o[0] === e.advance)?.[1] || ''}</span>` : ''}<span>${e.bell ? '♧ Com som' : 'Sem som'}</span>${tab === 'past' ? `<span class="pill">${({ due: 'Aguardando leitura', seen: 'Visto', postponed: 'Postergado' })[e.status] || 'Encerrado'}</span>` : ''}</div></div>${tab === 'future' ? `<div class="actions"><button class="small" data-edit="${e.id}">Editar</button><button class="small danger" data-delete="${e.id}" aria-label="Excluir ${esc(e.title)}">Excluir</button></div>` : ''}</article>` }).join('') : `<div class="empty"><div class="empty-icon">◷</div><h3>${q ? 'Nenhum resultado' : tab === 'future' ? 'Abra espaço para lembrar.' : 'Seu histórico começa aqui.'}</h3><p>${q ? 'Experimente outro termo.' : tab === 'future' ? 'Adicione seu primeiro lembrete e deixe o horário com a gente.' : 'Os lembretes passados aparecerão aqui para consulta.'}</p>${!q && tab === 'future' ? '<button class="primary" data-new>＋ Criar lembrete</button>' : ''}</div>`; }
+        function advanceOptions(selected = Number($('advance').value) || 0) { const gap = new Date($('when').value).getTime() - Date.now(); $('advance').innerHTML = options.map(([v, l]) => `<option value="${v}" ${v && gap < v * 60000 ? 'disabled' : ''}>${l}</option>`).join(''); $('advance').value = options.some(([v]) => v === selected && (!v || gap >= v * 60000)) ? selected : 0; }
+        function openEditor(id = null) { tick(); const e = id && data.events.find(e => e.id === id); if (id && (!e || e.status !== 'scheduled' || e.due <= Date.now())) return toast('Eventos passados só podem ser consultados.'); editing = id; $('form').reset(); $('title').value = e?.title || ''; $('description').value = e?.description || ''; $('when').value = localValue(e?.due || Date.now() + 3600000); $('when').min = localValue(Date.now() + 120000); $('repeat').value = e?.seriesId ? data.series.find(s => s.id === e.seriesId)?.kind || 'none' : 'none'; $('bell').checked = e ? e.bell : true; $('error').textContent = ''; $('formTitle').textContent = e ? 'Editar lembrete' : 'Novo lembrete'; advanceOptions(e?.advance || 0); $('editor').showModal(); }
+        $('form').addEventListener('submit', ev => { ev.preventDefault(); const due = new Date($('when').value).getTime(), title = $('title').value.trim(), advance = Number($('advance').value); if (!title || !Number.isFinite(due) || due < Date.now() + 60000) { $('error').textContent = 'Informe um título e um horário pelo menos 1 minuto no futuro.'; return } if (advance && due - Date.now() < advance * 60000) { advanceOptions(); $('error').textContent = 'A antecedência escolhida já passou. Selecione uma opção disponível.'; return } const previous = editing && data.events.find(e => e.id === editing); if (editing && (!previous || previous.status !== 'scheduled' || previous.due <= Date.now())) { $('error').textContent = 'Este lembrete venceu e agora só pode ser consultado.'; return } const fields = { title, description: $('description').value.trim(), due, bell: $('bell').checked, advance, status: 'scheduled', preSeen: false, generated: false }; let seriesId = null; if (previous?.seriesId) { const old = data.series.find(s => s.id === previous.seriesId); if (old) old.active = false; } if ($('repeat').value !== 'none') { seriesId = uid(); data.series.push({ id: seriesId, kind: $('repeat').value, anchorDay: new Date(due).getDate(), active: true, ...fields }); } if (previous) Object.assign(previous, fields, { seriesId }); else data.events.push({ id: uid(), seriesId, ...fields }); save(); $('editor').close(); render(); toast('Lembrete salvo'); });
+        $('new').onclick = () => openEditor(); $('close').onclick = $('cancel').onclick = () => $('editor').close(); $('when').onchange = () => advanceOptions(); $('search').oninput = render;
+        document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; document.querySelectorAll('[data-tab]').forEach(x => x.classList.toggle('active', x === b)); render() });
+        $('sound').onclick = async () => { try { if (data.sound && ctx?.state === 'running') { data.sound = false; } else { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); await ctx.resume(); data.sound = true; tone(false) } save(); updateStats() } catch (e) { toast('Este navegador não conseguiu ativar o som.') } };
+        $('list').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; if (b.hasAttribute('data-new')) openEditor(); if (b.dataset.edit) openEditor(b.dataset.edit); if (b.dataset.delete) { tick(); const e = data.events.find(e => e.id === b.dataset.delete); if (!e || e.status !== 'scheduled' || e.due <= Date.now()) return toast('Eventos passados só podem ser consultados.'); deleting = e.id; $('deleteText').textContent = e.title; $('deleteSeries').checked = false; $('seriesLabel').style.display = e.seriesId ? 'flex' : 'none'; $('deletion').showModal(); } };
+        $('cancelDelete').onclick = () => $('deletion').close(); $('confirmDelete').onclick = () => { const e = data.events.find(e => e.id === deleting); if (e && e.status === 'scheduled' && e.due > Date.now()) { if (e.seriesId) { if ($('deleteSeries').checked) { const s = data.series.find(s => s.id === e.seriesId); if (s) s.active = false; data.events = data.events.filter(x => !(x.seriesId === e.seriesId && x.status === 'scheduled' && x.due > Date.now())); } else { generate(e); data.events = data.events.filter(x => x.id !== e.id) } } else data.events = data.events.filter(x => x.id !== e.id); save(); toast('Lembrete excluído'); } else toast('Este lembrete venceu. O histórico foi preservado.'); $('deletion').close(); render(); };
+        $('alerts').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; const id = b.dataset.seen || b.dataset.post || b.dataset.early, e = data.events.find(e => e.id === id); if (!e) return; if (b.dataset.seen && e.status === 'due') e.status = 'seen'; if (b.dataset.early) e.preSeen = true; if (b.dataset.post && e.status === 'due') { const due = new Date($('post-' + id).value).getTime(); if (!Number.isFinite(due) || due < Date.now() + 60000) return toast('Escolha um horário pelo menos 1 minuto no futuro.'); e.status = 'postponed'; data.events.push({ id: uid(), title: e.title, description: e.description, due, bell: e.bell, advance: due - Date.now() >= e.advance * 60000 ? e.advance : 0, status: 'scheduled', preSeen: false, generated: false, seriesId: null }); } save(); render(); };
+        window.addEventListener('storage', ev => { if (ev.key === KEY && ev.newValue) { try { const d = JSON.parse(ev.newValue); if (Array.isArray(d.events) && Array.isArray(d.series)) { data = d; tick(); render() } } catch (e) { } } }); document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); render() } }); window.addEventListener('focus', () => { tick(); render() }); setInterval(tick, 1000); tick(); render(); if (!storageOK) toast('Armazenamento indisponível: os lembretes podem não persistir.');
+    </script>
+</body>
+
+</html>

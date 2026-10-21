@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101014" />
+  <meta name="description" content="Organize lembretes únicos e recorrentes, com alertas e opções para postergar." />
+  <title>Lume — Seus lembretes</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0e12;
+      --panel: #17181f;
+      --panel-2: #1d1e26;
+      --panel-3: #252630;
+      --line: #32333d;
+      --text: #f7f4f0;
+      --muted: #a4a3ad;
+      --subtle: #737480;
+      --orange: #ff873d;
+      --orange-bright: #ff9b52;
+      --orange-soft: rgba(255, 135, 61, .11);
+      --red: #ff7472;
+      --shadow: 0 22px 75px rgba(0,0,0,.25);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-width: 320px; min-height: 100vh;
+      color: var(--text); background: var(--bg);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      background-image: radial-gradient(ellipse 620px 370px at 78% -60px, rgba(255, 115, 43, .085), transparent 78%);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(255, 135, 61, .55); outline-offset: 3px;
+    }
+    .icon { width: 19px; height: 19px; flex-shrink: 0; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .shell { max-width: 1350px; margin: 0 auto; padding: 0 34px 80px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; min-height: 95px; gap: 22px; border-bottom: 1px solid rgba(255,255,255,.065); }
+    .brand { display:flex; align-items:center; gap: 13px; font-size: 23px; font-weight: 790; letter-spacing:-1.05px; user-select:none; }
+    .brand-mark { display:grid; place-items:center; width: 43px; height:43px; border-radius:14px; color:#121014; background: linear-gradient(135deg,#ffb16b,#ff742c); box-shadow: 0 10px 25px rgba(255,119,44,.17); }
+    .brand-mark .icon { width:23px; height:23px; stroke-width:2.5; }
+    .brand small { margin-top: 4px; font-size: 11px; font-weight: 750; color:var(--orange); letter-spacing: 2.8px; text-transform:uppercase; }
+    .brand-name { display: flex; align-items: baseline; gap: 12px; }
+    .top-actions { display:flex; align-items:center; gap: 18px; }
+    .live-date { color: var(--muted); font-size: 13px; text-align:right; }
+    .live-date strong { display:block; color:var(--text); font-weight: 650; font-size: 14px; }
+    .outline-btn { display:flex; align-items:center; justify-content:center; gap: 9px; border:1px solid var(--line); border-radius: 12px; padding: 11px 14px; color:var(--text); background:#1b1c23; font-size: 13px; font-weight: 650; transition: .2s; }
+    .outline-btn:hover:not(:disabled) { background:var(--panel-3); border-color:#53505a; }
+    .outline-btn .icon { width:17px; height:17px; }
+    .hero { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; margin:54px 0 42px; }
+    .eyebrow { display:flex; align-items:center; gap: 9px; text-transform:uppercase; letter-spacing:2.2px; color:var(--orange); font-size:11px; font-weight:800; margin-bottom:14px; }
+    .eyebrow:before { content:""; display:block; width:7px; height:7px; border-radius:50%; background:var(--orange); box-shadow:0 0 0 5px rgba(255,135,61,.12); }
+    h1 { font-size:clamp(31px,4.15vw,53px); font-weight:780; line-height:1.12; letter-spacing:-2.4px; margin:0 0 14px; }
+    h1 em { font-style:normal; color:var(--orange); }
+    .hero p { color:var(--muted); font-size:15px; line-height:1.75; max-width:620px; margin:0; }
+    .timezone { flex-shrink:0; display:flex; align-items:center; gap:9px; background:rgba(255,255,255,.035); color:var(--muted); border:1px solid var(--line); border-radius: 40px; padding:10px 14px; font-size:12px; }
+    .timezone .icon { width:15px;height:15px; color:var(--orange); }
+    .workspace { display:grid; grid-template-columns:minmax(300px, 375px) minmax(0, 1fr); align-items:start; gap:24px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .composer { padding:28px; background:linear-gradient(160deg, #1e1c20 0%, #17181f 42%); position:relative; overflow:hidden; }
+    .composer:before { content:""; position:absolute; pointer-events:none; top:-125px; right:-90px; width:275px; height:260px; background:radial-gradient(circle, rgba(255,122,52,.12),transparent 70%); }
+    .card-title { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .title-icon { display:grid; place-items:center; background:var(--orange-soft); color:var(--orange); width:40px; height:40px; border-radius:12px; }
+    h2 { margin:0; font-size:19px; font-weight:740; letter-spacing:-.5px; }
+    .composer-intro { color:var(--muted); font-size:13px; line-height:1.65; margin:6px 0 26px; }
+    .field { margin-top:19px; }
+    .field label { display:block; color:#e4e0df; font-size:13px; font-weight:630; margin-bottom:8px; }
+    .field label span { color:var(--subtle); font-weight:400; }
+    .control { width:100%; border:1px solid #373842; background:#101116; color:var(--text); border-radius:11px; min-height:47px; padding:11px 13px; outline:none; transition:border-color .15s,box-shadow .15s; }
+    .control::placeholder { color:#71717c; }
+    .control:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(255,135,61,.13); }
+    textarea.control { resize:vertical; min-height:91px; max-height:240px; }
+    input[type="datetime-local"] { color-scheme:dark; }
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator { cursor:pointer; filter:invert(.9) sepia(.3) saturate(2); opacity:.9; }
+    select.control { appearance:none; padding-right:35px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23b8b5bb' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position:right 12px center; background-repeat:no-repeat; background-size:18px; }
+    .field-hint { font-size:11px; color:var(--subtle); margin:7px 0 0; }
+    .form-error { color:#ff9896; font-size:12px; min-height:17px; margin:11px 0 0; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:46px; padding:11px 16px; border:0; border-radius:11px; font-size:13px; font-weight:760; transition:transform .16s, background .16s, box-shadow .16s; }
+    .btn:hover:not(:disabled) { transform:translateY(-1px); }
+    .btn .icon { width:17px; height:17px; }
+    .btn-primary { background:linear-gradient(110deg,#ff9649,#ff782e); color:#1b120e; box-shadow:0 10px 25px rgba(255,118,43,.17); }
+    .btn-primary:hover { box-shadow:0 12px 30px rgba(255,118,43,.28); }
+    .btn-secondary { background:var(--panel-3); color:var(--text); border:1px solid var(--line); }
+    .btn-secondary:hover { background:#30313c; }
+    .btn-ghost { background:transparent; color:var(--muted); }
+    .btn-ghost:hover { background:var(--panel-3); color:var(--text); }
+    .form-buttons { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+    .form-buttons .btn { width:100%; }
+    .hint-card { margin-top:17px; display:flex; gap:12px; color:var(--muted); background:#15161b; border:1px solid #292a32; border-radius:15px; padding:16px 17px; font-size:12px; line-height:1.7; }
+    .hint-card .icon { color:var(--orange); flex-shrink:0; }
+    .hint-card strong { color:var(--text); }
+    .right { min-width:0; }
+    .stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:21px; }
+    .stat { padding:18px 19px; min-width:0; background:#17181f; border:1px solid var(--line); border-radius:17px; }
+    .stat-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .stat-label { color:var(--muted); font-size:12px; font-weight:540; }
+    .stat .icon { width:17px; height:17px; color:var(--orange); }
+    .stat-value { display:block; color:var(--text); font-size:31px; letter-spacing:-1.4px; line-height:1.3; margin-top:10px; font-weight:760; font-variant-numeric:tabular-nums; }
+    .due-banner { display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:19px; border:1px solid rgba(255,135,61,.46); background:rgba(255,135,61,.07); border-radius:16px; padding:14px 17px; }
+    .due-banner p { margin:0; font-size:13px; color:#f4c39f; }
+    .due-banner strong { display:block; color:#ffb478; font-size:14px; margin-bottom:2px; }
+    .due-banner .btn { flex-shrink:0; min-height:39px; padding:8px 13px; }
+    .list-card { padding:22px 22px 15px; min-height:480px; }
+    .list-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:21px; }
+    .list-title { font-size:19px; font-weight:750; letter-spacing:-.5px; margin:0; }
+    .list-subtitle { font-size:12px; color:var(--muted); margin:3px 0 0; }
+    .tabs { display:flex; background:#101116; border:1px solid #2c2d36; border-radius:11px; padding:4px; gap:2px; }
+    .tab { background:transparent; border:0; border-radius:8px; color:var(--muted); font-size:12px; font-weight:680; padding:9px 13px; }
+    .tab[aria-selected="true"] { background:#302921; color:var(--orange-bright); }
+    .search { display:flex; align-items:center; gap:10px; color:var(--subtle); background:#111218; border:1px solid #30313a; padding:0 13px; border-radius:11px; margin:0 0 21px; }
+    .search .icon { width:16px; height:16px; }
+    .search input { min-width:0; width:100%; height:43px; color:var(--text); background:transparent; border:0; outline:0; font-size:12px; }
+    .search:focus-within { border-color:var(--orange); }
+    .search input::placeholder { color:#767681; }
+    .day-heading { color:#92919c; text-transform:uppercase; letter-spacing:1.4px; font-size:10px; font-weight:780; margin:28px 3px 12px; }
+    .day-heading:first-child { margin-top:5px; }
+    .reminder { display:flex; align-items:flex-start; gap:15px; min-width:0; border:1px solid #2e2f39; border-radius:15px; background:#1b1c24; margin-bottom:10px; padding:17px; transition:border-color .2s,background .2s; }
+    .reminder:hover { background:#20212a; border-color:#46434a; }
+    .date-tile { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:0 0 56px; height:62px; border:1px solid #543725; background:linear-gradient(145deg,#38291e,#2a2320); color:var(--orange-bright); border-radius:11px; }
+    .date-tile strong { font-size:22px; line-height:1.1; font-weight:770; font-variant-numeric:tabular-nums; }
+    .date-tile small { font-size:10px; text-transform:uppercase; letter-spacing:1.2px; font-weight:750; }
+    .reminder.completed .date-tile { background:#26272d; border-color:#34343b; color:#aaaab5; }
+    .reminder-body { flex:1; min-width:0; }
+    .reminder-title { font-size:15px; font-weight:700; margin:0 0 4px; line-height:1.4; overflow-wrap:anywhere; }
+    .reminder-desc { color:var(--muted); font-size:12px; line-height:1.6; margin:0 0 10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .reminder-meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+    .meta { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:#b4b3bc; }
+    .meta .icon { width:13px;height:13px; }
+    .tag { border:1px solid #464038; border-radius:6px; background:#302820; color:#ffb17e; padding:3px 7px; font-size:10px; font-weight:690; }
+    .tag.muted { color:#b2b1bc; background:#252630; border-color:#3b3c45; }
+    .reminder-actions { display:flex; gap:3px; align-self:flex-start; }
+    .icon-btn { display:grid; place-items:center; border:0; border-radius:8px; width:34px; height:34px; background:transparent; color:#9c9ba6; }
+    .icon-btn:hover { background:#30313a; color:var(--orange); }
+    .icon-btn.danger:hover { color:var(--red); background:rgba(255,116,114,.1); }
+    .icon-btn .icon { width:16px; height:16px; }
+    .empty { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:70px 18px 86px; }
+    .empty-art { display:grid; place-items:center; width:80px; height:80px; border-radius:24px; background:#28231f; color:var(--orange); margin-bottom:21px; transform:rotate(-5deg); }
+    .empty-art .icon { width:39px; height:39px; stroke-width:1.4; transform:rotate(5deg); }
+    .empty h3 { font-size:18px; margin:0 0 6px; }
+    .empty p { color:var(--muted); font-size:13px; max-width:290px; margin:0; }
+    .storage-warning { margin:15px 0 0; padding:12px 15px; border:1px solid #945440; background:#482a24; color:#ffbca4; border-radius:12px; font-size:12px; }
+    [hidden] { display:none !important; }
+    .footer { text-align:center; color:var(--subtle); font-size:11px; margin-top:37px; }
+    .footer span { color:#e0a273; }
+    .toast-region { position:fixed; bottom:24px; right:24px; z-index:70; pointer-events:none; }
+    .toast { max-width:min(390px,calc(100vw - 30px)); margin-top:9px; padding:13px 17px; color:#f5efe7; background:#2a2a31; border:1px solid #45424a; border-left:3px solid var(--orange); border-radius:12px; font-size:12px; box-shadow:0 15px 45px rgba(0,0,0,.3); animation:pop .2s ease-out; }
+    @keyframes pop { from { transform:translateY(9px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .dialog-backdrop { position:fixed; inset:0; z-index:80; background:rgba(4,4,8,.79); backdrop-filter:blur(7px); display:flex; align-items:center; justify-content:center; padding:20px; }
+    .dialog { position:relative; width:100%; max-width:480px; background:linear-gradient(160deg,#242024,#191a21 48%); border:1px solid #4a3a32; border-radius:24px; box-shadow:0 30px 100px rgba(0,0,0,.58); padding:30px; max-height:calc(100vh - 35px); overflow-y:auto; }
+    .dialog-x { position:absolute; top:19px; right:19px; }
+    .bell-mark { display:grid; place-items:center; width:55px; height:55px; border-radius:17px; color:#27190e; background:linear-gradient(140deg,#ffb26d,#ff7a2f); margin-bottom:20px; }
+    .bell-mark .icon { width:29px;height:29px;stroke-width:2.1; }
+    .dialog-eyebrow { color:var(--orange); text-transform:uppercase; letter-spacing:2px; font-size:10px; font-weight:820; }
+    .dialog h2 { font-size:27px; line-height:1.25; margin:8px 0; overflow-wrap:anywhere; }
+    .dialog-desc { color:var(--muted); margin:0 0 19px; font-size:13px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .scheduled { display:flex; align-items:center; gap:9px; border:1px solid #3c3533; background:#2a2525; color:#ffbb8a; border-radius:10px; padding:11px 13px; font-size:12px; }
+    .scheduled .icon { width:16px;height:16px; }
+    .dialog-actions { display:flex; gap:10px; margin:21px 0 0; }
+    .dialog-actions .btn { flex:1; }
+    .snooze-panel { margin-top:21px; padding-top:19px; border-top:1px solid #39363a; }
+    .snooze-panel label { font-size:12px; font-weight:720; display:block; margin-bottom:10px; }
+    .quick-times { display:flex; gap:7px; flex-wrap:wrap; margin:11px 0 12px; }
+    .quick-time { background:#2b2930; color:#c6c3ca; border:1px solid #46414a; padding:6px 11px; border-radius:7px; font-size:11px; }
+    .quick-time:hover { border-color:var(--orange); color:var(--orange); }
+    .snooze-buttons { display:flex; gap:9px; margin-top:12px; }
+    .snooze-buttons .btn { width:100%; }
+    .dialog-counter { margin:16px 0 0; text-align:center; color:var(--subtle); font-size:11px; }
+    @media(max-width:980px) {
+      .workspace { grid-template-columns:minmax(260px,330px) minmax(0,1fr); gap:16px; }
+      .shell { padding-left:22px; padding-right:22px; }
+      .composer { padding:22px; }
+      .stats { gap:8px; }
+      .stat { padding:14px; }
+      .list-card { padding:18px 14px; }
+      .reminder { padding:13px; gap:10px; }
+      .reminder-actions { flex-direction:column; }
+    }
+    @media(max-width:760px) {
+      .topbar { min-height:78px; }
+      .brand small, .live-date, .timezone { display:none; }
+      .hero { margin:36px 0 28px; }
+      .hero p { font-size:14px; }
+      h1 { letter-spacing:-1.5px; }
+      .workspace { grid-template-columns:1fr; }
+      .composer { padding:23px; }
+      .right { margin-top:5px; }
+      .hint-card { display:none; }
+      .stats { gap:9px; }
+      .stat { padding:13px; }
+      .stat-value { font-size:26px; }
+      .stat-label { font-size:11px; }
+      .list-card { padding:19px 15px; }
+      .reminder-actions { flex-direction:row; }
+      .list-top { align-items:flex-start; }
+    }
+    @media(max-width:430px) {
+      .shell { padding:0 14px 50px; }
+      .brand { font-size:21px; }
+      .brand-mark { width:39px;height:39px; }
+      .top-actions { gap:7px; }
+      #notificationBtn { width:43px; padding:10px; }
+      #notificationBtn .btn-label { display:none; }
+      .eyebrow { font-size:10px; letter-spacing:1.7px; }
+      .hero { margin-top:30px; }
+      .hero p { font-size:13px; }
+      .composer { padding:20px; }
+      .stat-top .icon { width:14px; }
+      .stat-label { font-size:10px; }
+      .stat { padding:10px; border-radius:12px; }
+      .stat-value { font-size:26px; margin-top:6px; }
+      .tabs { padding:3px; }
+      .tab { padding:8px 9px; font-size:11px; }
+      .date-tile { flex-basis:47px; height:56px; }
+      .date-tile strong { font-size:19px; }
+      .reminder-title { font-size:14px; }
+      .reminder { padding:12px 9px; }
+      .reminder-actions { flex-direction:column; }
+      .due-banner { align-items:flex-start; flex-direction:column; }
+      .dialog { padding:23px; }
+      .dialog h2 { font-size:23px; }
+      .dialog-actions { flex-direction:column; }
+    }
+    @media(prefers-reduced-motion:reduce) { *,*:before,*:after { animation-duration:.01ms !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Lume, lembretes">
+        <div class="brand-mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="brand-name">lume <small>lembretes</small></div>
+      </div>
+      <div class="top-actions">
+        <div class="live-date"><strong id="liveDay"></strong><span id="liveClock"></span></div>
+        <button id="notificationBtn" class="outline-btn" type="button" title="Ativar notificações do navegador">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+          <span class="btn-label">Ativar notificações</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero" aria-label="Boas-vindas">
+      <div>
+        <div class="eyebrow">Sua rotina, no tempo certo</div>
+        <h1>Não deixe nada <em>passar.</em></h1>
+        <p>Organize o que importa, escolha quando ser lembrado e tenha o próximo passo sempre à vista.</p>
+      </div>
+      <div class="timezone"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18M3 12h18"/></svg><span id="timezoneLabel"></span></div>
+    </section>
+
+    <main class="workspace">
+      <aside>
+        <section id="composer" class="card composer" aria-labelledby="composerHeading">
+          <div class="card-title"><div class="title-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><h2 id="composerHeading">Novo lembrete</h2></div>
+          <p class="composer-intro" id="composerIntro">Registre uma atividade e deixe o restante com a gente.</p>
+          <form id="reminderForm" novalidate>
+            <div class="field"><label for="titleInput">Título</label><input class="control" id="titleInput" type="text" placeholder="Ex.: Pagar a conta de luz" maxlength="100" required autocomplete="off" /></div>
+            <div class="field"><label for="descriptionInput">Descrição <span>(opcional)</span></label><textarea class="control" id="descriptionInput" maxlength="1000" placeholder="Adicione detalhes para não esquecer..."></textarea></div>
+            <div class="field"><label for="repeatInput">Repetição</label><select class="control" id="repeatInput"><option value="none">Uma única vez</option><option value="daily">Todos os dias</option><option value="weekly">Toda semana</option><option value="monthly">Todo mês</option></select></div>
+            <div class="field"><label for="dateInput">Data e hora do lembrete</label><input class="control" id="dateInput" type="datetime-local" step="60" required /><p class="field-hint">Escolha um horário no futuro, no fuso deste dispositivo.</p></div>
+            <p class="form-error" id="formError" role="alert" aria-live="polite"></p>
+            <div class="form-buttons"><button class="btn btn-primary" id="saveBtn" type="submit"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span id="saveLabel">Criar lembrete</span></button><button class="btn btn-ghost" id="cancelEditBtn" type="button" hidden>Cancelar edição</button></div>
+          </form>
+        </section>
+        <div class="hint-card"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div><strong>Como funcionam os alertas?</strong><br/>Quando a página estiver aberta, você receberá um aviso no horário definido. Os lembretes ficam salvos neste navegador.</div></div>
+      </aside>
+
+      <div class="right">
+        <section class="stats" aria-label="Resumo">
+          <div class="stat"><div class="stat-top"><span class="stat-label">Agendados</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div><strong class="stat-value" id="statScheduled">0</strong></div>
+          <div class="stat"><div class="stat-top"><span class="stat-label">Próximos 7 dias</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><strong class="stat-value" id="statWeek">0</strong></div>
+          <div class="stat"><div class="stat-top"><span class="stat-label">Recorrentes</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.4-2"/></svg></div><strong class="stat-value" id="statRecurring">0</strong></div>
+        </section>
+        <section id="dueBanner" class="due-banner" hidden aria-live="polite"><div><strong id="dueBannerTitle"></strong><p>Você tem um ou mais lembretes aguardando uma ação.</p></div><button id="reviewDueBtn" type="button" class="btn btn-primary">Ver alertas</button></section>
+        <section class="card list-card" aria-labelledby="listHeading">
+          <div class="list-top"><div><h2 class="list-title" id="listHeading">Seus lembretes</h2><p class="list-subtitle" id="listSubtitle">Tudo organizado em ordem cronológica</p></div><div class="tabs" role="tablist" aria-label="Visualização de lembretes"><button id="tabUpcoming" class="tab" type="button" role="tab" aria-selected="true" aria-controls="remindersList">Próximos</button><button id="tabCompleted" class="tab" type="button" role="tab" aria-selected="false" aria-controls="remindersList">Concluídos</button></div></div>
+          <div class="search"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input type="search" id="searchInput" aria-label="Buscar lembretes" placeholder="Buscar por título ou descrição..." autocomplete="off" /></div>
+          <div id="remindersList" role="tabpanel" aria-live="polite"></div>
+        </section>
+      </div>
+    </main>
+    <div id="storageWarning" class="storage-warning" role="alert" hidden>Não foi possível acessar o armazenamento deste navegador. Alterações podem ser perdidas ao fechar a página. Confira as configurações de privacidade.</div>
+    <footer class="footer">Feito para simplificar seus dias <span>✦</span> Dados armazenados somente neste navegador.</footer>
+  </div>
+
+  <div id="toastRegion" class="toast-region" role="status" aria-live="polite"></div>
+  <div id="dialogBackdrop" class="dialog-backdrop" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dueDialogTitle" aria-describedby="dueDialogDesc">
+      <button class="icon-btn dialog-x" id="dismissDialogBtn" aria-label="Fechar este alerta por enquanto" title="Fechar por enquanto" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>
+      <div class="bell-mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></div>
+      <div class="dialog-eyebrow">É hora de lembrar</div>
+      <h2 id="dueDialogTitle"></h2>
+      <p id="dueDialogDesc" class="dialog-desc"></p>
+      <div class="scheduled"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="dueScheduled"></span></div>
+      <div class="dialog-actions"><button id="acknowledgeBtn" class="btn btn-primary" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>Marcar como visto</button></div>
+      <div class="snooze-panel"><label for="snoozeInput">Não é o momento? Postergue o lembrete.</label><input class="control" id="snoozeInput" type="datetime-local" step="60" /><div class="quick-times"><button class="quick-time" type="button" data-snooze="15">+ 15 min</button><button class="quick-time" type="button" data-snooze="60">+ 1 hora</button><button class="quick-time" type="button" data-snooze="1440">+ 1 dia</button></div><div class="snooze-buttons"><button id="snoozeBtn" type="button" class="btn btn-secondary"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>Postergar para esta data</button></div><p class="form-error" id="snoozeError" role="alert"></p></div>
+      <p class="dialog-counter" id="dialogCounter"></p>
+    </section>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const STORAGE_KEY = 'lume-reminders-v1';
+    const VALID_REPEATS = new Set(['none', 'daily', 'weekly', 'monthly']);
+    const REPEAT_LABELS = { none: 'Único', daily: 'Diário', weekly: 'Semanal', monthly: 'Mensal' };
+    const $ = id => document.getElementById(id);
+    const icons = {
+      clock: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      repeat: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.4-2"/></svg>',
+      edit: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/></svg>',
+      trash: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 4h4M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>',
+      calendar: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>',
+      check: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>'
+    };
+
+    let reminders = loadReminders();
+    let editingId = null;
+    let currentTab = 'upcoming';
+    let openDueId = null;
+    let lastFocus = null;
+    const ignoredDue = new Set();
+    const notifiedDue = new Set();
+
+    function loadReminders() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('Formato inválido');
+        return parsed.filter(x => x && typeof x === 'object' && typeof x.title === 'string' && typeof x.id === 'string' && Number.isFinite(x.nextAt))
+          .map(x => ({
+            id: x.id, title: x.title.slice(0, 100), description: typeof x.description === 'string' ? x.description.slice(0, 1000) : '',
+            repeat: VALID_REPEATS.has(x.repeat) ? x.repeat : 'none', nextAt: x.nextAt,
+            occurrenceAt: Number.isFinite(x.occurrenceAt) ? x.occurrenceAt : x.nextAt,
+            anchorDay: Number.isInteger(x.anchorDay) && x.anchorDay >= 1 && x.anchorDay <= 31 ? x.anchorDay : new Date(x.nextAt).getDate(),
+            completed: x.completed === true, completedAt: Number.isFinite(x.completedAt) ? x.completedAt : null,
+            seenCount: Number.isInteger(x.seenCount) && x.seenCount >= 0 ? x.seenCount : 0
+          }));
+      } catch (e) {
+        $('storageWarning').hidden = false;
+        return [];
+      }
+    }
+    function persist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+        $('storageWarning').hidden = true;
+      } catch (e) {
+        $('storageWarning').hidden = false;
+        toast('Não foi possível salvar neste navegador.');
+      }
+    }
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function toInputValue(value) {
+      const d = new Date(value);
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function futureDefault(minutes = 60) {
+      const d = new Date(Date.now() + minutes * 60000);
+      d.setSeconds(0, 0);
+      d.setMinutes(Math.ceil(d.getMinutes() / 5) * 5);
+      return d;
+    }
+    function futureMin() {
+      const d = new Date(Date.now() + 60000);
+      d.setSeconds(0, 0);
+      return toInputValue(d);
+    }
+    function formatDate(t, options = { dateStyle:'long', timeStyle:'short' }) {
+      return new Intl.DateTimeFormat('pt-BR', options).format(new Date(t));
+    }
+    function dayKey(t) {
+      const d = new Date(t);
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+    function dayLabel(t) {
+      const key = dayKey(t);
+      if (key === dayKey(Date.now())) return 'Hoje';
+      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+1);
+      if (key === dayKey(d.getTime())) return 'Amanhã';
+      return formatDate(t, {weekday:'long', day:'numeric', month:'long'});
+    }
+    function relativeTime(t) {
+      const diff = t - Date.now();
+      if (diff <= 0) return 'Pendente';
+      const min = Math.ceil(diff / 60000);
+      if (min < 60) return `Em ${min} min`;
+      const hrs = Math.ceil(diff / 3600000);
+      if (hrs < 24) return `Em ${hrs} h`;
+      const days = Math.ceil(diff / 86400000);
+      return days === 1 ? 'Em 1 dia' : `Em ${days} dias`;
+    }
+    function uid() {
+      return typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID() : `lume-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+    function toast(message) {
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.textContent = message;
+      $('toastRegion').appendChild(el);
+      setTimeout(() => el.remove(), 3700);
+    }
+    function refreshDateFields() {
+      $('dateInput').min = futureMin();
+      $('snoozeInput').min = futureMin();
+    }
+    function resetForm() {
+      editingId = null;
+      $('reminderForm').reset();
+      $('dateInput').value = toInputValue(futureDefault());
+      $('composerHeading').textContent = 'Novo lembrete';
+      $('composerIntro').textContent = 'Registre uma atividade e deixe o restante com a gente.';
+      $('saveLabel').textContent = 'Criar lembrete';
+      $('cancelEditBtn').hidden = true;
+      $('formError').textContent = '';
+      refreshDateFields();
+    }
+    function setTab(tab) {
+      currentTab = tab;
+      $('tabUpcoming').setAttribute('aria-selected', tab === 'upcoming' ? 'true' : 'false');
+      $('tabCompleted').setAttribute('aria-selected', tab === 'completed' ? 'true' : 'false');
+      render();
+    }
+    function makeIconBtn(name, svg, label, handler, extraClass='') {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = `icon-btn ${extraClass}`;
+      b.setAttribute('aria-label', `${label} ${name}`);
+      b.title = label; b.innerHTML = svg;
+      b.addEventListener('click', handler);
+      return b;
+    }
+    function render() {
+      const now = Date.now();
+      const active = reminders.filter(r => !r.completed);
+      const upcoming = active.filter(r => r.nextAt > now).sort((a,b) => a.nextAt-b.nextAt);
+      const due = active.filter(r => r.nextAt <= now);
+      const completed = reminders.filter(r => r.completed).sort((a,b) => (b.completedAt||0) - (a.completedAt||0));
+      $('statScheduled').textContent = upcoming.length;
+      $('statWeek').textContent = upcoming.filter(r => r.nextAt <= now + 7 * 86400000).length;
+      $('statRecurring').textContent = active.filter(r => r.repeat !== 'none').length;
+      $('dueBanner').hidden = due.length === 0;
+      $('dueBannerTitle').textContent = due.length === 1 ? '1 lembrete pendente' : `${due.length} lembretes pendentes`;
+      const isDone = currentTab === 'completed';
+      $('listSubtitle').textContent = isDone ? `${completed.length} lembrete(s) finalizado(s)` : `${upcoming.length} lembrete(s) futuro(s), do mais próximo ao mais distante`;
+      const term = $('searchInput').value.trim().toLocaleLowerCase('pt-BR');
+      const items = (isDone ? completed : upcoming).filter(r => (r.title + ' ' + r.description).toLocaleLowerCase('pt-BR').includes(term));
+      const root = $('remindersList');
+      root.replaceChildren();
+      if (!items.length) {
+        const empty = document.createElement('div'); empty.className = 'empty';
+        const art = document.createElement('div'); art.className = 'empty-art'; art.innerHTML = isDone ? icons.check : icons.calendar;
+        const heading = document.createElement('h3'); heading.textContent = term ? 'Nenhum resultado' : isDone ? 'Nada concluído por aqui' : due.length ? 'Tudo em dia por aqui?' : 'Seu próximo passo começa aqui';
+        const description = document.createElement('p');
+        description.textContent = term ? 'Tente outra palavra na busca.' : isDone ? 'Os lembretes únicos marcados como vistos aparecerão aqui.' : due.length ? 'Resolva os alertas pendentes ou crie um novo lembrete.' : 'Crie um lembrete à esquerda (ou acima, no celular) para começar.';
+        empty.append(art,heading,description); root.append(empty); return;
+      }
+      let lastDay = null;
+      for (const r of items) {
+        const key = dayKey(isDone ? (r.completedAt || r.nextAt) : r.nextAt);
+        if (key !== lastDay) {
+          const day = document.createElement('div'); day.className = 'day-heading';
+          day.textContent = dayLabel(isDone ? (r.completedAt || r.nextAt) : r.nextAt);
+          root.appendChild(day); lastDay = key;
+        }
+        const row = document.createElement('article'); row.className = `reminder${isDone ? ' completed' : ''}`;
+        const date = new Date(r.nextAt);
+        const tile = document.createElement('div'); tile.className = 'date-tile';
+        const tileDay = document.createElement('strong'); tileDay.textContent = pad(date.getDate());
+        const tileMonth = document.createElement('small'); tileMonth.textContent = formatDate(r.nextAt, {month:'short'}).replace('.', '');
+        tile.append(tileDay, tileMonth);
+        const body = document.createElement('div'); body.className = 'reminder-body';
+        const title = document.createElement('h3'); title.className = 'reminder-title'; title.textContent = r.title;
+        body.append(title);
+        if (r.description) {
+          const desc = document.createElement('p'); desc.className = 'reminder-desc'; desc.textContent = r.description;
+          body.append(desc);
+        }
+        const meta = document.createElement('div'); meta.className = 'reminder-meta';
+        const time = document.createElement('span'); time.className = 'meta';
+        time.innerHTML = icons.clock;
+        const timeText = document.createElement('span'); timeText.textContent = formatDate(r.nextAt, {hour:'2-digit',minute:'2-digit'});
+        time.append(timeText); meta.append(time);
+        const type = document.createElement('span'); type.className = 'tag'; type.textContent = REPEAT_LABELS[r.repeat]; meta.append(type);
+        const relative = document.createElement('span'); relative.className = 'tag muted';
+        relative.textContent = isDone ? `Visto em ${formatDate(r.completedAt || r.nextAt, {day:'2-digit',month:'2-digit',year:'numeric'})}` : relativeTime(r.nextAt);
+        meta.append(relative); body.append(meta);
+        const actions = document.createElement('div'); actions.className = 'reminder-actions';
+        actions.append(makeIconBtn(r.title, icons.edit, 'Editar', () => startEdit(r.id)));
+        actions.append(makeIconBtn(r.title, icons.trash, 'Excluir', () => deleteReminder(r.id), 'danger'));
+        row.append(tile,body,actions); root.append(row);
+      }
+    }
+    function startEdit(id) {
+      const r = reminders.find(x => x.id === id); if (!r) return;
+      editingId = id;
+      $('titleInput').value = r.title;
+      $('descriptionInput').value = r.description;
+      $('repeatInput').value = r.repeat;
+      $('dateInput').value = toInputValue(r.nextAt);
+      $('composerHeading').textContent = 'Editar lembrete';
+      $('composerIntro').textContent = 'Atualize as informações e salve as alterações.';
+      $('saveLabel').textContent = 'Salvar alterações';
+      $('cancelEditBtn').hidden = false;
+      $('formError').textContent = '';
+      $('composer').scrollIntoView({behavior:'smooth',block:'start'});
+      $('titleInput').focus({preventScroll:true});
+    }
+    function deleteReminder(id) {
+      const r = reminders.find(x => x.id === id); if (!r) return;
+      if (!window.confirm(`Excluir o lembrete "${r.title}"?`)) return;
+      reminders = reminders.filter(x => x.id !== id);
+      if (editingId === id) resetForm();
+      if (openDueId === id) closeDueDialog();
+      persist(); render(); checkDue(); toast('Lembrete excluído.');
+    }
+    function onSubmit(e) {
+      e.preventDefault();
+      const title = $('titleInput').value.trim();
+      const description = $('descriptionInput').value.trim();
+      const repeat = $('repeatInput').value;
+      const rawDate = $('dateInput').value;
+      const nextAt = new Date(rawDate).getTime();
+      if (!title) { $('formError').textContent = 'Informe um título para o lembrete.'; $('titleInput').focus(); return; }
+      if (!VALID_REPEATS.has(repeat)) { $('formError').textContent = 'Selecione uma repetição válida.'; return; }
+      if (!rawDate || !Number.isFinite(nextAt) || nextAt <= Date.now()) {
+        $('formError').textContent = 'Escolha uma data e hora no futuro.'; $('dateInput').focus(); refreshDateFields(); return;
+      }
+      const anchorDay = new Date(nextAt).getDate();
+      if (editingId) {
+        const r = reminders.find(x => x.id === editingId);
+        if (!r) { resetForm(); return; }
+        Object.assign(r,{title,description,repeat,nextAt,occurrenceAt:nextAt,anchorDay,completed:false,completedAt:null});
+        toast('Lembrete atualizado.');
+      } else {
+        reminders.push({id:uid(),title,description,repeat,nextAt,occurrenceAt:nextAt,anchorDay,completed:false,completedAt:null,seenCount:0});
+        toast('Lembrete criado com sucesso.');
+      }
+      persist(); resetForm(); setTab('upcoming'); checkDue();
+    }
+    function nextCycle(t, repeat, anchorDay) {
+      const d = new Date(t);
+      if (repeat === 'daily') d.setDate(d.getDate() + 1);
+      if (repeat === 'weekly') d.setDate(d.getDate() + 7);
+      if (repeat === 'monthly') {
+        const year = d.getFullYear(); const month = d.getMonth() + 1;
+        const last = new Date(year, month + 1, 0).getDate();
+        d.setDate(1); d.setMonth(month); d.setDate(Math.min(anchorDay, last));
+      }
+      return d.getTime();
+    }
+    function advanceRecurring(r) {
+      let next = r.occurrenceAt;
+      const now = Date.now();
+      let safety = 0;
+      do {
+        next = nextCycle(next,r.repeat,r.anchorDay);
+        safety++;
+      } while (next <= now && safety < 100000);
+      if (next <= now) next = futureDefault(60).getTime();
+      r.occurrenceAt = next;
+      r.nextAt = next;
+    }
+    function currentDue() {
+      return reminders.filter(r => !r.completed && r.nextAt <= Date.now()).sort((a,b) => a.nextAt - b.nextAt);
+    }
+    function dueKey(r) { return `${r.id}:${r.nextAt}`; }
+    function showDueDialog(r) {
+      if (!$('dialogBackdrop').hidden) return;
+      openDueId = r.id;
+      lastFocus = document.activeElement;
+      $('dueDialogTitle').textContent = r.title;
+      $('dueDialogDesc').textContent = r.description || 'Você tem uma atividade agendada para este horário.';
+      $('dueScheduled').textContent = `Agendado para ${formatDate(r.nextAt)}`;
+      $('snoozeInput').value = toInputValue(futureDefault(15));
+      $('snoozeError').textContent = '';
+      refreshDateFields();
+      const remaining = currentDue().length;
+      $('dialogCounter').textContent = remaining > 1 ? `Mais ${remaining-1} lembrete(s) pendente(s) depois deste.` : 'Você está em dia após resolver este alerta.';
+      $('dialogBackdrop').hidden = false;
+      document.body.style.overflow = 'hidden';
+      $('acknowledgeBtn').focus();
+    }
+    function closeDueDialog() {
+      $('dialogBackdrop').hidden = true;
+      document.body.style.overflow = '';
+      openDueId = null;
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus({preventScroll:true});
+    }
+    function dismissDue() {
+      const r = reminders.find(x => x.id === openDueId);
+      if (r) ignoredDue.add(dueKey(r));
+      closeDueDialog(); checkDue();
+    }
+    function checkDue({force=false}={}) {
+      if (!$('dialogBackdrop').hidden) return;
+      const due = currentDue();
+      notifyBrowser(due);
+      render();
+      if (force) ignoredDue.clear();
+      const next = due.find(r => !ignoredDue.has(dueKey(r)));
+      if (next) showDueDialog(next);
+    }
+    function acknowledge() {
+      const r = reminders.find(x => x.id === openDueId);
+      if (!r) { closeDueDialog(); checkDue(); return; }
+      if (r.repeat === 'none') { r.completed = true; r.completedAt = Date.now(); }
+      else { r.seenCount++; advanceRecurring(r); }
+      persist(); closeDueDialog(); render(); checkDue();
+      toast(r.repeat === 'none' ? 'Lembrete marcado como visto.' : 'Visto! Próxima ocorrência agendada.');
+    }
+    function snooze() {
+      const r = reminders.find(x => x.id === openDueId);
+      if (!r) { closeDueDialog(); return; }
+      const raw = $('snoozeInput').value;
+      const nextAt = new Date(raw).getTime();
+      if (!raw || !Number.isFinite(nextAt) || nextAt <= Date.now()) {
+        $('snoozeError').textContent = 'Escolha uma nova data e hora no futuro.';
+        refreshDateFields(); return;
+      }
+      r.nextAt = nextAt;
+      // Para lembretes recorrentes, occurrenceAt mantém a data original do ciclo.
+      // Assim, postergar um aviso não muda a cadência dos avisos seguintes.
+      ignoredDue.delete(dueKey(r));
+      persist(); closeDueDialog(); render(); checkDue();
+      toast(`Lembrete postergado para ${formatDate(nextAt)}.`);
+    }
+    function notifyBrowser(due) {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      for (const r of due) {
+        const key = dueKey(r);
+        if (notifiedDue.has(key)) continue;
+        notifiedDue.add(key);
+        try {
+          const n = new Notification(`Lume: ${r.title}`, {
+            body: r.description || `Seu lembrete está na hora: ${formatDate(r.nextAt)}`,
+            tag: `lume-${r.id}`, icon: undefined
+          });
+          n.onclick = () => { window.focus(); n.close(); checkDue({force:true}); };
+        } catch(e) { /* Notificação de sistema pode não ser suportada neste contexto. */ }
+      }
+    }
+    function updateNotificationButton() {
+      const button = $('notificationBtn');
+      const label = button.querySelector('.btn-label');
+      if (!('Notification' in window)) { label.textContent = 'Alertas na página'; button.title = 'Seu navegador não oferece notificações do sistema nesta página'; button.disabled = true; return; }
+      if (Notification.permission === 'granted') { label.textContent = 'Notificações ativas'; button.title = 'Notificações do sistema ativadas'; button.disabled = true; return; }
+      if (Notification.permission === 'denied') { label.textContent = 'Notificações bloqueadas'; button.title = 'Libere a permissão nas configurações do navegador'; button.disabled = true; return; }
+      label.textContent = 'Ativar notificações'; button.title = 'Pedir permissão para notificações do sistema'; button.disabled = false;
+    }
+    async function requestNotifications() {
+      if (!('Notification' in window)) { toast('Notificações de sistema não são suportadas neste navegador.'); return; }
+      try {
+        const permission = await Notification.requestPermission();
+        updateNotificationButton();
+        toast(permission === 'granted' ? 'Notificações ativadas enquanto a página estiver aberta.' : 'Você continua recebendo alertas dentro da página.');
+        if (permission === 'granted') notifyBrowser(currentDue());
+      } catch(e) { toast('Não foi possível ativar as notificações do sistema.'); }
+    }
+    function updateClock() {
+      const now = Date.now();
+      $('liveDay').textContent = formatDate(now,{weekday:'long',day:'numeric',month:'long'});
+      $('liveClock').textContent = formatDate(now,{hour:'2-digit',minute:'2-digit'});
+    }
+
+    $('reminderForm').addEventListener('submit',onSubmit);
+    $('cancelEditBtn').addEventListener('click',resetForm);
+    $('tabUpcoming').addEventListener('click',()=>setTab('upcoming'));
+    $('tabCompleted').addEventListener('click',()=>setTab('completed'));
+    $('searchInput').addEventListener('input',render);
+    $('reviewDueBtn').addEventListener('click',()=>checkDue({force:true}));
+    $('notificationBtn').addEventListener('click',requestNotifications);
+    $('dismissDialogBtn').addEventListener('click',dismissDue);
+    $('acknowledgeBtn').addEventListener('click',acknowledge);
+    $('snoozeBtn').addEventListener('click',snooze);
+    document.querySelectorAll('[data-snooze]').forEach(button => button.addEventListener('click', () => {
+      $('snoozeInput').value = toInputValue(futureDefault(Number(button.dataset.snooze)));
+      $('snoozeError').textContent = '';
+    }));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('dialogBackdrop').hidden) dismissDue(); });
+    $('dialogBackdrop').addEventListener('click',e => { if (e.target === $('dialogBackdrop')) dismissDue(); });
+    document.addEventListener('visibilitychange',()=>{ if (!document.hidden) {updateClock(); checkDue();} });
+    window.addEventListener('focus',()=>{updateClock(); checkDue();});
+    $('timezoneLabel').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Horário local';
+    resetForm(); updateClock(); updateNotificationButton(); render(); checkDue();
+    setInterval(() => { updateClock(); refreshDateFields(); checkDue(); }, 15000);
+  })();
+  </script>
+</body>
+</html>

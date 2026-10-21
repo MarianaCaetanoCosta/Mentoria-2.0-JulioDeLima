@@ -1,0 +1,17 @@
+Objetivo:
+Crie uma aplicação Web de lembretes de atividades a serem realizadas.
+
+Contexto:
+Essa aplicação Web deverá permitir ao usuário registrar lembretes que eu preciso lembrar em uma data e hora futura
+O lembrete é composto, basicamente, por um titulo, uma descrição, se é único ou recorrente, e a data/hora de quando devo ser lembrado
+Ao entrar na tela de lembretes, o usuário vê uma lista com todos os lembretes futuros organizados por data/hora do mais próximo ao mais distante
+Quando a data/hora é chegada, uma mensagem alerta o usuário que pode dizer se vai marcar esse lembrete como visto ou se vai postergar para uma nova data.
+Os lembretes sempre devem ser registrados para data/hora futura
+
+Regras:
+Você deverá criar esse site em HTML, no formato Single Page, ou seja, tudo roda em uma única página Web
+Você deverá colocar todos os scripts JS e CSS dentro do mesmo arquivo HTML
+Caso seja necessário armazenar informações para uso futuro, faça uso do armazenamento em browser
+Você deverá usar o esquema de cores escuro com tons de laranja
+Essa aplicação deve funcionar tanto para quem usa computador de mesa quanto para quem usa um dispositivo mobile
+Não crie testes automatizados
