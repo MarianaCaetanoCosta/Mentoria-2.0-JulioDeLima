@@ -1,0 +1,3306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetCare + PetQA — Gestão Inteligente</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: #121d2e;
+        --panel2: #17263a;
+        --line: #293b51;
+        --text: #e8f0f7;
+        --muted: #9db0c4;
+        --teal: #2dd4bf;
+        --teal2: #0f766e;
+        --orange: #fb923c;
+        --red: #fb7185;
+        --green: #4ade80;
+        --blue: #60a5fa;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 9px 12px;
+        background: var(--panel2);
+        color: var(--text);
+      }
+      button:hover {
+        border-color: var(--teal);
+      }
+      button.primary {
+        background: var(--teal2);
+        border-color: var(--teal2);
+        color: white;
+      }
+      button.danger {
+        color: #fecdd3;
+        border-color: #7f1d1d;
+        background: #3b1520;
+      }
+      button.small {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+      header {
+        padding: 20px clamp(16px, 4vw, 42px);
+        border-bottom: 1px solid var(--line);
+        background: #0d1726;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+        background: linear-gradient(135deg, var(--teal), #0f766e);
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+      }
+      .brand h1 {
+        font-size: 21px;
+        margin: 0;
+      }
+      .brand p {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        min-height: calc(100vh - 85px);
+      }
+      nav {
+        padding: 20px 12px;
+        border-right: 1px solid var(--line);
+        background: #0d1726;
+      }
+      .nav-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        padding: 8px 12px;
+      }
+      .nav-btn {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        text-align: left;
+        border-color: transparent;
+        background: transparent;
+        margin: 3px 0;
+      }
+      .nav-btn.active {
+        background: #14333b;
+        border-color: #1f5e5a;
+        color: #a7f3d0;
+      }
+      main {
+        padding: clamp(16px, 3vw, 30px);
+        min-width: 0;
+      }
+      .page-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+      }
+      .page-head h2 {
+        margin: 0;
+        font-size: 25px;
+      }
+      .page-head p {
+        margin: 5px 0 0;
+        color: var(--muted);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+      .stat,
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+      .stat {
+        padding: 17px;
+      }
+      .stat .label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .stat .value {
+        font-size: 26px;
+        font-weight: 750;
+        margin-top: 7px;
+      }
+      .stat .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .panel {
+        padding: 18px;
+        margin-bottom: 18px;
+      }
+      .panel h3 {
+        margin: 0 0 14px;
+        font-size: 17px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .report-menu {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+      }
+      .report-tab {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+      .report-tab[aria-selected="true"] {
+        background: #14333b;
+        border-color: #1f5e5a;
+        color: #a7f3d0;
+      }
+      .print-only {
+        display: none;
+      }
+      .toolbar input {
+        max-width: 320px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        background: #0b1625;
+        border: 1px solid #34475e;
+        border-radius: 8px;
+        color: var(--text);
+        padding: 10px 11px;
+        outline: none;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--teal);
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        color: #c6d4e1;
+        margin-bottom: 6px;
+      }
+      .field {
+        min-width: 0;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+      }
+      .form-grid .wide {
+        grid-column: 1/-1;
+      }
+      .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 11px 10px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      td {
+        font-size: 13px;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .actions {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #26364a;
+        color: #cbd5e1;
+      }
+      .badge.green {
+        background: #123c2e;
+        color: #86efac;
+      }
+      .badge.orange {
+        background: #4b2c17;
+        color: #fdba74;
+      }
+      .badge.red {
+        background: #481b2a;
+        color: #fda4af;
+      }
+      .badge.blue {
+        background: #172f50;
+        color: #93c5fd;
+      }
+      .empty {
+        text-align: center;
+        padding: 28px;
+        color: var(--muted);
+      }
+      .hidden {
+        display: none !important;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .notice {
+        border: 1px solid #1d5a55;
+        background: #102d32;
+        color: #b7f7e9;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        font-size: 13px;
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        color: var(--text);
+        width: min(620px, calc(100% - 24px));
+        padding: 22px;
+        box-shadow: 0 25px 90px #0009;
+      }
+      dialog::backdrop {
+        background: #020617bb;
+      }
+      .dialog-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .toast {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        background: #123c2e;
+        border: 1px solid #237a5a;
+        color: #bbf7d0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        box-shadow: 0 10px 30px #0006;
+        z-index: 20;
+        max-width: min(420px, calc(100% - 36px));
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      @media print {
+        @page {
+          size: landscape;
+          margin: 12mm;
+        }
+        body {
+          background: white;
+          color: black;
+          font-size: 10pt;
+        }
+        header,
+        nav,
+        footer,
+        .report-menu,
+        #btn-baixar-pdf-relatorio,
+        #btn-imprimir-relatorio {
+          display: none !important;
+        }
+        .app {
+          display: block;
+          min-height: 0;
+        }
+        main {
+          padding: 0;
+        }
+        .page,
+        .page.hidden {
+          display: none !important;
+        }
+        #page-relatorios,
+        #page-relatorios.hidden {
+          display: block !important;
+        }
+        .print-only {
+          display: block;
+          margin-bottom: 12px;
+        }
+        .print-only h1 {
+          margin: 0 0 4px;
+          font-size: 18pt;
+        }
+        .stats {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .stat,
+        .panel {
+          background: white;
+          color: black;
+          border: 1px solid #999;
+          break-inside: avoid;
+        }
+        .stat {
+          padding: 9px;
+        }
+        .stat .label,
+        .stat .hint,
+        .muted,
+        th {
+          color: #333;
+        }
+        .stat .value {
+          font-size: 16pt;
+        }
+        .panel {
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+        .table-wrap {
+          overflow: visible;
+        }
+        table {
+          width: 100%;
+          min-width: 0;
+          table-layout: auto;
+        }
+        th,
+        td {
+          padding: 5px;
+          border-color: #bbb;
+          color: black;
+          overflow-wrap: anywhere;
+        }
+        th {
+          font-size: 8pt;
+        }
+        td {
+          font-size: 8pt;
+        }
+        .badge {
+          background: white !important;
+          color: black !important;
+          border: 1px solid #777;
+        }
+        thead {
+          display: table-header-group;
+        }
+        tr {
+          break-inside: avoid;
+        }
+      }
+      @media (max-width: 950px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .app {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          display: flex;
+          gap: 5px;
+          overflow-x: auto;
+          padding: 10px;
+        }
+        .nav-label {
+          display: none;
+        }
+        .nav-btn {
+          width: auto;
+          white-space: nowrap;
+          margin: 0;
+        }
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 600px) {
+        header {
+          padding: 15px;
+        }
+        .stats {
+          gap: 9px;
+        }
+        .stat {
+          padding: 12px;
+        }
+        .stat .value {
+          font-size: 21px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-grid .wide {
+          grid-column: auto;
+        }
+        main {
+          padding: 14px;
+        }
+        .page-head h2 {
+          font-size: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🐾</div>
+        <div>
+          <h1>PetCare <span style="color: var(--teal)">+</span> PetQA</h1>
+          <p>Gestão inteligente de cuidados e serviços pet</p>
+        </div>
+      </div>
+    </header>
+    <div class="app">
+      <nav aria-label="Navegação principal">
+        <div class="nav-label">Menu principal</div>
+        <button class="nav-btn active" data-page="dashboard">
+          ▦ Visão geral</button
+        ><button class="nav-btn" data-page="tutores">👤 Tutores</button
+        ><button class="nav-btn" data-page="animais">🐶 Animais</button
+        ><button class="nav-btn" data-page="clinicas">🏥 Clínicas</button
+        ><button class="nav-btn" data-page="lembretes">🔔 Lembretes</button
+        ><button class="nav-btn" data-page="agendamentos">
+          ✂️ Agendamentos</button
+        ><button class="nav-btn" data-page="historico">
+          📈 Financeiro
+        </button
+        ><button class="nav-btn" data-page="relatorios">📊 Relatórios</button
+        ><button class="nav-btn" data-page="backup">💾 Backup</button
+        ><button class="nav-btn" data-page="tutorial">📘 Tutorial</button>
+      </nav>
+      <main id="conteudo" tabindex="-1">
+        <section id="page-dashboard" class="page">
+          <div class="page-head">
+            <div>
+              <h2>Visão geral</h2>
+              <p>
+                Acompanhe os cuidados, serviços e resultados do seu negócio.
+              </p>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <div class="label">Tutores cadastrados</div>
+              <div class="value" id="stat-tutores">0</div>
+              <div class="hint">Pessoas responsáveis</div>
+            </div>
+            <div class="stat">
+              <div class="label">Animais cadastrados</div>
+              <div class="value" id="stat-animais">0</div>
+              <div class="hint">Pets registrados</div>
+            </div>
+            <div class="stat">
+              <div class="label">Agendamentos em aberto</div>
+              <div class="value" id="stat-abertos">0</div>
+              <div class="hint">Aguardando atendimento</div>
+            </div>
+            <div class="stat">
+              <div class="label">Recebimentos líquidos</div>
+              <div class="value" id="stat-faturamento">R$ 0,00</div>
+              <div class="hint">Pagamentos menos estornos</div>
+            </div>
+          </div>
+          <div class="notice">
+            Seus dados ficam salvos neste navegador. Exporte um backup antes
+            de limpar os dados ou trocar de dispositivo.
+          </div>
+          <div class="two-col">
+            <section class="panel">
+              <h3>Próximos agendamentos</h3>
+              <div id="dashboard-proximos"></div>
+            </section>
+            <section class="panel">
+              <h3>Lembretes próximos</h3>
+              <div id="dashboard-lembretes"></div>
+            </section>
+          </div>
+        </section>
+        <section id="page-tutores" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Tutores</h2>
+              <p>Cadastro de responsáveis pelos animais.</p>
+            </div>
+            <button class="primary" data-new="tutor">+ Novo tutor</button>
+          </div>
+          <section class="panel">
+            <div class="toolbar">
+              <input
+                id="busca-tutores"
+                placeholder="Buscar tutor por nome, telefone ou e-mail"
+              />
+            </div>
+            <div id="lista-tutores"></div>
+          </section>
+        </section>
+        <section id="page-animais" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Animais</h2>
+              <p>Dados dos pets e seus responsáveis.</p>
+            </div>
+            <button class="primary" data-new="animal">+ Novo animal</button>
+          </div>
+          <section class="panel">
+            <div class="toolbar">
+              <input
+                id="busca-animais"
+                placeholder="Buscar animal, espécie ou tutor"
+              />
+            </div>
+            <div id="lista-animais"></div>
+          </section>
+        </section>
+        <section id="page-clinicas" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Clínicas e contatos</h2>
+              <p>Cadastre clínicas veterinárias e contatos úteis.</p>
+            </div>
+            <button class="primary" data-new="clinica">+ Nova clínica</button>
+          </div>
+          <section class="panel">
+            <div class="toolbar">
+              <input
+                id="busca-clinicas"
+                placeholder="Buscar clínica, telefone ou endereço"
+              />
+            </div>
+            <div id="lista-clinicas"></div>
+          </section>
+        </section>
+        <section id="page-lembretes" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Lembretes veterinários</h2>
+              <p>Vacinas, consultas, medicamentos e outros cuidados.</p>
+            </div>
+            <button class="primary" data-new="lembrete">+ Novo lembrete</button>
+          </div>
+          <section class="panel">
+            <div class="toolbar">
+              <input
+                id="busca-lembretes"
+                placeholder="Buscar lembrete ou animal"
+              />
+            </div>
+            <div id="lista-lembretes"></div>
+          </section>
+        </section>
+        <section id="page-agendamentos" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Agendamentos e serviços</h2>
+              <p>Controle atendimentos, status e valores cobrados.</p>
+            </div>
+            <button class="primary" data-new="agendamento">
+              + Novo agendamento
+            </button>
+          </div>
+          <section class="panel">
+            <div class="toolbar">
+              <input
+                id="busca-agendamentos"
+                placeholder="Buscar por pet, serviço ou status"
+              /><select id="filtro-status">
+                <option value="">Todos os status</option>
+                <option>Agendado</option>
+                <option>Em andamento</option>
+                <option>Concluído</option>
+                <option>Cancelado</option>
+                <option>Anulado</option>
+              </select>
+            </div>
+            <div id="lista-agendamentos"></div>
+          </section>
+        </section>
+        <section id="page-historico" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Financeiro</h2>
+              <p>Acompanhe serviços concluídos, valores recebidos e saldos a receber.</p>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <div class="label">Serviços concluídos</div>
+              <div class="value" id="hist-total">R$ 0,00</div>
+            </div>
+            <div class="stat">
+              <div class="label">Atendimentos concluídos</div>
+              <div class="value" id="hist-concluidos">0</div>
+            </div>
+            <div class="stat">
+              <div class="label">Ticket médio</div>
+              <div class="value" id="hist-ticket">R$ 0,00</div>
+            </div>
+            <div class="stat">
+              <div class="label">A receber</div>
+              <div class="value" id="hist-pendentes">R$ 0,00</div>
+            </div>
+          </div>
+          <section class="panel">
+            <h3>Serviços concluídos e valores a receber</h3>
+            <div id="lista-historico"></div>
+          </section>
+          <section class="panel">
+            <h3>Movimentações de recebimento</h3>
+            <div id="lista-pagamentos"></div>
+          </section>
+        </section>
+        <section id="page-relatorios" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Relatórios</h2>
+              <p>Consulte os registros por categoria ou veja o resumo completo da operação.</p>
+            </div>
+            <div class="actions">
+              <button id="btn-baixar-pdf-relatorio" type="button">Baixar PDF</button>
+              <button id="btn-imprimir-relatorio" type="button">Imprimir relatório</button>
+            </div>
+          </div>
+          <div id="cabecalho-impressao-relatorio" class="print-only">
+            <h1>PetCare + PetQA — <span id="titulo-impressao-relatorio">Relatório Total</span></h1>
+            <div id="data-impressao-relatorio"></div>
+          </div>
+          <div class="report-menu" role="tablist" aria-label="Categorias de relatórios">
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-total" aria-controls="conteudo-relatorio" aria-selected="true" data-report-category="total">Total</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-tutores" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="tutores">Tutores</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-animais" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="animais">Animais</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-clinicas" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="clinicas">Clínicas</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-agendamentos" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="agendamentos">Agendamentos</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-lembretes" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="lembretes">Lembretes</button>
+            <button class="report-tab" type="button" role="tab" id="tab-relatorio-financeiro" aria-controls="conteudo-relatorio" aria-selected="false" data-report-category="financeiro">Financeiro</button>
+          </div>
+          <div id="conteudo-relatorio" role="tabpanel" aria-labelledby="tab-relatorio-total"></div>
+        </section>
+        <section id="page-backup" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Backup</h2>
+              <p>Exporte seus dados para guardar uma cópia ou restaure um backup existente.</p>
+            </div>
+          </div>
+          <section class="panel">
+            <h3>Exportar dados</h3>
+            <p class="muted">Baixe um arquivo JSON com os cadastros, lembretes, agendamentos e pagamentos salvos neste navegador.</p>
+            <button id="btn-exportar" type="button">⇩ Exportar backup JSON</button>
+          </section>
+          <section class="panel">
+            <h3>Restaurar dados</h3>
+            <p class="muted">A restauração substitui os dados atuais. Confira se selecionou o arquivo correto e confirme a operação.</p>
+            <button id="btn-importar" type="button">⇧ Restaurar backup</button>
+            <input
+              id="arquivo-backup"
+              type="file"
+              accept="application/json,.json"
+              class="hidden"
+            />
+          </section>
+        </section>
+        <section id="page-tutorial" class="page hidden">
+          <div class="page-head">
+            <div>
+              <h2>Tutorial de utilização</h2>
+              <p>Um guia rápido para navegar e usar os principais recursos do PetCare + PetQA.</p>
+            </div>
+          </div>
+          <section class="panel">
+            <h3>1. Conheça o Menu principal</h3>
+            <p>Use o menu lateral para abrir Visão geral, Tutores, Animais, Clínicas, Lembretes, Agendamentos, Financeiro, Relatórios, Backup e este Tutorial. Cada opção abre sua própria tela.</p>
+          </section>
+          <section class="panel">
+            <h3>2. Cadastre os dados básicos</h3>
+            <ol>
+              <li>Em <strong>Tutores</strong>, cadastre a pessoa responsável.</li>
+              <li>Em <strong>Animais</strong>, cadastre o pet e associe-o ao tutor.</li>
+              <li>Em <strong>Clínicas</strong>, cadastre o local de atendimento.</li>
+              <li>Use as ações de cada tela para incluir, pesquisar, editar ou excluir registros. Vínculos existentes podem impedir exclusões para proteger os dados relacionados.</li>
+            </ol>
+          </section>
+          <section class="panel">
+            <h3>3. Organize lembretes e atendimentos</h3>
+            <ol>
+              <li>Em <strong>Lembretes</strong>, associe um cuidado ao animal e informe a data; a clínica é opcional.</li>
+              <li>Em <strong>Agendamentos</strong>, selecione animal, clínica, serviço, data e horário.</li>
+              <li>Inicie o atendimento pela ação disponível no agendamento. A conclusão só fica disponível a partir do horário marcado; informe o valor combinado e a data de conclusão.</li>
+              <li>Para desfazer uma conclusão, use <strong>Anular</strong> e informe o motivo. O registro permanece no histórico, mas deixa de compor os serviços concluídos e o saldo a receber. Se houver pagamentos, devolva os valores pelo meio de pagamento e registre o estorno integral de cada pagamento no Financeiro antes de anular; o registro do estorno no sistema não transfere dinheiro.</li>
+              <li>Links de WhatsApp e e-mail abrem o aplicativo correspondente com uma mensagem preparada. Revise e envie por conta própria.</li>
+            </ol>
+          </section>
+          <section class="panel">
+            <h3>4. Consulte o financeiro e os relatórios</h3>
+            <p>O Financeiro separa serviços concluídos, recebimentos líquidos de estornos e saldo a receber. Registre pagamentos pelo atendimento concluído; pagamentos parciais são aceitos até o limite do saldo. Para registrar um estorno, confirme que a devolução já foi feita fora do sistema e informe motivo, data e valor. Em Relatórios, selecione uma categoria ou Total; use Baixar PDF para gerar um arquivo ou Imprimir relatório para abrir a impressão do navegador.</p>
+          </section>
+          <section class="panel">
+            <h3>5. Proteja seus dados</h3>
+            <p>Os dados ficam no armazenamento local deste navegador e não são sincronizados com outros dispositivos. Abra <strong>Backup</strong> no Menu principal e exporte um JSON periodicamente. Restaurar um backup substitui os dados atuais e requer confirmação.</p>
+          </section>
+        </section>
+      </main>
+    </div>
+    <footer>
+      PetCare + PetQA · Protótipo local · Os dados permanecem neste navegador
+    </footer>
+    <dialog id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <div class="dialog-top">
+        <h3 id="modal-titulo">Cadastro</h3>
+        <button type="button" id="modal-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <form id="form-registro" data-name-prefix="registro-">
+        <div id="form-campos" class="form-grid"></div>
+        <div class="form-actions">
+          <button type="button" id="modal-cancelar">Cancelar</button
+          ><button type="submit" class="primary">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modal-pagamento" role="dialog" aria-modal="true" aria-labelledby="pagamento-titulo">
+      <div class="dialog-top">
+        <h3 id="pagamento-titulo">Registrar recebimento</h3>
+        <button type="button" id="pagamento-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <p id="pagamento-resumo" class="muted"></p>
+      <form id="form-pagamento" data-name-prefix="pagamento-">
+        <div class="form-grid">
+          <div class="field">
+            <label for="pagamento-valor">Valor recebido (R$)</label>
+            <input id="pagamento-valor" name="pagamento-valor" type="number" min="0.01" step="0.01" required />
+          </div>
+          <div class="field">
+            <label for="pagamento-forma">Forma de pagamento</label>
+            <select id="pagamento-forma" name="pagamento-forma" required>
+              <option value="">Selecione...</option>
+              <option>Dinheiro</option>
+              <option>Pix</option>
+              <option>Cartão de débito</option>
+              <option>Cartão de crédito</option>
+              <option>Transferência</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pagamento-data">Data do recebimento</label>
+            <input id="pagamento-data" name="pagamento-data" type="date" required />
+          </div>
+          <div class="field wide">
+            <label for="pagamento-observacoes">Observações</label>
+            <textarea id="pagamento-observacoes" name="pagamento-observacoes" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="pagamento-cancelar">Cancelar</button>
+          <button type="submit" class="primary">Confirmar recebimento</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modal-finalizacao" role="dialog" aria-modal="true" aria-labelledby="finalizacao-titulo">
+      <div class="dialog-top">
+        <h3 id="finalizacao-titulo">Finalizar atendimento</h3>
+        <button type="button" id="finalizacao-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <p id="finalizacao-resumo" class="muted"></p>
+      <form id="form-finalizacao" data-name-prefix="finalizacao-">
+        <div class="form-grid">
+          <div class="field">
+            <label for="finalizacao-valor">Valor combinado pelo atendimento (R$)</label>
+            <input id="finalizacao-valor" name="finalizacao-valor" type="number" min="0" step="0.01" required />
+          </div>
+          <div class="field">
+            <label for="finalizacao-data">Data da conclusão</label>
+            <input id="finalizacao-data" name="finalizacao-dataConclusao" type="date" required />
+          </div>
+          <div class="field wide muted">
+            O valor só será contado como recebido depois que você registrar o pagamento.
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="finalizacao-cancelar">Cancelar</button>
+          <button type="submit" class="primary">Finalizar atendimento</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modal-anulacao" role="dialog" aria-modal="true" aria-labelledby="anulacao-titulo">
+      <div class="dialog-top">
+        <h3 id="anulacao-titulo">Anular atendimento concluído</h3>
+        <button type="button" id="anulacao-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <p id="anulacao-resumo" class="muted"></p>
+      <form id="form-anulacao" data-name-prefix="anulacao-">
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="anulacao-motivo">Motivo da anulação</label>
+            <textarea id="anulacao-motivo" name="anulacao-motivo" rows="3" required maxlength="500"></textarea>
+          </div>
+          <div class="field wide muted">
+            O atendimento será mantido no histórico como anulado e deixará de compor serviços concluídos e valores a receber. Essa ação não pode ser desfeita.
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="anulacao-cancelar">Cancelar</button>
+          <button type="submit" class="danger">Confirmar anulação</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modal-estorno" role="dialog" aria-modal="true" aria-labelledby="estorno-titulo">
+      <div class="dialog-top">
+        <h3 id="estorno-titulo">Registrar estorno</h3>
+        <button type="button" id="estorno-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <p id="estorno-resumo" class="muted"></p>
+      <form id="form-estorno" data-name-prefix="estorno-">
+        <div class="form-grid">
+          <div class="field">
+            <label for="estorno-valor">Valor estornado (R$)</label>
+            <input id="estorno-valor" name="estorno-valor" type="number" min="0.01" step="0.01" required />
+          </div>
+          <div class="field">
+            <label for="estorno-data">Data do estorno</label>
+            <input id="estorno-data" name="estorno-data" type="date" required />
+          </div>
+          <div class="field wide">
+            <label for="estorno-motivo">Motivo do estorno</label>
+            <textarea id="estorno-motivo" name="estorno-motivo" rows="3" required maxlength="500"></textarea>
+          </div>
+          <div class="field wide muted">
+            Este registro não transfere dinheiro. Faça a devolução pelo meio de pagamento e registre aqui o estorno, vinculado ao pagamento original, para reduzir os recebimentos.
+          </div>
+          <div class="field wide">
+            <label>
+              <input id="estorno-confirmacao" name="estorno-confirmacao" type="checkbox" required />
+              Confirmo que o valor já foi devolvido ao cliente pelo meio de pagamento.
+            </label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="estorno-cancelar">Cancelar</button>
+          <button type="submit" class="primary">Registrar estorno</button>
+        </div>
+      </form>
+    </dialog>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+    <script>
+      "use strict";
+      const STORAGE_KEY = "petcare_petqa_v1";
+      const MIGRACAO_LEGADO_KEY = "petcare_petqa_migracao_legado_v1";
+      const STATUS_AGENDAMENTO = [
+        "Agendado",
+        "Em andamento",
+        "Concluído",
+        "Cancelado",
+        "Anulado",
+      ];
+      const focoAnteriorDialogo = new WeakMap();
+      function abrirDialogo(dialogo) {
+        focoAnteriorDialogo.set(dialogo, document.activeElement);
+        dialogo.showModal();
+        const primeiroCampo = dialogo.querySelector(
+          "form input:not([type='hidden']):not(:disabled), form select:not(:disabled), form textarea:not(:disabled), form button:not(:disabled)",
+        );
+        (primeiroCampo || dialogo).focus();
+      }
+      function restaurarFocoDialogo(evento) {
+        const elementoAnterior = focoAnteriorDialogo.get(evento.currentTarget);
+        focoAnteriorDialogo.delete(evento.currentTarget);
+        if (elementoAnterior?.isConnected && !elementoAnterior.disabled) {
+          elementoAnterior.focus();
+          return;
+        }
+        document.getElementById("conteudo").focus();
+      }
+      document.querySelectorAll("dialog").forEach((dialogo) => {
+        dialogo.addEventListener("close", restaurarFocoDialogo);
+      });
+      const hojeISO = () => new Date().toISOString().slice(0, 10);
+      function dataISOAtualLocal() {
+        const agora = new Date();
+        const ano = agora.getFullYear();
+        const mes = String(agora.getMonth() + 1).padStart(2, "0");
+        const dia = String(agora.getDate()).padStart(2, "0");
+        return `${ano}-${mes}-${dia}`;
+      }
+      function dataHoraAgendada(agendamento) {
+        const partesData = String(agendamento.data || "").match(
+          /^(\d{4})-(\d{2})-(\d{2})$/,
+        );
+        const partesHora = String(agendamento.horario || "").match(
+          /^([01]\d|2[0-3]):([0-5]\d)$/,
+        );
+        if (!partesData || !partesHora) return null;
+        const [ano, mes, dia] = partesData.slice(1).map(Number);
+        const hora = Number(partesHora[1]);
+        const minuto = Number(partesHora[2]);
+        const data = new Date(ano, mes - 1, dia, hora, minuto);
+        if (
+          data.getFullYear() !== ano ||
+          data.getMonth() !== mes - 1 ||
+          data.getDate() !== dia ||
+          data.getHours() !== hora ||
+          data.getMinutes() !== minuto
+        )
+          return null;
+        return data;
+      }
+      const moeda = (valor) =>
+        Number(valor || 0).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      const uid = (prefixo) =>
+        prefixo +
+        "_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).slice(2, 8);
+      const escapeHTML = (valor) =>
+        String(valor ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const valorSeguro = (valor) => {
+        if (typeof valor === "number") return Number.isFinite(valor) ? valor : 0;
+        const texto = String(valor ?? "")
+          .trim()
+          .replace(/[^\d,.-]/g, "");
+        if (!texto) return 0;
+        const normalizado = texto.includes(",")
+          ? texto.replace(/\./g, "").replace(",", ".")
+          : texto;
+        const numero = Number(normalizado);
+        return Number.isFinite(numero) ? numero : 0;
+      };
+      const dadosVazios = () => ({
+        tutores: [],
+        animais: [],
+        clinicas: [],
+        lembretes: [],
+        agendamentos: [],
+        pagamentos: [],
+        estornos: [],
+      });
+      let dados = carregarDados();
+      let tipoEditando = null,
+        idEditando = null,
+        pagamentoAgendamentoId = null,
+        finalizacaoAgendamentoId = null,
+        anulacaoAgendamentoId = null,
+        estornoPagamentoId = null,
+        toastTimer = null,
+        relatorioAtivo = "total";
+      function lerChaveLocal(chave) {
+        try {
+          const texto = localStorage.getItem(chave);
+          if (!texto) return null;
+          const obj = JSON.parse(texto);
+          return obj && typeof obj === "object" ? obj : null;
+        } catch (e) {
+          console.warn("Não foi possível ler a chave antiga", chave, e);
+          return null;
+        }
+      }
+      function listaDe(obj, ...chaves) {
+        for (const chave of chaves) {
+          if (Array.isArray(obj?.[chave])) return obj[chave];
+        }
+        return [];
+      }
+      function normalizarStatus(status) {
+        const s = String(status || "")
+          .trim()
+          .toLowerCase();
+        if (
+          [
+            "concluído",
+            "concluido",
+            "completed",
+            "complete",
+            "done",
+            "finalizado",
+            "finalizada",
+          ].includes(s)
+        )
+          return "Concluído";
+        if (["cancelado", "cancelada", "canceled", "cancelled"].includes(s))
+          return "Cancelado";
+        if (["anulado", "anulada", "voided"].includes(s)) return "Anulado";
+        if (
+          ["em andamento", "in progress", "in_progress", "started"].includes(s)
+        )
+          return "Em andamento";
+        return "Agendado";
+      }
+      function converterPetShop(antigo) {
+        if (!antigo) return dadosVazios();
+        const clientes = listaDe(antigo, "clients", "clientes", "tutores").map(
+          (x) => ({
+            ...x,
+            id: String(x.id ?? uid("tutor")),
+            nome: x.nome ?? x.name ?? x.nomeCompleto ?? "Tutor sem nome",
+            telefone: x.telefone ?? x.phone ?? x.celular ?? "",
+            email: x.email ?? "",
+            observacoes: x.observacoes ?? x.notes ?? "",
+          }),
+        );
+        const pets = listaDe(antigo, "pets", "animais").map((x) => ({
+          ...x,
+          id: String(x.id ?? uid("animal")),
+          nome: x.nome ?? x.name ?? "Pet sem nome",
+          tutorId: String(
+            x.tutorId ??
+              x.clientId ??
+              x.ownerId ??
+              x.clienteId ??
+              x.tutor_id ??
+              "",
+          ),
+          especie: x.especie ?? x.species ?? x.tipo ?? "Outro",
+          raca: x.raca ?? x.breed ?? "",
+          sexo: x.sexo ?? x.sex ?? "",
+          nascimento: x.nascimento ?? x.birthDate ?? x.birth_date ?? "",
+          peso: x.peso ?? x.weight ?? "",
+          observacoes: x.observacoes ?? x.notes ?? "",
+        }));
+        const ags = listaDe(
+          antigo,
+          "appts",
+          "appointments",
+          "agendamentos",
+        ).map((x) => ({
+          ...x,
+          id: String(x.id ?? uid("agendamento")),
+          animalId: String(
+            x.animalId ?? x.petId ?? x.pet_id ?? x.animal_id ?? "",
+          ),
+          servico: x.servico ?? x.service ?? x.tipo ?? "Atendimento",
+          data: String(
+            x.data ?? x.date ?? x.appointmentDate ?? x.appointment_date ?? "",
+          ).slice(0, 10),
+          horario: x.horario ?? x.time ?? x.appointmentTime ?? "",
+          valor: valorSeguro(x.valor ?? x.price ?? x.amount ?? x.value ?? 0),
+          status: normalizarStatus(x.status),
+          valorCobrado:
+            x.valorCobrado ?? x.amountCharged ?? x.chargedAmount ?? null,
+          dataConclusao:
+            x.dataConclusao ?? x.completedAt ?? x.completed_at ?? "",
+          observacoes: x.observacoes ?? x.notes ?? "",
+        }));
+        return {
+          tutores: clientes,
+          animais: pets,
+          clinicas: listaDe(antigo, "clinicas", "clinics"),
+          lembretes: listaDe(antigo, "lembretes", "reminders"),
+          agendamentos: ags,
+        };
+      }
+      function unirSemDuplicar(destino, origem) {
+        const saida = [...destino];
+        for (const item of origem) {
+          const id = item?.id == null ? "" : String(item.id);
+          const existe = saida.some(
+            (x) =>
+              (id && String(x?.id ?? "") === id) ||
+              (!id &&
+                String(x?.nome ?? x?.titulo ?? "")
+                  .trim()
+                  .toLowerCase() ===
+                  String(item?.nome ?? item?.titulo ?? "")
+                    .trim()
+                    .toLowerCase() &&
+                String(x?.data ?? "") === String(item?.data ?? "")),
+          );
+          if (!existe) saida.push(item);
+        }
+        return saida;
+      }
+      function chaveTexto(valor) {
+        return String(valor ?? "")
+          .trim()
+          .toLocaleLowerCase("pt-BR")
+          .replace(/\s+/g, " ");
+      }
+      function deduplicarRegistros(lista, criarChave) {
+        const porChave = new Map();
+        const aliases = new Map();
+        const saida = [];
+        for (const item of lista) {
+          const chave = criarChave(item);
+          const existente = chave ? porChave.get(chave) : null;
+          if (!existente) {
+            saida.push(item);
+            if (chave) porChave.set(chave, item);
+            continue;
+          }
+          if (String(item.id) !== String(existente.id))
+            aliases.set(String(item.id), String(existente.id));
+          for (const [campo, valor] of Object.entries(item)) {
+            if (
+              (existente[campo] === undefined ||
+                existente[campo] === null ||
+                existente[campo] === "") &&
+              valor !== undefined &&
+              valor !== null &&
+              valor !== ""
+            )
+              existente[campo] = valor;
+          }
+        }
+        return { lista: saida, aliases };
+      }
+      function aplicarAliases(lista, campo, aliases) {
+        for (const item of lista) {
+          const id = String(item[campo] ?? "");
+          if (aliases.has(id)) item[campo] = aliases.get(id);
+        }
+      }
+      function normalizarEstornos(estornos, pagamentos) {
+        const lista = estornos.map((e) => {
+          const pagamentoId = String(e.pagamentoId ?? e.paymentId ?? "");
+          const pagamento = pagamentos.find((p) => p.id === pagamentoId);
+          const valor = valorSeguro(e.valor);
+          const data = String(e.data ?? "").slice(0, 10);
+          const motivo = String(e.motivo ?? e.reason ?? "").trim();
+          if (!pagamento || valor <= 0 || !data || !motivo)
+            throw new Error("Registro de estorno inválido.");
+          return {
+            ...e,
+            id: String(e.id ?? uid("estorno")),
+            pagamentoId,
+            agendamentoId: pagamento.agendamentoId,
+            valor,
+            data,
+            motivo,
+          };
+        });
+        for (const pagamento of pagamentos) {
+          const total = lista
+            .filter((e) => e.pagamentoId === pagamento.id)
+            .reduce((s, e) => s + e.valor, 0);
+          if (total > valorSeguro(pagamento.valor) + 0.001)
+            throw new Error("Estornos excedem o pagamento original.");
+        }
+        return lista;
+      }
+      function carregarDados() {
+        const base = dadosVazios();
+        try {
+          const armazenamentoAtual = localStorage.getItem(STORAGE_KEY);
+          const atual = lerChaveLocal(STORAGE_KEY);
+          for (const chave of Object.keys(base))
+            base[chave] = Array.isArray(atual?.[chave]) ? atual[chave] : [];
+          const deveMigrarLegado =
+            armazenamentoAtual === null &&
+            localStorage.getItem(MIGRACAO_LEGADO_KEY) !== "concluida";
+          if (deveMigrarLegado) {
+            // Migra versões antigas uma única vez e preserva as chaves originais como backup.
+            const legadoPetCare = lerChaveLocal("petcare_dados_v1");
+            const legadoPetQA = converterPetShop(lerChaveLocal("petshop.v1"));
+            const fontes = [legadoPetCare || {}, legadoPetQA];
+            for (const fonte of fontes) {
+              for (const chave of Object.keys(base)) {
+                const lista = Array.isArray(fonte[chave]) ? fonte[chave] : [];
+                base[chave] = unirSemDuplicar(base[chave], lista);
+              }
+            }
+          }
+          base.tutores = base.tutores.map((t) => ({
+            ...t,
+            id: String(t.id ?? uid("tutor")),
+            nome: t.nome ?? t.name ?? "Tutor sem nome",
+            telefone: t.telefone ?? t.phone ?? "",
+            email: t.email ?? "",
+            observacoes: t.observacoes ?? t.notes ?? "",
+          }));
+          base.animais = base.animais.map((a) => ({
+            ...a,
+            id: String(a.id ?? uid("animal")),
+            nome: a.nome ?? a.name ?? "Pet sem nome",
+            tutorId: String(
+              a.tutorId ?? a.clientId ?? a.ownerId ?? a.clienteId ?? "",
+            ),
+            especie: a.especie ?? a.species ?? a.tipo ?? "Outro",
+            raca: a.raca ?? a.breed ?? "",
+            sexo: a.sexo ?? a.sex ?? "",
+            nascimento: a.nascimento ?? a.birthDate ?? "",
+            peso: a.peso ?? a.weight ?? "",
+            observacoes: a.observacoes ?? a.notes ?? "",
+          }));
+          base.clinicas = base.clinicas.map((c) => ({
+            ...c,
+            id: String(c.id ?? uid("clinica")),
+            nome: c.nome ?? c.name ?? "Clínica sem nome",
+            telefone: c.telefone ?? c.phone ?? "",
+            email: c.email ?? "",
+            endereco: c.endereco ?? c.address ?? "",
+            contato: c.contato ?? c.contact ?? "",
+            observacoes: c.observacoes ?? c.notes ?? "",
+          }));
+          base.lembretes = base.lembretes.map((l) => ({
+            ...l,
+            id: String(l.id ?? uid("lembrete")),
+            titulo: l.titulo ?? l.title ?? l.nome ?? "Lembrete",
+            animalId: String(l.animalId ?? l.petId ?? l.pet_id ?? ""),
+            tipo: l.tipo ?? l.type ?? "Outro",
+            data: String(l.data ?? l.date ?? "").slice(0, 10),
+            clinicaId: String(l.clinicaId ?? l.clinicId ?? ""),
+            observacoes: l.observacoes ?? l.notes ?? "",
+            concluido: Boolean(l.concluido ?? l.completed ?? false),
+          }));
+          base.agendamentos = base.agendamentos.map((a) => ({
+            ...a,
+            id: String(a.id ?? uid("agendamento")),
+            animalId: String(a.animalId ?? a.petId ?? a.pet_id ?? ""),
+            servico: a.servico ?? a.service ?? a.tipo ?? "Atendimento",
+            data: String(a.data ?? a.date ?? "").slice(0, 10),
+            horario: a.horario ?? a.time ?? "",
+            valor: valorSeguro(a.valor ?? a.price ?? a.amount ?? 0),
+            status: normalizarStatus(a.status),
+            valorCobrado:
+              a.valorCobrado === null ||
+              a.valorCobrado === undefined ||
+              a.valorCobrado === ""
+                ? null
+                : valorSeguro(a.valorCobrado),
+            dataConclusao: a.dataConclusao ?? a.completedAt ?? "",
+            observacoes: a.observacoes ?? a.notes ?? "",
+          }));
+          const tutores = deduplicarRegistros(base.tutores, (t) => {
+            const nome = chaveTexto(t.nome);
+            if (!nome) return "";
+            const contato =
+              String(t.telefone || "").replace(/\D/g, "") ||
+              chaveTexto(t.email);
+            return `tutor|${nome}|${contato}`;
+          });
+          base.tutores = tutores.lista;
+          aplicarAliases(base.animais, "tutorId", tutores.aliases);
+          const animais = deduplicarRegistros(base.animais, (a) => {
+            const nome = chaveTexto(a.nome);
+            return nome
+              ? `animal|${nome}|${a.tutorId}|${chaveTexto(a.especie)}`
+              : "";
+          });
+          base.animais = animais.lista;
+          aplicarAliases(base.agendamentos, "animalId", animais.aliases);
+          aplicarAliases(base.lembretes, "animalId", animais.aliases);
+          const clinicas = deduplicarRegistros(base.clinicas, (c) => {
+            const nome = chaveTexto(c.nome);
+            return nome
+              ? `clinica|${nome}|${String(c.telefone || "").replace(/\D/g, "")}`
+              : "";
+          });
+          base.clinicas = clinicas.lista;
+          aplicarAliases(base.lembretes, "clinicaId", clinicas.aliases);
+          base.lembretes = deduplicarRegistros(base.lembretes, (l) => {
+            const titulo = chaveTexto(l.titulo);
+            return titulo && l.animalId && l.data
+              ? `lembrete|${titulo}|${l.animalId}|${l.data}|${chaveTexto(l.tipo)}`
+              : "";
+          }).lista;
+          base.agendamentos = deduplicarRegistros(base.agendamentos, (a) => {
+            if (a.status === "Anulado")
+              return `agendamento-anulado|${a.id}`;
+            const servico = chaveTexto(a.servico);
+            return a.animalId && a.data && a.horario && servico
+              ? `agendamento|${a.animalId}|${a.data}|${a.horario}|${servico}`
+              : "";
+          }).lista;
+          base.pagamentos = base.pagamentos.map((p) => ({
+            ...p,
+            id: String(p.id ?? uid("pagamento")),
+            agendamentoId: String(p.agendamentoId ?? p.appointmentId ?? ""),
+            valor: valorSeguro(p.valor),
+            forma: p.forma ?? "Outro",
+            data: String(p.data ?? "").slice(0, 10),
+            observacoes: p.observacoes ?? "",
+          }));
+          base.estornos = normalizarEstornos(base.estornos, base.pagamentos);
+          // Persiste os dados atuais; fontes antigas não devem restaurar registros excluídos.
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(base));
+          if (deveMigrarLegado)
+            localStorage.setItem(MIGRACAO_LEGADO_KEY, "concluida");
+          return base;
+        } catch (e) {
+          console.error("Erro ao migrar dados locais:", e);
+          return base;
+        }
+      }
+      function persistir() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+          return true;
+        } catch (e) {
+          alert(
+            "Não foi possível salvar os dados neste navegador. Exporte um backup e libere espaço.",
+          );
+          return false;
+        }
+      }
+      function toast(mensagem) {
+        const el = document.getElementById("toast");
+        el.textContent = mensagem;
+        el.classList.remove("hidden");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.add("hidden"), 3300);
+      }
+      function tutorNome(id) {
+        return (
+          dados.tutores.find((x) => x.id === id)?.nome || "Tutor não encontrado"
+        );
+      }
+      function animalNome(id) {
+        return (
+          dados.animais.find((x) => x.id === id)?.nome ||
+          "Animal não encontrado"
+        );
+      }
+      function clinicaNome(id) {
+        return dados.clinicas.find((x) => x.id === id)?.nome || "Clínica não encontrada";
+      }
+      function dataBR(data) {
+        if (!data) return "—";
+        const p = String(data).slice(0, 10).split("-");
+        return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : data;
+      }
+      function badgeStatus(status) {
+        const classe =
+          status === "Concluído"
+            ? "green"
+            : status === "Cancelado" || status === "Anulado"
+              ? "red"
+              : status === "Em andamento"
+                ? "blue"
+                : "orange";
+        return `<span class="badge ${classe}">${escapeHTML(status || "Agendado")}</span>`;
+      }
+      function vazio(msg) {
+        return `<div class="empty">${escapeHTML(msg)}</div>`;
+      }
+      function tabela(colunas, linhas) {
+        if (!linhas.length) return vazio("Nenhum registro cadastrado.");
+        return `<div class="table-wrap"><table><thead><tr>${colunas.map((c) => `<th>${c}</th>`).join("")}</tr></thead><tbody>${linhas.join("")}</tbody></table></div>`;
+      }
+      function acoes(tipo, id, extra = "", opcoes = {}) {
+        const editar = opcoes.editar !== false
+          ? `<button class="small" data-edit="${escapeHTML(tipo)}" data-id="${escapeHTML(id)}">Editar</button>`
+          : "";
+        const excluir = opcoes.excluir !== false
+          ? `<button class="small danger" data-delete="${escapeHTML(tipo)}" data-id="${escapeHTML(id)}">Excluir</button>`
+          : "";
+        return `<div class="actions">${extra}${editar}${excluir}</div>`;
+      }
+      function valorDoAtendimento(agendamento) {
+        if (
+          agendamento.valorCobrado !== null &&
+          agendamento.valorCobrado !== undefined &&
+          agendamento.valorCobrado !== ""
+        )
+          return valorSeguro(agendamento.valorCobrado);
+        return valorSeguro(agendamento.valor);
+      }
+      function totalRecebido(agendamentoId) {
+        const recebido = dados.pagamentos
+          .filter((p) => p.agendamentoId === agendamentoId)
+          .reduce((s, p) => s + valorSeguro(p.valor), 0);
+        const estornado = dados.estornos
+          .filter((e) => e.agendamentoId === agendamentoId)
+          .reduce((s, e) => s + valorSeguro(e.valor), 0);
+        return Math.max(0, recebido - estornado);
+      }
+      function saldoDoAtendimento(agendamento) {
+        if (agendamento.status !== "Concluído") return 0;
+        return Math.max(
+          0,
+          valorDoAtendimento(agendamento) - totalRecebido(agendamento.id),
+        );
+      }
+      function totalRecebimentos() {
+        const recebido = dados.pagamentos.reduce(
+          (s, p) => s + valorSeguro(p.valor),
+          0,
+        );
+        const estornado = dados.estornos.reduce(
+          (s, e) => s + valorSeguro(e.valor),
+          0,
+        );
+        return Math.max(0, recebido - estornado);
+      }
+      function totalEstornadoDoPagamento(pagamentoId) {
+        return dados.estornos
+          .filter((e) => e.pagamentoId === pagamentoId)
+          .reduce((s, e) => s + valorSeguro(e.valor), 0);
+      }
+      function valorEstornavel(pagamento) {
+        return Math.max(
+          0,
+          valorSeguro(pagamento.valor) -
+            totalEstornadoDoPagamento(pagamento.id),
+        );
+      }
+      function totalFaturamento() {
+        return totalRecebimentos();
+      }
+      function renderizarDashboard() {
+        document.getElementById("stat-tutores").textContent =
+          dados.tutores.length;
+        document.getElementById("stat-animais").textContent =
+          dados.animais.length;
+        document.getElementById("stat-abertos").textContent =
+          dados.agendamentos.filter(
+            (a) => !["Concluído", "Cancelado", "Anulado"].includes(a.status),
+          ).length;
+        document.getElementById("stat-faturamento").textContent =
+          moeda(totalFaturamento());
+        const prox = dados.agendamentos
+          .filter(
+            (a) =>
+              !["Concluído", "Cancelado", "Anulado"].includes(a.status),
+          )
+          .slice()
+          .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+          .slice(0, 6);
+        document.getElementById("dashboard-proximos").innerHTML = prox.length
+          ? `<div class="table-wrap"><table><thead><tr><th>Data</th><th>Pet / serviço</th><th>Clínica</th><th>Status</th></tr></thead><tbody>${prox.map((a) => `<tr><td>${dataBR(a.data)}<br><span class="muted">${escapeHTML(a.horario || "")}</span></td><td><b>${escapeHTML(animalNome(a.animalId))}</b><br>${escapeHTML(a.servico)}</td><td>${escapeHTML(clinicaNome(a.clinicaId))}</td><td>${badgeStatus(a.status)}</td></tr>`).join("")}</tbody></table></div>`
+          : vazio("Nenhum agendamento em aberto.");
+        const lemb = dados.lembretes
+          .filter((l) => !l.concluido)
+          .slice()
+          .sort((a, b) => (a.data || "").localeCompare(b.data || ""))
+          .slice(0, 6);
+        document.getElementById("dashboard-lembretes").innerHTML = lemb.length
+          ? `<div class="table-wrap"><table><thead><tr><th>Data</th><th>Lembrete</th><th>Pet</th></tr></thead><tbody>${lemb.map((l) => `<tr><td>${dataBR(l.data)}</td><td>${escapeHTML(l.titulo)}</td><td>${escapeHTML(animalNome(l.animalId))}</td></tr>`).join("")}</tbody></table></div>`
+          : vazio("Nenhum lembrete pendente.");
+      }
+      function renderizarTutores() {
+        const q = (
+          document.getElementById("busca-tutores")?.value || ""
+        ).toLowerCase();
+        const lista = dados.tutores.filter((t) =>
+          [t.nome, t.telefone, t.email].some((v) =>
+            String(v || "")
+              .toLowerCase()
+              .includes(q),
+          ),
+        );
+        document.getElementById("lista-tutores").innerHTML = tabela(
+          ["Nome", "Telefone", "E-mail", "Observações", "Ações"],
+          lista.map(
+            (t) =>
+              `<tr><td><b>${escapeHTML(t.nome)}</b></td><td>${escapeHTML(t.telefone || "—")}</td><td>${escapeHTML(t.email || "—")}</td><td>${escapeHTML(t.observacoes || "—")}</td><td>${acoes("tutor", t.id)}</td></tr>`,
+          ),
+        );
+      }
+      function renderizarAnimais() {
+        const q = (
+          document.getElementById("busca-animais")?.value || ""
+        ).toLowerCase();
+        const lista = dados.animais.filter((a) =>
+          [a.nome, a.especie, a.raca, tutorNome(a.tutorId)].some((v) =>
+            String(v || "")
+              .toLowerCase()
+              .includes(q),
+          ),
+        );
+        document.getElementById("lista-animais").innerHTML = tabela(
+          ["Animal", "Espécie / raça", "Nascimento", "Tutor", "Ações"],
+          lista.map(
+            (a) =>
+              `<tr><td><b>${escapeHTML(a.nome)}</b><br><span class="muted">${escapeHTML(a.sexo || "")}</span></td><td>${escapeHTML(a.especie || "—")} / ${escapeHTML(a.raca || "—")}</td><td>${dataBR(a.nascimento)}</td><td>${escapeHTML(tutorNome(a.tutorId))}</td><td>${acoes("animal", a.id)}</td></tr>`,
+          ),
+        );
+      }
+      function renderizarClinicas() {
+        const q = (
+          document.getElementById("busca-clinicas")?.value || ""
+        ).toLowerCase();
+        const lista = dados.clinicas.filter((c) =>
+          [c.nome, c.telefone, c.endereco].some((v) =>
+            String(v || "")
+              .toLowerCase()
+              .includes(q),
+          ),
+        );
+        document.getElementById("lista-clinicas").innerHTML = tabela(
+          ["Clínica", "Telefone", "Endereço", "Contato", "Ações"],
+          lista.map(
+            (c) =>
+              `<tr><td><b>${escapeHTML(c.nome)}</b></td><td>${escapeHTML(c.telefone || "—")}</td><td>${escapeHTML(c.endereco || "—")}</td><td>${escapeHTML(c.contato || "—")}</td><td>${acoes("clinica", c.id)}</td></tr>`,
+          ),
+        );
+      }
+      function renderizarLembretes() {
+        const q = (
+          document.getElementById("busca-lembretes")?.value || ""
+        ).toLowerCase();
+        const lista = dados.lembretes
+          .filter((l) =>
+            [l.titulo, l.tipo, l.observacoes, animalNome(l.animalId)].some(
+              (v) =>
+                String(v || "")
+                  .toLowerCase()
+                  .includes(q),
+            ),
+          )
+          .sort((a, b) => (a.data || "").localeCompare(b.data || ""));
+        document.getElementById("lista-lembretes").innerHTML = tabela(
+          [
+            "Data",
+            "Lembrete",
+            "Animal",
+            "Clínica",
+            "Situação",
+            "Enviar lembrete",
+            "Ações",
+          ],
+          lista.map(
+            (l) =>
+              `<tr><td>${dataBR(l.data)}</td><td><b>${escapeHTML(l.titulo)}</b><br><span class="muted">${escapeHTML(l.tipo || "")}</span></td><td>${escapeHTML(animalNome(l.animalId))}</td><td>${escapeHTML(dados.clinicas.find((c) => c.id === l.clinicaId)?.nome || "—")}</td><td>${l.concluido ? '<span class="badge green">Concluído</span>' : '<span class="badge orange">Pendente</span>'}</td><td><div class="actions">${linksCompartilhamentoLembrete(l)}</div></td><td>${acoes("lembrete", l.id, `<button class="small" data-toggle-reminder="${escapeHTML(l.id)}">${l.concluido ? "Reabrir" : "Concluir"}</button>`)}</td></tr>`,
+          ),
+        );
+      }
+      function linksCompartilhamentoLembrete(lembrete) {
+        const animal = dados.animais.find((a) => a.id === lembrete.animalId);
+        const tutor = dados.tutores.find((t) => t.id === animal?.tutorId);
+        const clinica = dados.clinicas.find(
+          (c) => c.id === lembrete.clinicaId,
+        );
+        if (!tutor)
+          return '<span class="muted">Contato do tutor indisponível</span>';
+        const mensagem = [
+          `Olá, ${tutor.nome}!`,
+          `Lembrete sobre ${animal?.nome || "seu pet"}: ${lembrete.titulo}.`,
+          lembrete.tipo ? `Tipo: ${lembrete.tipo}.` : "",
+          lembrete.data ? `Data: ${dataBR(lembrete.data)}.` : "",
+          clinica?.nome ? `Clínica: ${clinica.nome}.` : "",
+          lembrete.observacoes ? `Observações: ${lembrete.observacoes}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n");
+        const telefone = String(tutor.telefone || "").replace(/\D/g, "");
+        const telefoneWhatsApp =
+          telefone && (telefone.startsWith("55") ? telefone : `55${telefone}`);
+        const whatsapp = telefoneWhatsApp
+          ? `<button type="button" class="small" data-send-reminder="whatsapp" data-phone="${escapeHTML(telefoneWhatsApp)}" data-message="${escapeHTML(mensagem)}">WhatsApp</button>`
+          : "";
+        const email = String(tutor.email || "").trim();
+        const emailLink = email
+          ? `<button type="button" class="small" data-send-reminder="email" data-email="${escapeHTML(email)}" data-subject="${escapeHTML(`Lembrete PetCare: ${lembrete.titulo}`)}" data-message="${escapeHTML(mensagem)}">E-mail</button>`
+          : "";
+        return (
+          whatsapp +
+          emailLink ||
+          '<span class="muted">Cadastre telefone ou e-mail do tutor</span>'
+        );
+      }
+      function abrirEnvioLembrete(botao) {
+        const mensagem = botao.dataset.message || "";
+        let destino;
+        if (botao.dataset.sendReminder === "whatsapp") {
+          const telefone = botao.dataset.phone || "";
+          if (!telefone) {
+            toast("O tutor não possui telefone cadastrado.");
+            return;
+          }
+          destino = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+        } else if (botao.dataset.sendReminder === "email") {
+          const email = botao.dataset.email || "";
+          if (!email) {
+            toast("O tutor não possui e-mail cadastrado.");
+            return;
+          }
+          const assunto = botao.dataset.subject || "Lembrete PetCare";
+          destino = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(mensagem)}`;
+        } else {
+          return;
+        }
+        window.open(destino, "_blank", "noopener,noreferrer");
+      }
+      function renderizarAgendamentos() {
+        const q = (
+            document.getElementById("busca-agendamentos")?.value || ""
+          ).toLowerCase(),
+          f = document.getElementById("filtro-status")?.value || "";
+        const lista = dados.agendamentos
+          .filter(
+            (a) =>
+              (!f || a.status === f) &&
+              [
+                animalNome(a.animalId),
+                a.servico,
+                a.status,
+                tutorNome(
+                  dados.animais.find((p) => p.id === a.animalId)?.tutorId,
+                ),
+              ].some((v) =>
+                String(v || "")
+                  .toLowerCase()
+                  .includes(q),
+              ),
+          )
+          .slice()
+          .sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+        document.getElementById("lista-agendamentos").innerHTML = tabela(
+          [
+            "Data / hora",
+            "Pet / tutor",
+            "Clínica",
+            "Serviço",
+            "Valor",
+            "Cobrado",
+            "Status",
+            "Ações",
+          ],
+          lista.map((a) => {
+            let extras = "";
+            let opcoes = {};
+            if (a.status === "Agendado") {
+              extras = `<button class="small" data-start="${escapeHTML(a.id)}">Iniciar atendimento</button>`;
+            } else if (a.status === "Em andamento") {
+              extras = `<button class="small primary" data-complete="${escapeHTML(a.id)}">Concluir atendimento</button>`;
+            } else if (a.status === "Concluído") {
+              opcoes = { editar: false, excluir: false };
+              if (saldoDoAtendimento(a) > 0)
+                extras += `<button class="small primary" data-payment="${escapeHTML(a.id)}">Receber ${moeda(saldoDoAtendimento(a))}</button>`;
+              extras += `<button class="small danger" data-annul="${escapeHTML(a.id)}">Anular</button>`;
+            } else if (a.status === "Anulado") {
+              opcoes = { editar: false, excluir: false };
+              extras = `<span class="muted" title="${escapeHTML(a.anulacaoMotivo || "")}">Motivo: ${escapeHTML(a.anulacaoMotivo || "Não informado")}</span>`;
+            }
+            return `<tr><td>${dataBR(a.data)}<br><span class="muted">${escapeHTML(a.horario || "")}</span></td><td><b>${escapeHTML(animalNome(a.animalId))}</b><br><span class="muted">${escapeHTML(tutorNome(dados.animais.find((p) => p.id === a.animalId)?.tutorId))}</span></td><td>${escapeHTML(clinicaNome(a.clinicaId))}</td><td>${escapeHTML(a.servico)}</td><td>${a.status === "Concluído" ? moeda(valorDoAtendimento(a)) : "—"}</td><td><b>${a.status === "Concluído" ? moeda(totalRecebido(a.id)) : "—"}</b></td><td>${badgeStatus(a.status)}</td><td>${acoes("agendamento", a.id, extras, opcoes)}</td></tr>`;
+          }),
+        );
+      }
+      function renderizarHistorico() {
+        const concluidos = dados.agendamentos.filter(
+          (a) => a.status === "Concluído",
+        );
+        const historico = dados.agendamentos.filter((a) =>
+          ["Concluído", "Anulado"].includes(a.status),
+        );
+        const total = concluidos.reduce(
+          (s, a) => s + valorDoAtendimento(a),
+          0,
+        );
+        const pendentes = concluidos.reduce(
+          (s, a) => s + saldoDoAtendimento(a),
+          0,
+        );
+        document.getElementById("hist-total").textContent = moeda(total);
+        document.getElementById("hist-concluidos").textContent =
+          concluidos.length;
+        document.getElementById("hist-ticket").textContent = moeda(
+          concluidos.length ? total / concluidos.length : 0,
+        );
+        document.getElementById("hist-pendentes").textContent =
+          moeda(pendentes);
+        const lista = historico
+          .slice()
+          .sort((a, b) => {
+            const dataA =
+              a.status === "Anulado"
+                ? a.anuladoEm || a.dataConclusao || a.data
+                : a.dataConclusao || a.data;
+            const dataB =
+              b.status === "Anulado"
+                ? b.anuladoEm || b.dataConclusao || b.data
+                : b.dataConclusao || b.data;
+            return String(dataB || "").localeCompare(String(dataA || ""));
+          });
+        document.getElementById("lista-historico").innerHTML = tabela(
+          ["Conclusão / anulação", "Pet", "Clínica", "Serviço", "Status", "Valor", "Recebido", "Saldo", "Ação"],
+          lista.map((a) => {
+            const anulada = a.status === "Anulado";
+            const dataRegistro = anulada ? a.anuladoEm : a.dataConclusao;
+            const motivo = anulada
+              ? `<br><span class="muted">Motivo: ${escapeHTML(a.anulacaoMotivo || "Não informado")}</span>`
+              : "";
+            const acao = anulada
+              ? '<span class="muted">Sem ações</span>'
+              : saldoDoAtendimento(a) > 0
+                ? `<button class="small primary" data-payment="${escapeHTML(a.id)}">Registrar recebimento</button>`
+                : '<span class="badge green">Pago</span>';
+            return `<tr><td>${dataBR(String(dataRegistro || a.data).slice(0, 10))}${motivo}</td><td>${escapeHTML(animalNome(a.animalId))}</td><td>${escapeHTML(clinicaNome(a.clinicaId))}</td><td>${escapeHTML(a.servico)}</td><td>${badgeStatus(a.status)}</td><td>${moeda(valorDoAtendimento(a))}</td><td>${moeda(totalRecebido(a.id))}</td><td><b>${moeda(saldoDoAtendimento(a))}</b></td><td>${acao}</td></tr>`;
+          }),
+        );
+        const movimentos = [
+          ...dados.pagamentos.map((p) => ({
+            tipo: "Recebimento",
+            data: p.data,
+            valor: valorSeguro(p.valor),
+            pagamento: p,
+          })),
+          ...dados.estornos.map((e) => ({
+            tipo: "Estorno",
+            data: e.data,
+            valor: -valorSeguro(e.valor),
+            estorno: e,
+          })),
+        ].sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+        document.getElementById("lista-pagamentos").innerHTML = tabela(
+          ["Data", "Tipo", "Pet / serviço", "Clínica", "Forma / motivo", "Valor", "Ação"],
+          movimentos.map((movimento) => {
+            const pagamento = movimento.pagamento;
+            const estorno = movimento.estorno;
+            const agendamentoId =
+              pagamento?.agendamentoId ?? estorno?.agendamentoId;
+            const agendamento = dados.agendamentos.find(
+              (a) => a.id === agendamentoId,
+            );
+            const descricao = pagamento
+              ? escapeHTML(pagamento.forma)
+              : escapeHTML(estorno.motivo);
+            const acao =
+              pagamento &&
+              agendamento?.status === "Concluído" &&
+              valorEstornavel(pagamento) > 0
+                ? `<button class="small" data-refund="${escapeHTML(pagamento.id)}">Registrar estorno</button>`
+                : "—";
+            return `<tr><td>${dataBR(movimento.data)}</td><td>${escapeHTML(movimento.tipo)}</td><td><b>${escapeHTML(animalNome(agendamento?.animalId))}</b><br><span class="muted">${escapeHTML(agendamento?.servico || "Serviço removido")}</span></td><td>${escapeHTML(clinicaNome(agendamento?.clinicaId))}</td><td>${descricao}</td><td><b>${moeda(movimento.valor)}</b></td><td>${acao}</td></tr>`;
+          }),
+        );
+      }
+      function cartaoRelatorio(rotulo, valor, detalhe = "") {
+        return `<div class="stat"><div class="label">${escapeHTML(rotulo)}</div><div class="value">${escapeHTML(valor)}</div>${detalhe ? `<div class="hint">${escapeHTML(detalhe)}</div>` : ""}</div>`;
+      }
+      function painelRelatorio(titulo, colunas, linhas) {
+        return `<section class="panel"><h3>${escapeHTML(titulo)}</h3>${tabela(colunas, linhas)}</section>`;
+      }
+      function relatorioTutores() {
+        const linhas = dados.tutores.map((t) => {
+          const animais = dados.animais.filter((a) => a.tutorId === t.id).length;
+          return `<tr><td><b>${escapeHTML(t.nome)}</b></td><td>${escapeHTML(t.telefone || "—")}</td><td>${escapeHTML(t.email || "—")}</td><td>${animais}</td><td>${escapeHTML(t.observacoes || "—")}</td></tr>`;
+        });
+        return painelRelatorio(
+          "Relatório de tutores",
+          ["Tutor", "Telefone", "E-mail", "Animais vinculados", "Observações"],
+          linhas,
+        );
+      }
+      function relatorioAnimais() {
+        const linhas = dados.animais.map(
+          (a) =>
+            `<tr><td><b>${escapeHTML(a.nome)}</b></td><td>${escapeHTML(a.especie || "—")}</td><td>${escapeHTML(a.raca || "—")}</td><td>${escapeHTML(a.sexo || "—")}</td><td>${escapeHTML(tutorNome(a.tutorId))}</td><td>${escapeHTML(a.peso === "" || a.peso == null ? "—" : `${a.peso} kg`)}</td><td>${dataBR(a.nascimento)}</td></tr>`,
+        );
+        return painelRelatorio(
+          "Relatório de animais",
+          ["Animal", "Espécie", "Raça", "Sexo", "Tutor", "Peso", "Nascimento"],
+          linhas,
+        );
+      }
+      function relatorioClinicas() {
+        const linhas = dados.clinicas.map((c) => {
+          const agendamentos = dados.agendamentos.filter(
+            (a) => a.clinicaId === c.id,
+          ).length;
+          const lembretes = dados.lembretes.filter(
+            (l) => l.clinicaId === c.id,
+          ).length;
+          return `<tr><td><b>${escapeHTML(c.nome)}</b></td><td>${escapeHTML(c.telefone || "—")}</td><td>${escapeHTML(c.email || "—")}</td><td>${escapeHTML(c.endereco || "—")}</td><td>${escapeHTML(c.contato || "—")}</td><td>${agendamentos}</td><td>${lembretes}</td></tr>`;
+        });
+        return painelRelatorio(
+          "Relatório de clínicas",
+          ["Clínica", "Telefone", "E-mail", "Endereço", "Contato", "Agendamentos", "Lembretes"],
+          linhas,
+        );
+      }
+      function relatorioAgendamentos() {
+        const lista = dados.agendamentos
+          .slice()
+          .sort((a, b) =>
+            `${b.data || ""} ${b.horario || ""}`.localeCompare(
+              `${a.data || ""} ${a.horario || ""}`,
+            ),
+          );
+        const linhas = lista.map(
+          (a) =>
+            `<tr><td>${dataBR(a.data)} ${escapeHTML(a.horario || "")}</td><td>${escapeHTML(animalNome(a.animalId))}</td><td>${escapeHTML(tutorNome(dados.animais.find((p) => p.id === a.animalId)?.tutorId))}</td><td>${escapeHTML(clinicaNome(a.clinicaId))}</td><td>${escapeHTML(a.servico || "—")}</td><td>${badgeStatus(a.status)}${a.status === "Anulado" ? `<br><span class="muted">Motivo: ${escapeHTML(a.anulacaoMotivo || "Não informado")}</span>` : ""}</td><td>${a.status === "Concluído" || a.status === "Anulado" ? moeda(valorDoAtendimento(a)) : "—"}</td><td>${a.status === "Concluído" || a.status === "Anulado" ? moeda(totalRecebido(a.id)) : "—"}</td><td>${a.status === "Concluído" || a.status === "Anulado" ? moeda(saldoDoAtendimento(a)) : "—"}</td></tr>`,
+        );
+        return painelRelatorio(
+          "Relatório de agendamentos",
+          ["Data e hora", "Animal", "Tutor", "Clínica", "Serviço", "Status / motivo", "Valor original", "Recebido líquido", "Saldo"],
+          linhas,
+        );
+      }
+      function relatorioLembretes() {
+        const lista = dados.lembretes
+          .slice()
+          .sort((a, b) => (a.data || "").localeCompare(b.data || ""));
+        const linhas = lista.map(
+          (l) =>
+            `<tr><td>${dataBR(l.data)}</td><td><b>${escapeHTML(l.titulo)}</b></td><td>${escapeHTML(l.tipo || "—")}</td><td>${escapeHTML(animalNome(l.animalId))}</td><td>${escapeHTML(dados.clinicas.find((c) => c.id === l.clinicaId)?.nome || "—")}</td><td>${l.concluido ? '<span class="badge green">Concluído</span>' : '<span class="badge orange">Pendente</span>'}</td><td>${escapeHTML(l.observacoes || "—")}</td></tr>`,
+        );
+        return painelRelatorio(
+          "Relatório de lembretes",
+          ["Data", "Lembrete", "Tipo", "Animal", "Clínica", "Situação", "Observações"],
+          linhas,
+        );
+      }
+      function relatorioFinanceiro() {
+        const concluidos = dados.agendamentos.filter(
+          (a) => a.status === "Concluído",
+        );
+        const valorServicos = concluidos.reduce(
+          (s, a) => s + valorDoAtendimento(a),
+          0,
+        );
+        const saldo = concluidos.reduce(
+          (s, a) => s + saldoDoAtendimento(a),
+          0,
+        );
+        const movimentos = [
+          ...dados.pagamentos.map((p) => ({
+            tipo: "Recebimento",
+            data: p.data,
+            valor: valorSeguro(p.valor),
+            pagamento: p,
+          })),
+          ...dados.estornos.map((e) => ({
+            tipo: "Estorno",
+            data: e.data,
+            valor: -valorSeguro(e.valor),
+            estorno: e,
+          })),
+        ].sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+        const linhasServicos = concluidos
+          .slice()
+          .sort((a, b) =>
+            (b.dataConclusao || b.data || "").localeCompare(
+              a.dataConclusao || a.data || "",
+            ),
+          )
+          .map(
+            (a) =>
+              `<tr><td>${dataBR(a.dataConclusao || a.data)}</td><td>${escapeHTML(animalNome(a.animalId))}</td><td>${escapeHTML(tutorNome(dados.animais.find((p) => p.id === a.animalId)?.tutorId))}</td><td>${escapeHTML(clinicaNome(a.clinicaId))}</td><td>${escapeHTML(a.servico || "—")}</td><td>${moeda(valorDoAtendimento(a))}</td><td>${moeda(totalRecebido(a.id))}</td><td>${moeda(saldoDoAtendimento(a))}</td></tr>`,
+          );
+        const linhasPagamentos = movimentos.map((movimento) => {
+          const pagamento = movimento.pagamento;
+          const estorno = movimento.estorno;
+          const agendamento = dados.agendamentos.find(
+            (a) =>
+              a.id ===
+              (pagamento?.agendamentoId ?? estorno?.agendamentoId),
+          );
+          return `<tr><td>${dataBR(movimento.data)}</td><td>${escapeHTML(movimento.tipo)}</td><td>${escapeHTML(animalNome(agendamento?.animalId))}</td><td>${escapeHTML(agendamento?.servico || "Serviço removido")}</td><td>${escapeHTML(clinicaNome(agendamento?.clinicaId))}</td><td>${escapeHTML(pagamento?.forma || estorno?.motivo || "—")}</td><td>${moeda(movimento.valor)}</td></tr>`;
+        });
+        return `<div class="stats">${cartaoRelatorio("Serviços concluídos", moeda(valorServicos), `${concluidos.length} atendimentos`)}${cartaoRelatorio("Recebimentos líquidos", moeda(totalRecebimentos()), `${dados.pagamentos.length} recebimentos · ${dados.estornos.length} estornos`)}${cartaoRelatorio("A receber", moeda(saldo))}${cartaoRelatorio("Ticket médio", moeda(concluidos.length ? valorServicos / concluidos.length : 0))}</div>${painelRelatorio("Serviços concluídos e saldos", ["Conclusão", "Animal", "Tutor", "Clínica", "Serviço", "Valor", "Recebido líquido", "Saldo"], linhasServicos)}${painelRelatorio("Movimentações financeiras", ["Data", "Tipo", "Animal", "Serviço", "Clínica", "Forma / motivo", "Valor"], linhasPagamentos)}`;
+      }
+      function conteudoRelatorio(tipo) {
+        if (tipo === "tutores") return relatorioTutores();
+        if (tipo === "animais") return relatorioAnimais();
+        if (tipo === "clinicas") return relatorioClinicas();
+        if (tipo === "agendamentos") return relatorioAgendamentos();
+        if (tipo === "lembretes") return relatorioLembretes();
+        if (tipo === "financeiro") return relatorioFinanceiro();
+        const concluidos = dados.agendamentos.filter(
+          (a) => a.status === "Concluído",
+        );
+        const valorServicos = concluidos.reduce(
+          (s, a) => s + valorDoAtendimento(a),
+          0,
+        );
+        const saldo = concluidos.reduce(
+          (s, a) => s + saldoDoAtendimento(a),
+          0,
+        );
+        const resumo = `<div class="stats">${cartaoRelatorio("Tutores", String(dados.tutores.length))}${cartaoRelatorio("Animais", String(dados.animais.length))}${cartaoRelatorio("Clínicas", String(dados.clinicas.length))}${cartaoRelatorio("Agendamentos", String(dados.agendamentos.length), `${dados.agendamentos.filter((a) => a.status === "Agendado").length} agendados · ${dados.agendamentos.filter((a) => a.status === "Em andamento").length} em andamento · ${concluidos.length} concluídos · ${dados.agendamentos.filter((a) => a.status === "Cancelado").length} cancelados · ${dados.agendamentos.filter((a) => a.status === "Anulado").length} anulados`)}${cartaoRelatorio("Lembretes", String(dados.lembretes.length), `${dados.lembretes.filter((l) => !l.concluido).length} pendentes · ${dados.lembretes.filter((l) => l.concluido).length} concluídos`)}${cartaoRelatorio("Serviços concluídos", moeda(valorServicos), `${concluidos.length} atendimentos`)}${cartaoRelatorio("Recebimentos líquidos", moeda(totalRecebimentos()), `${dados.pagamentos.length} recebimentos · ${dados.estornos.length} estornos`)}${cartaoRelatorio("A receber", moeda(saldo))}</div>`;
+        return `${resumo}${relatorioTutores()}${relatorioAnimais()}${relatorioClinicas()}${relatorioAgendamentos()}${relatorioLembretes()}${relatorioFinanceiro()}`;
+      }
+      function selecionarRelatorio(tipo) {
+        const opcoes = [
+          "total",
+          "tutores",
+          "animais",
+          "clinicas",
+          "agendamentos",
+          "lembretes",
+          "financeiro",
+        ];
+        if (!opcoes.includes(tipo)) return;
+        relatorioAtivo = tipo;
+        document.querySelectorAll("[data-report-category]").forEach((botao) => {
+          const selecionado = botao.dataset.reportCategory === tipo;
+          botao.setAttribute("aria-selected", String(selecionado));
+          botao.tabIndex = selecionado ? 0 : -1;
+        });
+        const painel = document.getElementById("conteudo-relatorio");
+        painel.setAttribute("aria-labelledby", `tab-relatorio-${tipo}`);
+        painel.innerHTML = conteudoRelatorio(tipo);
+      }
+      function renderizarRelatorios() {
+        selecionarRelatorio(relatorioAtivo);
+      }
+      function imprimirRelatorio() {
+        const titulo = tituloRelatorioAtivo();
+        document.getElementById("titulo-impressao-relatorio").textContent =
+          titulo;
+        document.getElementById("data-impressao-relatorio").textContent =
+          `Gerado em ${new Date().toLocaleString("pt-BR")}`;
+        window.print();
+      }
+      function tituloRelatorioAtivo() {
+        return (
+          document
+            .querySelector(`[data-report-category="${relatorioAtivo}"]`)
+            ?.textContent.trim() || "Total"
+        );
+      }
+      function textoCelulaRelatorio(celula) {
+        return String(celula.innerText || celula.textContent || "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+      function linhasPDF(texto, maxCaracteres) {
+        const palavras = String(texto || "—").split(/\s+/);
+        const linhas = [];
+        let linha = "";
+        for (const palavra of palavras) {
+          if (!linha) {
+            linha = palavra;
+          } else if (`${linha} ${palavra}`.length <= maxCaracteres) {
+            linha += ` ${palavra}`;
+          } else {
+            linhas.push(linha);
+            linha = palavra;
+          }
+        }
+        if (linha) linhas.push(linha);
+        return linhas.length ? linhas : ["—"];
+      }
+      function byteWindows1252(caractere) {
+        const ponto = caractere.codePointAt(0);
+        if (ponto <= 0xff) return ponto;
+        const especiais = {
+          "€": 0x80,
+          "‚": 0x82,
+          "ƒ": 0x83,
+          "„": 0x84,
+          "…": 0x85,
+          "†": 0x86,
+          "‡": 0x87,
+          "ˆ": 0x88,
+          "‰": 0x89,
+          "Š": 0x8a,
+          "‹": 0x8b,
+          "Œ": 0x8c,
+          "Ž": 0x8e,
+          "‘": 0x91,
+          "’": 0x92,
+          "“": 0x93,
+          "”": 0x94,
+          "•": 0x95,
+          "–": 0x96,
+          "—": 0x97,
+          "˜": 0x98,
+          "™": 0x99,
+          "š": 0x9a,
+          "›": 0x9b,
+          "œ": 0x9c,
+          "ž": 0x9e,
+          "Ÿ": 0x9f,
+        };
+        return especiais[caractere] ?? 0x3f;
+      }
+      function hexadecimalPDF(texto) {
+        return Array.from(String(texto)).map((caractere) =>
+          byteWindows1252(caractere).toString(16).padStart(2, "0"),
+        ).join("");
+      }
+      function gerarConteudoPDFRelatorio() {
+        const larguraPagina = 842;
+        const alturaPagina = 595;
+        const margem = 36;
+        const larguraConteudo = larguraPagina - margem * 2;
+        const paginas = [];
+        let comandos = [];
+        let y = 0;
+        const novoComandoTexto = (
+          texto,
+          x,
+          linhaY,
+          tamanho = 9,
+          negrito = false,
+          cor = "0 0 0",
+        ) =>
+          `BT /${negrito ? "F2" : "F1"} ${tamanho} Tf ${cor} rg 1 0 0 1 ${x.toFixed(2)} ${linhaY.toFixed(2)} Tm <${hexadecimalPDF(texto)}> Tj ET`;
+        function finalizarPagina() {
+          comandos.push(
+            novoComandoTexto(
+              `PetCare + PetQA | ${tituloRelatorioAtivo()} | Página ${paginas.length + 1}`,
+              margem,
+              22,
+              7,
+              false,
+              "0.35 0.35 0.35",
+            ),
+          );
+          paginas.push(comandos.join("\n"));
+          comandos = [];
+          y = alturaPagina - margem;
+        }
+        function garantirEspaco(altura) {
+          if (y - altura < 42) finalizarPagina();
+        }
+        function escreverTitulo(texto) {
+          const linhas = linhasPDF(texto, 100);
+          garantirEspaco(linhas.length * 14 + 8);
+          for (const linha of linhas) {
+            comandos.push(
+              novoComandoTexto(linha, margem, y, 12, true, "0.05 0.28 0.32"),
+            );
+            y -= 14;
+          }
+          y -= 4;
+        }
+        function escreverResumo(stats) {
+          const cartoes = [...stats.querySelectorAll(".stat")];
+          if (!cartoes.length) return;
+          escreverTitulo("Resumo");
+          const colunas = Math.min(4, cartoes.length);
+          const larguraCartao = larguraConteudo / colunas;
+          const alturaCartao = 42;
+          for (let inicio = 0; inicio < cartoes.length; inicio += colunas) {
+            garantirEspaco(alturaCartao + 8);
+            for (let coluna = 0; coluna < colunas; coluna++) {
+              const cartao = cartoes[inicio + coluna];
+              if (!cartao) continue;
+              const x = margem + coluna * larguraCartao;
+              const rotulo = textoCelulaRelatorio(
+                cartao.querySelector(".label") || cartao,
+              );
+              const valor = textoCelulaRelatorio(
+                cartao.querySelector(".value") || cartao,
+              );
+              const detalhe = textoCelulaRelatorio(
+                cartao.querySelector(".hint") || document.createElement("span"),
+              );
+              comandos.push(
+                `${x.toFixed(2)} ${(y - alturaCartao + 4).toFixed(2)} ${(
+                  larguraCartao - 6
+                ).toFixed(2)} ${alturaCartao} re S`,
+              );
+              comandos.push(novoComandoTexto(rotulo, x + 6, y - 10, 7, false));
+              comandos.push(
+                novoComandoTexto(valor, x + 6, y - 23, 10, true),
+              );
+              if (detalhe)
+                comandos.push(
+                  novoComandoTexto(detalhe, x + 6, y - 34, 6, false),
+                );
+            }
+            y -= alturaCartao + 8;
+          }
+        }
+        function escreverTabela(tabela) {
+          const cabecalhos = [
+            ...tabela.querySelectorAll("thead th"),
+          ].map(textoCelulaRelatorio);
+          const linhas = [
+            ...tabela.querySelectorAll("tbody tr"),
+          ].map((linha) =>
+            [...linha.querySelectorAll("th, td")].map(textoCelulaRelatorio),
+          );
+          if (!cabecalhos.length) return;
+          const larguraColuna = larguraConteudo / cabecalhos.length;
+          const tamanhoFonte = cabecalhos.length > 7 ? 6 : 7;
+          const maxCaracteres = Math.max(
+            7,
+            Math.floor(larguraColuna / (tamanhoFonte * 0.52)),
+          );
+          const alturaLinha = 9;
+          function imprimirCabecalho() {
+            const celulas = cabecalhos.map((valor) =>
+              linhasPDF(valor, maxCaracteres),
+            );
+            const linhasCabecalho = Math.max(...celulas.map((itens) => itens.length));
+            const altura = linhasCabecalho * alturaLinha + 8;
+            comandos.push(
+              `q 0.88 0.93 0.94 rg ${margem} ${(y - altura + 3).toFixed(2)} ${larguraConteudo} ${altura} re f Q`,
+            );
+            celulas.forEach((itens, coluna) => {
+              itens.forEach((linha, indice) => {
+                comandos.push(
+                  novoComandoTexto(
+                    linha,
+                    margem + coluna * larguraColuna + 3,
+                    y - 10 - indice * alturaLinha,
+                    tamanhoFonte,
+                    true,
+                  ),
+                );
+              });
+            });
+            y -= altura;
+          }
+          garantirEspaco(26);
+          imprimirCabecalho();
+          for (const linha of linhas) {
+            const celulas = linha.map((valor) =>
+              linhasPDF(valor, maxCaracteres),
+            );
+            const quantidadeLinhas = Math.max(
+              1,
+              ...celulas.map((itens) => itens.length),
+            );
+            let inicio = 0;
+            while (inicio < quantidadeLinhas) {
+              if (y - 18 < 42) {
+                finalizarPagina();
+                imprimirCabecalho();
+              }
+              const linhasDisponiveis = Math.max(
+                1,
+                Math.floor((y - 42) / alturaLinha),
+              );
+              const fim = Math.min(
+                quantidadeLinhas,
+                inicio + linhasDisponiveis,
+              );
+              const linhasBloco = fim - inicio;
+              celulas.forEach((itens, coluna) => {
+                for (let indice = inicio; indice < fim; indice++) {
+                  if (itens[indice]) {
+                    comandos.push(
+                      novoComandoTexto(
+                        itens[indice],
+                        margem + coluna * larguraColuna + 3,
+                        y - 7 - (indice - inicio) * alturaLinha,
+                        tamanhoFonte,
+                      ),
+                    );
+                  }
+                }
+              });
+              y -= linhasBloco * alturaLinha + 5;
+              inicio = fim;
+              if (inicio < quantidadeLinhas) {
+                finalizarPagina();
+                imprimirCabecalho();
+              }
+            }
+            comandos.push(
+              `${margem} ${y.toFixed(2)} m ${(margem + larguraConteudo).toFixed(2)} ${y.toFixed(2)} l S`,
+            );
+            y -= 3;
+          }
+          y -= 8;
+        }
+        const relatorio = document.getElementById("conteudo-relatorio");
+        escreverTitulo(`PetCare + PetQA — Relatório ${tituloRelatorioAtivo()}`);
+        escreverTitulo(`Gerado em ${new Date().toLocaleString("pt-BR")}`);
+        for (const filho of relatorio.children) {
+          if (filho.classList.contains("stats")) {
+            escreverResumo(filho);
+            continue;
+          }
+          if (filho.classList.contains("panel")) {
+            escreverTitulo(
+              filho.querySelector("h3")?.textContent.trim() || "Relatório",
+            );
+            const tabelas = filho.querySelectorAll("table");
+            if (tabelas.length) tabelas.forEach(escreverTabela);
+            else {
+              const vazio = filho.querySelector(".empty");
+              if (vazio) escreverTitulo(vazio.textContent.trim());
+            }
+          }
+        }
+        if (comandos.length || !paginas.length) finalizarPagina();
+        return paginas;
+      }
+      function criarArquivoPDF(paginas) {
+        const objetos = [];
+        const adicionarObjeto = (conteudo) => {
+          objetos.push(conteudo);
+          return objetos.length;
+        };
+        const catalogoId = adicionarObjeto("");
+        const paginasId = adicionarObjeto("");
+        const fonteRegularId = adicionarObjeto(
+          "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+        );
+        const fonteNegritoId = adicionarObjeto(
+          "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+        );
+        const idsPaginas = [];
+        for (const conteudo of paginas) {
+          const streamId = adicionarObjeto(
+            `<< /Length ${conteudo.length} >>\nstream\n${conteudo}\nendstream`,
+          );
+          const paginaId = adicionarObjeto(
+            `<< /Type /Page /Parent ${paginasId} 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 ${fonteRegularId} 0 R /F2 ${fonteNegritoId} 0 R >> >> /Contents ${streamId} 0 R >>`,
+          );
+          idsPaginas.push(`${paginaId} 0 R`);
+        }
+        objetos[catalogoId - 1] =
+          `<< /Type /Catalog /Pages ${paginasId} 0 R >>`;
+        objetos[paginasId - 1] =
+          `<< /Type /Pages /Kids [${idsPaginas.join(" ")}] /Count ${idsPaginas.length} >>`;
+        let pdf = "%PDF-1.4\n";
+        const offsets = [0];
+        objetos.forEach((objeto, indice) => {
+          offsets.push(new TextEncoder().encode(pdf).length);
+          pdf += `${indice + 1} 0 obj\n${objeto}\nendobj\n`;
+        });
+        const inicioXref = new TextEncoder().encode(pdf).length;
+        pdf += `xref\n0 ${objetos.length + 1}\n0000000000 65535 f \n`;
+        for (const offset of offsets.slice(1))
+          pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+        pdf += `trailer\n<< /Size ${objetos.length + 1} /Root ${catalogoId} 0 R >>\nstartxref\n${inicioXref}\n%%EOF`;
+        return new Blob([pdf], { type: "application/pdf" });
+      }
+      function baixarRelatorioPDF() {
+        const blob = criarArquivoPDF(gerarConteudoPDFRelatorio());
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const categoria =
+          relatorioAtivo === "total" ? "total" : relatorioAtivo;
+        link.href = url;
+        link.download = `petcare-relatorio-${categoria}-${hojeISO()}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast(`PDF do relatório ${tituloRelatorioAtivo()} baixado.`);
+      }
+      function renderizar() {
+        renderizarDashboard();
+        renderizarTutores();
+        renderizarAnimais();
+        renderizarClinicas();
+        renderizarLembretes();
+        renderizarAgendamentos();
+        renderizarHistorico();
+        renderizarRelatorios();
+      }
+      const definicoes = {
+        tutor: {
+          titulo: "Tutor",
+          colecao: "tutores",
+          campos: [
+            ["nome", "Nome completo", "text", true],
+            ["telefone", "Telefone", "tel"],
+            ["email", "E-mail", "email"],
+            ["observacoes", "Observações", "textarea"],
+          ],
+        },
+        animal: {
+          titulo: "Animal",
+          colecao: "animais",
+          campos: [
+            ["nome", "Nome do animal", "text", true],
+            ["tutorId", "Tutor responsável", "select:tutores", true],
+            ["especie", "Espécie", "select:especie", true],
+            ["raca", "Raça", "text"],
+            ["sexo", "Sexo", "select:sexo"],
+            ["nascimento", "Data de nascimento", "date"],
+            ["peso", "Peso (kg)", "number"],
+            ["observacoes", "Observações", "textarea"],
+          ],
+        },
+        clinica: {
+          titulo: "Clínica",
+          colecao: "clinicas",
+          campos: [
+            ["nome", "Nome da clínica", "text", true],
+            ["telefone", "Telefone", "tel"],
+            ["email", "E-mail", "email"],
+            ["endereco", "Endereço", "text"],
+            ["contato", "Pessoa de contato", "text"],
+            ["observacoes", "Observações", "textarea"],
+          ],
+        },
+        lembrete: {
+          titulo: "Lembrete",
+          colecao: "lembretes",
+          campos: [
+            ["titulo", "Título do lembrete", "text", true],
+            ["animalId", "Animal", "select:animais", true],
+            ["tipo", "Tipo", "select:tipoLembrete", true],
+            ["data", "Data", "date", true],
+            ["clinicaId", "Clínica (opcional)", "select:clinicas"],
+            ["observacoes", "Observações", "textarea"],
+          ],
+        },
+        agendamento: {
+          titulo: "Agendamento",
+          colecao: "agendamentos",
+          campos: [
+            ["animalId", "Animal", "select:animais", true],
+            ["clinicaId", "Clínica", "select:clinicas", true],
+            ["servico", "Serviço", "select:servico", true],
+            ["data", "Data", "date", true],
+            ["horario", "Horário", "time", true],
+            ["observacoes", "Observações", "textarea"],
+          ],
+        },
+      };
+      function opcoesSelect(campo, atual) {
+        let itens = [];
+        if (campo === "tutores")
+          itens = dados.tutores.map((x) => [x.id, x.nome]);
+        if (campo === "animais")
+          itens = dados.animais.map((x) => [
+            x.id,
+            `${x.nome} (${x.especie || "pet"})`,
+          ]);
+        if (campo === "clinicas")
+          itens = dados.clinicas.map((x) => [x.id, x.nome]);
+        if (campo === "especie")
+          itens = ["Cão", "Gato", "Ave", "Roedor", "Réptil", "Outro"].map(
+            (x) => [x, x],
+          );
+        if (campo === "sexo")
+          itens = ["Macho", "Fêmea", "Não informado"].map((x) => [x, x]);
+        if (campo === "tipoLembrete")
+          itens = [
+            "Vacina",
+            "Consulta",
+            "Medicamento",
+            "Exame",
+            "Vermífugo",
+            "Antipulgas",
+            "Outro",
+          ].map((x) => [x, x]);
+        if (campo === "servico")
+          itens = [
+            "Banho",
+            "Tosa",
+            "Banho e tosa",
+            "Consulta veterinária",
+            "Vacinação",
+            "Exame",
+            "Outro",
+          ].map((x) => [x, x]);
+        if (campo === "status") itens = STATUS_AGENDAMENTO.map((x) => [x, x]);
+        return (
+          `<option value="">Selecione...</option>` +
+          itens
+            .map(
+              ([v, t]) =>
+                `<option value="${escapeHTML(v)}" ${String(v) === String(atual ?? "") ? "selected" : ""}>${escapeHTML(t)}</option>`,
+            )
+            .join("")
+        );
+      }
+      function campoHTML(tipo, campo, label, obrigatorio, valor, grupo) {
+        const id = `campo-${grupo}-${campo}`,
+          nome = `registro-${grupo}-${campo}`,
+          required = obrigatorio ? "required" : "";
+        if (tipo === "select")
+          return `<div class="field"><label for="${id}">${escapeHTML(label)}</label><select id="${id}" name="${nome}" ${required}>${opcoesSelect(valor.opcoes, valor.valor)}</select></div>`;
+        if (tipo === "textarea")
+          return `<div class="field wide"><label for="${id}">${escapeHTML(label)}</label><textarea id="${id}" name="${nome}" rows="3"></textarea></div>`;
+        return `<div class="field"><label for="${id}">${escapeHTML(label)}</label><input id="${id}" name="${nome}" type="${tipo}" ${required} ${tipo === "number" ? 'min="0" step="0.01"' : ""} value="${escapeHTML(valor ?? "")}"></div>`;
+      }
+      function abrirFormulario(tipo, id = null) {
+        const def = definicoes[tipo];
+        if (!def) return;
+        if (tipo === "agendamento" && id) {
+          const agendamento = dados.agendamentos.find((a) => a.id === id);
+          if (["Concluído", "Anulado"].includes(agendamento?.status)) {
+            toast("Atendimentos concluídos ou anulados não podem ser editados.");
+            return;
+          }
+        }
+        if (tipo === "animal" && !dados.tutores.length) {
+          toast("Cadastre um tutor antes de cadastrar um animal.");
+          irPara("tutores");
+          return;
+        }
+        if (tipo === "lembrete" && !dados.animais.length) {
+          toast("Cadastre um animal antes de criar lembretes.");
+          irPara("animais");
+          return;
+        }
+        if (tipo === "agendamento" && !dados.animais.length) {
+          toast("Cadastre um animal antes de criar agendamentos.");
+          irPara("animais");
+          return;
+        }
+        if (tipo === "agendamento" && !dados.clinicas.length) {
+          toast("Cadastre uma clínica antes de criar agendamentos.");
+          irPara("clinicas");
+          return;
+        }
+        tipoEditando = tipo;
+        idEditando = id;
+        document.getElementById("form-registro").dataset.namePrefix =
+          `registro-${tipo}-`;
+        const atual = id ? dados[def.colecao].find((x) => x.id === id) : {};
+        document.getElementById("modal-titulo").textContent =
+          (id ? "Editar " : "Novo ") + def.titulo.toLowerCase();
+        const container = document.getElementById("form-campos");
+        container.innerHTML = def.campos
+          .map(([nome, label, tipoCampo, req]) => {
+            const v =
+              atual?.[nome] ??
+              (nome === "data"
+                ? hojeISO()
+                : nome === "status"
+                  ? "Agendado"
+                  : nome === "valor"
+                    ? ""
+                    : nome === "valorCobrado"
+                      ? ""
+                      : nome === "dataConclusao"
+                        ? ""
+                        : "");
+            if (tipoCampo.startsWith("select:"))
+              return campoHTML("select", nome, label, req, {
+                opcoes: tipoCampo.split(":")[1],
+                valor: v,
+              }, tipo);
+            return campoHTML(tipoCampo, nome, label, req, v, tipo);
+          })
+          .join("");
+        if (tipo === "lembrete") {
+          const extra = document.createElement("div");
+          extra.className = "field wide";
+          extra.innerHTML = `<label><input id="campo-lembrete-concluido" name="registro-lembrete-concluido" type="checkbox" style="width:auto;margin-right:8px">Lembrete concluído</label>`;
+          container.appendChild(extra);
+          if (atual?.concluido) extra.querySelector("input").checked = true;
+        }
+        abrirDialogo(document.getElementById("modal"));
+      }
+      function ler(form, nome) {
+        const el = form.elements.namedItem(
+          `${form.dataset.namePrefix || ""}${nome}`,
+        );
+        return el ? el.value.trim() : "";
+      }
+      function processarFormulario(evento) {
+        evento.preventDefault();
+        const form = evento.currentTarget;
+        const tipo = tipoEditando;
+        const def = definicoes[tipo];
+        if (!def) return;
+        const atual = idEditando
+          ? dados[def.colecao].find((x) => x.id === idEditando)
+          : null;
+        const registro = { ...(atual || {}), id: idEditando || uid(tipo) };
+        for (const [nome, label, tipoCampo] of def.campos) {
+          if (tipo === "lembrete" && nome === "concluido") {
+            continue;
+          }
+          if (tipo === "lembrete" && nome === "concluido") continue;
+          registro[nome] = ler(form, nome);
+        }
+        if (tipo === "lembrete")
+          registro.concluido = !!form.elements.namedItem(
+            "registro-lembrete-concluido",
+          )?.checked;
+        if (tipo === "agendamento") {
+          if (!atual) {
+            registro.status = "Agendado";
+            registro.valor = null;
+            registro.valorCobrado = null;
+          }
+          if (
+            totalRecebido(registro.id) > 0 &&
+            registro.status !== "Concluído"
+          ) {
+            toast("Este atendimento possui recebimentos e não pode ser reaberto ou cancelado.");
+            return;
+          }
+          if (totalRecebido(registro.id) > valorSeguro(registro.valor)) {
+            toast("O valor do serviço não pode ser menor que o total já recebido.");
+            return;
+          }
+          if (registro.status === "Concluído") {
+            registro.dataConclusao = registro.dataConclusao || hojeISO();
+          }
+        }
+        if (tipo === "animal")
+          registro.peso =
+            registro.peso === "" ? "" : valorSeguro(registro.peso);
+        if (tipo === "tutor" && !registro.nome) {
+          toast("Informe o nome do tutor.");
+          return;
+        }
+        if (tipo === "animal" && !registro.nome) {
+          toast("Informe o nome do animal.");
+          return;
+        }
+        if (tipo === "clinica" && !registro.nome) {
+          toast("Informe o nome da clínica.");
+          return;
+        }
+        if (tipo === "lembrete" && !registro.titulo) {
+          toast("Informe o título do lembrete.");
+          return;
+        }
+        if (atual) {
+          const i = dados[def.colecao].findIndex((x) => x.id === atual.id);
+          dados[def.colecao][i] = registro;
+        } else dados[def.colecao].push(registro);
+        if (!persistir()) return;
+        document.getElementById("modal").close();
+        renderizar();
+        toast(def.titulo + " salvo com sucesso.");
+      }
+      function alterarStatusAgendamento(id, status) {
+        const a = dados.agendamentos.find((x) => x.id === id);
+        if (!a || !STATUS_AGENDAMENTO.includes(status)) return;
+        if (a.status === "Anulado") {
+          toast("Atendimentos anulados são mantidos no histórico e não podem ser reabertos.");
+          return;
+        }
+        if (status === "Concluído") {
+          abrirFinalizacao(id);
+          return;
+        }
+        if (status !== "Concluído" && totalRecebido(id) > 0) {
+          toast("Este atendimento possui recebimentos e não pode ser reaberto ou cancelado.");
+          return;
+        }
+        if (
+          status === "Cancelado" &&
+          !confirm("Deseja cancelar este agendamento?")
+        )
+          return;
+        a.status = status;
+        a.dataConclusao = "";
+        if (!persistir()) return;
+        renderizar();
+        toast("Status do agendamento atualizado.");
+      }
+      function abrirFinalizacao(id) {
+        const agendamento = dados.agendamentos.find((a) => a.id === id);
+        if (!agendamento || agendamento.status !== "Em andamento") {
+          toast("Inicie o atendimento antes de finalizá-lo.");
+          return;
+        }
+        const inicioAgendado = dataHoraAgendada(agendamento);
+        if (!inicioAgendado) {
+          toast("Corrija a data e o horário do agendamento antes de concluí-lo.");
+          return;
+        }
+        if (new Date() < inicioAgendado) {
+          toast(
+            `O atendimento só pode ser concluído a partir de ${dataBR(agendamento.data)} às ${agendamento.horario}.`,
+          );
+          return;
+        }
+        finalizacaoAgendamentoId = id;
+        document.getElementById("finalizacao-resumo").textContent =
+          `${animalNome(agendamento.animalId)} · ${agendamento.servico} · ${clinicaNome(agendamento.clinicaId)}`;
+        document.getElementById("finalizacao-valor").value =
+          agendamento.valor === null || agendamento.valor === undefined
+            ? ""
+            : String(agendamento.valor);
+        const campoDataConclusao = document.getElementById("finalizacao-data");
+        campoDataConclusao.min = agendamento.data;
+        campoDataConclusao.max = dataISOAtualLocal();
+        campoDataConclusao.value = dataISOAtualLocal();
+        abrirDialogo(document.getElementById("modal-finalizacao"));
+      }
+      function abrirAnulacao(id) {
+        const agendamento = dados.agendamentos.find((a) => a.id === id);
+        if (!agendamento || agendamento.status !== "Concluído") {
+          toast("Somente atendimentos concluídos podem ser anulados.");
+          return;
+        }
+        if (totalRecebido(id) > 0.001) {
+          toast(
+            `Antes de anular, devolva e registre no Financeiro o estorno integral dos pagamentos pendentes: ${moeda(totalRecebido(id))}.`,
+          );
+          return;
+        }
+        anulacaoAgendamentoId = id;
+        document.getElementById("anulacao-resumo").textContent =
+          `${animalNome(agendamento.animalId)} · ${agendamento.servico} · Valor original: ${moeda(valorDoAtendimento(agendamento))}. O atendimento permanecerá no histórico com o motivo e a data da anulação.`;
+        document.getElementById("anulacao-motivo").value = "";
+        abrirDialogo(document.getElementById("modal-anulacao"));
+      }
+      function registrarAnulacao(evento) {
+        evento.preventDefault();
+        const agendamento = dados.agendamentos.find(
+          (a) => a.id === anulacaoAgendamentoId,
+        );
+        if (!agendamento || agendamento.status !== "Concluído") {
+          toast("O atendimento não está disponível para anulação.");
+          return;
+        }
+        if (totalRecebido(agendamento.id) > 0.001) {
+          toast("Estorne integralmente os recebimentos antes de anular.");
+          return;
+        }
+        const motivo = document
+          .getElementById("anulacao-motivo")
+          .value.trim();
+        if (!motivo) {
+          toast("Informe o motivo da anulação.");
+          return;
+        }
+        const anterior = {
+          status: agendamento.status,
+          anulacaoMotivo: agendamento.anulacaoMotivo,
+          anuladoEm: agendamento.anuladoEm,
+        };
+        agendamento.status = "Anulado";
+        agendamento.anulacaoMotivo = motivo;
+        agendamento.anuladoEm = new Date().toISOString();
+        if (!persistir()) {
+          Object.assign(agendamento, anterior);
+          return;
+        }
+        document.getElementById("modal-anulacao").close();
+        anulacaoAgendamentoId = null;
+        renderizar();
+        toast("Atendimento anulado e mantido no histórico.");
+      }
+      function abrirEstorno(pagamentoId) {
+        const pagamento = dados.pagamentos.find((p) => p.id === pagamentoId);
+        const agendamento = dados.agendamentos.find(
+          (a) => a.id === pagamento?.agendamentoId,
+        );
+        if (!pagamento || agendamento?.status !== "Concluído") {
+          toast("Só é possível estornar pagamentos de atendimentos concluídos.");
+          return;
+        }
+        const valorRestante = valorEstornavel(pagamento);
+        if (valorRestante <= 0.001) {
+          toast("Este pagamento já foi estornado integralmente.");
+          return;
+        }
+        estornoPagamentoId = pagamentoId;
+        document.getElementById("estorno-resumo").textContent =
+          `${animalNome(agendamento.animalId)} · ${agendamento.servico} · Pagamento original: ${moeda(pagamento.valor)} · Ainda estornável: ${moeda(valorRestante)}. Para anular o atendimento, todos os pagamentos devem ser estornados integralmente.`;
+        const campoValor = document.getElementById("estorno-valor");
+        campoValor.max = valorRestante.toFixed(2);
+        campoValor.value = valorRestante.toFixed(2);
+        const campoData = document.getElementById("estorno-data");
+        campoData.value = dataISOAtualLocal();
+        campoData.max = dataISOAtualLocal();
+        document.getElementById("estorno-motivo").value = "";
+        document.getElementById("estorno-confirmacao").checked = false;
+        abrirDialogo(document.getElementById("modal-estorno"));
+      }
+      function registrarEstorno(evento) {
+        evento.preventDefault();
+        const pagamento = dados.pagamentos.find(
+          (p) => p.id === estornoPagamentoId,
+        );
+        const agendamento = dados.agendamentos.find(
+          (a) => a.id === pagamento?.agendamentoId,
+        );
+        if (!pagamento || agendamento?.status !== "Concluído") {
+          toast("O pagamento não está disponível para estorno.");
+          return;
+        }
+        const valorInformado = valorSeguro(
+          document.getElementById("estorno-valor").value,
+        );
+        const valorCentavos = Math.round(valorInformado * 100);
+        const valorRestante = valorEstornavel(pagamento);
+        if (
+          valorCentavos <= 0 ||
+          valorCentavos > Math.round(valorRestante * 100)
+        ) {
+          toast(`Informe um valor maior que zero e até ${moeda(valorRestante)}.`);
+          return;
+        }
+        const valor = valorCentavos / 100;
+        const data = document.getElementById("estorno-data").value;
+        const motivo = document
+          .getElementById("estorno-motivo")
+          .value.trim();
+        if (!data || data > dataISOAtualLocal() || !motivo) {
+          toast("Informe uma data válida até hoje e o motivo do estorno.");
+          return;
+        }
+        if (!document.getElementById("estorno-confirmacao").checked) {
+          toast("Confirme que a devolução foi realizada antes de registrar o estorno.");
+          return;
+        }
+        const estorno = {
+          id: uid("estorno"),
+          pagamentoId: pagamento.id,
+          agendamentoId: agendamento.id,
+          valor,
+          data,
+          motivo,
+        };
+        dados.estornos.push(estorno);
+        if (!persistir()) {
+          dados.estornos.pop();
+          return;
+        }
+        document.getElementById("modal-estorno").close();
+        estornoPagamentoId = null;
+        renderizar();
+        toast(`Estorno de ${moeda(valor)} registrado.`);
+      }
+      function finalizarAtendimento(evento) {
+        evento.preventDefault();
+        const agendamento = dados.agendamentos.find(
+          (a) => a.id === finalizacaoAgendamentoId,
+        );
+        if (!agendamento || agendamento.status !== "Em andamento") {
+          toast("O atendimento não está disponível para finalização.");
+          return;
+        }
+        const valor = valorSeguro(
+          ler(evento.currentTarget, "valor"),
+        );
+        const dataConclusao = ler(evento.currentTarget, "dataConclusao");
+        if (!dataConclusao) {
+          toast("Informe a data de conclusão.");
+          return;
+        }
+        const inicioAgendado = dataHoraAgendada(agendamento);
+        if (!inicioAgendado) {
+          toast("Corrija a data e o horário do agendamento antes de concluí-lo.");
+          return;
+        }
+        if (new Date() < inicioAgendado) {
+          toast(
+            `O atendimento só pode ser concluído a partir de ${dataBR(agendamento.data)} às ${agendamento.horario}.`,
+          );
+          return;
+        }
+        if (dataConclusao < agendamento.data) {
+          toast("A data de conclusão não pode ser anterior à data agendada.");
+          return;
+        }
+        if (dataConclusao > dataISOAtualLocal()) {
+          toast("A data de conclusão não pode ser futura.");
+          return;
+        }
+        const anterior = { ...agendamento };
+        agendamento.valor = valor;
+        agendamento.valorCobrado = valor;
+        agendamento.dataConclusao = dataConclusao;
+        agendamento.status = "Concluído";
+        if (!persistir()) {
+          Object.assign(agendamento, anterior);
+          return;
+        }
+        document.getElementById("modal-finalizacao").close();
+        finalizacaoAgendamentoId = null;
+        renderizar();
+        toast("Atendimento finalizado. Registre o pagamento para movimentar o financeiro.");
+      }
+      function abrirRecebimento(id) {
+        const agendamento = dados.agendamentos.find((a) => a.id === id);
+        if (
+          !agendamento ||
+          agendamento.status !== "Concluído" ||
+          agendamento.status === "Anulado"
+        ) {
+          toast("Finalize o atendimento antes de registrar o pagamento.");
+          return;
+        }
+        const saldo = saldoDoAtendimento(agendamento);
+        if (saldo <= 0) {
+          toast("Este serviço já está totalmente pago.");
+          return;
+        }
+        pagamentoAgendamentoId = id;
+        document.getElementById("pagamento-resumo").textContent =
+          `${animalNome(agendamento.animalId)} · ${agendamento.servico} · Saldo: ${moeda(saldo)}`;
+        document.getElementById("pagamento-valor").value = saldo.toFixed(2);
+        document.getElementById("pagamento-forma").value = "";
+        document.getElementById("pagamento-data").value = hojeISO();
+        document.getElementById("pagamento-observacoes").value = "";
+        abrirDialogo(document.getElementById("modal-pagamento"));
+      }
+      function registrarRecebimento(evento) {
+        evento.preventDefault();
+        const form = evento.currentTarget;
+        const agendamento = dados.agendamentos.find(
+          (a) => a.id === pagamentoAgendamentoId,
+        );
+        if (!agendamento || agendamento.status !== "Concluído") {
+          toast("O atendimento não está disponível para recebimento.");
+          return;
+        }
+        const valor = valorSeguro(ler(form, "valor"));
+        const saldo = saldoDoAtendimento(agendamento);
+        if (valor <= 0 || valor > saldo) {
+          toast(`Informe um valor maior que zero e até ${moeda(saldo)}.`);
+          return;
+        }
+        const forma = ler(form, "forma");
+        const data = ler(form, "data");
+        if (!forma || !data) {
+          toast("Informe a forma e a data do recebimento.");
+          return;
+        }
+        const pagamento = {
+          id: uid("pagamento"),
+          agendamentoId: agendamento.id,
+          valor,
+          forma,
+          data,
+          observacoes: ler(form, "observacoes"),
+        };
+        dados.pagamentos.push(pagamento);
+        if (!persistir()) {
+          dados.pagamentos.pop();
+          return;
+        }
+        document.getElementById("modal-pagamento").close();
+        pagamentoAgendamentoId = null;
+        renderizar();
+        toast(`Recebimento de ${moeda(valor)} registrado no financeiro.`);
+      }
+      function excluirRegistro(tipo, id) {
+        const def = definicoes[tipo];
+        if (!def) return;
+        if (tipo === "tutor" && dados.animais.some((a) => a.tutorId === id)) {
+          toast("Não é possível excluir: há animais vinculados a este tutor.");
+          return;
+        }
+        if (
+          tipo === "animal" &&
+          (dados.lembretes.some((l) => l.animalId === id) ||
+            dados.agendamentos.some((a) => a.animalId === id))
+        ) {
+          toast(
+            "Não é possível excluir: há lembretes ou agendamentos vinculados.",
+          );
+          return;
+        }
+        if (
+          tipo === "clinica" &&
+          (dados.lembretes.some((l) => l.clinicaId === id) ||
+            dados.agendamentos.some((a) => a.clinicaId === id))
+        ) {
+          toast("Não é possível excluir: há lembretes ou agendamentos vinculados a esta clínica.");
+          return;
+        }
+        if (tipo === "agendamento") {
+          const agendamento = dados.agendamentos.find((a) => a.id === id);
+          if (!agendamento) return;
+          if (["Concluído", "Anulado"].includes(agendamento.status)) {
+            toast("Atendimentos concluídos ou anulados não podem ser excluídos; use Anular para preservar o histórico.");
+            return;
+          }
+          if (
+            dados.pagamentos.some((p) => p.agendamentoId === id) ||
+            dados.estornos.some((e) => e.agendamentoId === id)
+          ) {
+            toast("Não é possível excluir: este atendimento possui movimentações financeiras registradas.");
+            return;
+          }
+        }
+        const mensagemConfirmacao =
+          "Tem certeza de que deseja excluir este registro?";
+        if (!confirm(mensagemConfirmacao)) return;
+        dados[def.colecao] = dados[def.colecao].filter((x) => x.id !== id);
+        if (!persistir()) return;
+        renderizar();
+        toast("Registro excluído.");
+      }
+      function irPara(pagina) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) =>
+            p.classList.toggle("hidden", p.id !== "page-" + pagina),
+          );
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) =>
+            b.classList.toggle("active", b.dataset.page === pagina),
+          );
+      }
+      function exportarBackup() {
+        const blob = new Blob(
+          [
+            JSON.stringify(
+              {
+                app: "PetCare + PetQA",
+                versao: 1,
+                exportadoEm: new Date().toISOString(),
+                dados,
+              },
+              null,
+              2,
+            ),
+          ],
+          { type: "application/json" },
+        );
+        const url = URL.createObjectURL(blob),
+          a = document.createElement("a");
+        a.href = url;
+        a.download = `petcare-backup-${hojeISO()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        toast("Backup exportado.");
+      }
+      async function importarBackup(arquivo) {
+        try {
+          const parsed = JSON.parse(await arquivo.text()),
+            entrada = parsed.dados || parsed;
+          const chaves = Object.keys(dadosVazios()).filter(
+            (chave) => !["pagamentos", "estornos"].includes(chave),
+          );
+          if (!entrada || !chaves.every((k) => Array.isArray(entrada[k])))
+            throw new Error("Estrutura inválida");
+          if (
+            (entrada.pagamentos !== undefined &&
+              !Array.isArray(entrada.pagamentos)) ||
+            (entrada.estornos !== undefined &&
+              !Array.isArray(entrada.estornos))
+          )
+            throw new Error("Coleções financeiras inválidas");
+          const novo = dadosVazios();
+          for (const k of chaves) novo[k] = entrada[k];
+          novo.pagamentos = Array.isArray(entrada.pagamentos)
+            ? entrada.pagamentos.map((p) => ({
+                ...p,
+                id: String(p.id ?? uid("pagamento")),
+                agendamentoId: String(p.agendamentoId ?? p.appointmentId ?? ""),
+                valor: valorSeguro(p.valor),
+                forma: p.forma ?? "Outro",
+                data: String(p.data ?? "").slice(0, 10),
+                observacoes: p.observacoes ?? "",
+              }))
+            : [];
+          novo.estornos = normalizarEstornos(
+            Array.isArray(entrada.estornos) ? entrada.estornos : [],
+            novo.pagamentos,
+          );
+          novo.agendamentos = novo.agendamentos.map((a) => ({
+            ...a,
+            valor: valorSeguro(a.valor),
+            valorCobrado:
+              a.valorCobrado === null ||
+              a.valorCobrado === undefined ||
+              a.valorCobrado === ""
+                ? null
+                : valorSeguro(a.valorCobrado),
+          }));
+          if (
+            !confirm(
+              "Restaurar este backup substituirá os dados atuais. Deseja continuar?",
+            )
+          )
+            return;
+          const dadosAnteriores = dados;
+          dados = novo;
+          if (!persistir()) {
+            dados = dadosAnteriores;
+            return;
+          }
+          renderizar();
+          toast("Backup restaurado com sucesso.");
+        } catch (e) {
+          alert(
+            "Não foi possível restaurar. Confira se selecionou um backup JSON válido do PetCare.",
+          );
+        }
+      }
+      document
+        .querySelectorAll("[data-page]")
+        .forEach((b) =>
+          b.addEventListener("click", () => irPara(b.dataset.page)),
+        );
+      const abasRelatorios = [
+        ...document.querySelectorAll("[data-report-category]"),
+      ];
+      abasRelatorios.forEach((aba) =>
+        aba.addEventListener("click", () =>
+          selecionarRelatorio(aba.dataset.reportCategory),
+        ),
+      );
+      document
+        .getElementById("btn-imprimir-relatorio")
+        .addEventListener("click", imprimirRelatorio);
+      document
+        .getElementById("btn-baixar-pdf-relatorio")
+        .addEventListener("click", baixarRelatorioPDF);
+      document
+        .querySelector(".report-menu")
+        .addEventListener("keydown", (evento) => {
+          const indiceAtual = abasRelatorios.indexOf(document.activeElement);
+          if (indiceAtual < 0) return;
+          let proximo = indiceAtual;
+          if (evento.key === "ArrowRight")
+            proximo = (indiceAtual + 1) % abasRelatorios.length;
+          else if (evento.key === "ArrowLeft")
+            proximo =
+              (indiceAtual - 1 + abasRelatorios.length) %
+              abasRelatorios.length;
+          else if (evento.key === "Home") proximo = 0;
+          else if (evento.key === "End")
+            proximo = abasRelatorios.length - 1;
+          else return;
+          evento.preventDefault();
+          abasRelatorios[proximo].focus();
+          selecionarRelatorio(abasRelatorios[proximo].dataset.reportCategory);
+        });
+      document.addEventListener("click", (evento) => {
+        const navegacao = evento.target.closest("[data-page]");
+        if (navegacao) {
+          irPara(navegacao.dataset.page);
+          return;
+        }
+        const enviarLembrete = evento.target.closest("[data-send-reminder]");
+        if (enviarLembrete) {
+          abrirEnvioLembrete(enviarLembrete);
+          return;
+        }
+        const go = evento.target.closest("[data-go]");
+        if (go) {
+          irPara(go.dataset.go);
+          if (go.dataset.new) abrirFormulario(go.dataset.new);
+          return;
+        }
+        const novo = evento.target.closest("[data-new]");
+        if (novo) {
+          abrirFormulario(novo.dataset.new);
+          return;
+        }
+        const edit = evento.target.closest("[data-edit]");
+        if (edit) {
+          abrirFormulario(edit.dataset.edit, edit.dataset.id);
+          return;
+        }
+        const del = evento.target.closest("[data-delete]");
+        if (del) {
+          excluirRegistro(del.dataset.delete, del.dataset.id);
+          return;
+        }
+        const complete = evento.target.closest("[data-complete]");
+        if (complete) {
+          alterarStatusAgendamento(complete.dataset.complete, "Concluído");
+          return;
+        }
+        const start = evento.target.closest("[data-start]");
+        if (start) {
+          alterarStatusAgendamento(start.dataset.start, "Em andamento");
+          return;
+        }
+        const payment = evento.target.closest("[data-payment]");
+        if (payment) {
+          abrirRecebimento(payment.dataset.payment);
+          return;
+        }
+        const annul = evento.target.closest("[data-annul]");
+        if (annul) {
+          abrirAnulacao(annul.dataset.annul);
+          return;
+        }
+        const refund = evento.target.closest("[data-refund]");
+        if (refund) {
+          abrirEstorno(refund.dataset.refund);
+          return;
+        }
+        const reminder = evento.target.closest("[data-toggle-reminder]");
+        if (reminder) {
+          const l = dados.lembretes.find(
+            (x) => x.id === reminder.dataset.toggleReminder,
+          );
+          if (l) {
+            l.concluido = !l.concluido;
+            if (persistir()) {
+              renderizar();
+              toast(l.concluido ? "Lembrete concluído." : "Lembrete reaberto.");
+            }
+          }
+        }
+      });
+      document
+        .getElementById("form-registro")
+        .addEventListener("submit", processarFormulario);
+      document
+        .getElementById("form-pagamento")
+        .addEventListener("submit", registrarRecebimento);
+      document
+        .getElementById("form-finalizacao")
+        .addEventListener("submit", finalizarAtendimento);
+      document
+        .getElementById("form-anulacao")
+        .addEventListener("submit", registrarAnulacao);
+      document
+        .getElementById("form-estorno")
+        .addEventListener("submit", registrarEstorno);
+      document
+        .getElementById("pagamento-fechar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-pagamento").close(),
+        );
+      document
+        .getElementById("pagamento-cancelar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-pagamento").close(),
+        );
+      document
+        .getElementById("finalizacao-fechar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-finalizacao").close(),
+        );
+      document
+        .getElementById("finalizacao-cancelar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-finalizacao").close(),
+        );
+      document
+        .getElementById("anulacao-fechar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-anulacao").close(),
+        );
+      document
+        .getElementById("anulacao-cancelar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-anulacao").close(),
+        );
+      document
+        .getElementById("estorno-fechar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-estorno").close(),
+        );
+      document
+        .getElementById("estorno-cancelar")
+        .addEventListener("click", () =>
+          document.getElementById("modal-estorno").close(),
+        );
+      document
+        .getElementById("modal-fechar")
+        .addEventListener("click", () =>
+          document.getElementById("modal").close(),
+        );
+      document
+        .getElementById("modal-cancelar")
+        .addEventListener("click", () =>
+          document.getElementById("modal").close(),
+        );
+      document
+        .getElementById("btn-exportar")
+        .addEventListener("click", exportarBackup);
+      document
+        .getElementById("btn-importar")
+        .addEventListener("click", () => {
+          document.getElementById("arquivo-backup").click();
+        });
+      document
+        .getElementById("arquivo-backup")
+        .addEventListener("change", (e) => {
+          if (e.target.files?.[0]) importarBackup(e.target.files[0]);
+          e.target.value = "";
+        });
+      ["tutores", "animais", "clinicas", "lembretes", "agendamentos"].forEach(
+        (tipo) => {
+          const el = document.getElementById("busca-" + tipo);
+          if (el)
+            el.addEventListener("input", () =>
+              ({
+                tutores: renderizarTutores,
+                animais: renderizarAnimais,
+                clinicas: renderizarClinicas,
+                lembretes: renderizarLembretes,
+                agendamentos: renderizarAgendamentos,
+              })[tipo](),
+            );
+        },
+      );
+      document
+        .getElementById("filtro-status")
+        .addEventListener("change", renderizarAgendamentos);
+      renderizar();
+    </script>
+  </body>
+</html>
