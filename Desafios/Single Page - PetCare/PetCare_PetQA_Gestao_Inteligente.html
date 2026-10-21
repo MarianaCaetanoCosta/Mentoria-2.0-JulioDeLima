@@ -2628,11 +2628,17 @@
           toast("Informe o título do lembrete.");
           return;
         }
+        // Mantém uma cópia da coleção para desfazer a alteração se o navegador
+        // recusar a gravação no localStorage (por exemplo, por falta de espaço).
+        const colecaoAnterior = dados[def.colecao].slice();
         if (atual) {
           const i = dados[def.colecao].findIndex((x) => x.id === atual.id);
           dados[def.colecao][i] = registro;
         } else dados[def.colecao].push(registro);
-        if (!persistir()) return;
+        if (!persistir()) {
+          dados[def.colecao] = colecaoAnterior;
+          return;
+        }
         document.getElementById("modal").close();
         renderizar();
         toast(def.titulo + " salvo com sucesso.");
@@ -2657,9 +2663,16 @@
           !confirm("Deseja cancelar este agendamento?")
         )
           return;
+        const anterior = {
+          status: a.status,
+          dataConclusao: a.dataConclusao,
+        };
         a.status = status;
         a.dataConclusao = "";
-        if (!persistir()) return;
+        if (!persistir()) {
+          Object.assign(a, anterior);
+          return;
+        }
         renderizar();
         toast("Status do agendamento atualizado.");
       }
@@ -2987,8 +3000,12 @@
         const mensagemConfirmacao =
           "Tem certeza de que deseja excluir este registro?";
         if (!confirm(mensagemConfirmacao)) return;
+        const colecaoAnterior = dados[def.colecao];
         dados[def.colecao] = dados[def.colecao].filter((x) => x.id !== id);
-        if (!persistir()) return;
+        if (!persistir()) {
+          dados[def.colecao] = colecaoAnterior;
+          return;
+        }
         renderizar();
         toast("Registro excluído.");
       }
