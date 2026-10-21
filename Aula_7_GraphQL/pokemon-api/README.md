@@ -76,7 +76,7 @@ npm install apollo-server-express@3.12.0 express@4.18.2 bcryptjs jsonwebtoken uu
 ### Como rodar a API GraphQL
 
 ```powershell
-node graphql/server.js
+npm run start:graphql
 ```
 
 Acesse o playground em:
@@ -95,8 +95,8 @@ mutation {
 
 #### Login
 ```graphql
-query {
-  login(login: "ash2", password: "pikachu123") {
+mutation {
+  login(login: "ash", password: "pikachu123") {
     token
   }
 }
