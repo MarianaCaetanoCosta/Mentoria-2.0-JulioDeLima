@@ -2,7 +2,16 @@ const db = require('../models/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const pokemonService = require('../services/pokemonService');
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_jwt_key';
+
+function validarNivel(level) {
+  const nivel = Number(level);
+  if (!Number.isInteger(nivel) || nivel < 1 || nivel > 100) {
+    throw new Error('level must be an integer between 1 and 100');
+  }
+  return nivel;
+}
 
 function safeUser(user) {
   return {
@@ -70,13 +79,15 @@ const resolvers = {
     addCapture: (_, { pokemonId, sex, level }, { userId }) => {
       if (!userId) throw new Error('Authentication required');
       if (sex !== 'M' && sex !== 'F') throw new Error('sex must be "M" ou "F"');
+      if (!pokemonService.getById(pokemonId)) throw new Error('pokemonId does not exist in Kanto');
+      const nivel = validarNivel(level);
       const captureId = uuidv4();
       const registro = {
         captureId,
         usuarioId: userId,
         pokemonId: Number(pokemonId),
         sex,
-        level: Number(level)
+        level: nivel
       };
       db.pokemons_capturados.push(registro);
       return registro;
@@ -85,7 +96,7 @@ const resolvers = {
       if (!userId) throw new Error('Authentication required');
       const registro = db.pokemons_capturados.find(c => c.captureId === String(captureId) && c.usuarioId === String(userId));
       if (!registro) throw new Error('capture not found');
-      registro.level = Number(level);
+      registro.level = validarNivel(level);
       return registro;
     },
     deleteCapture: (_, { captureId }, { userId }) => {
