@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PetCare</title>
+    <style>
+      :root {
+        --primary: #247c70;
+        --dark: #185d54;
+        --bg: #f3f7f6;
+        --border: #dce6e3;
+        --text: #263b39;
+        --muted: #687b78;
+        --danger: #b93636;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      header {
+        padding: 22px;
+        background: var(--primary);
+        color: white;
+      }
+
+      header h1,
+      header p {
+        max-width: 1100px;
+        margin: 5px auto;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: auto;
+        padding: 18px;
+      }
+
+      nav,
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      button {
+        padding: 10px 14px;
+        border: 0;
+        border-radius: 7px;
+        background: var(--primary);
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      button:hover {
+        background: var(--dark);
+      }
+
+      nav button,
+      button.secondary {
+        background: white;
+        color: var(--dark);
+        border: 1px solid var(--border);
+      }
+
+      nav button.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      button.danger {
+        background: var(--danger);
+      }
+
+      .panel,
+      .stat {
+        padding: 16px;
+        margin-bottom: 16px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 12px;
+      }
+
+      .stat span {
+        display: block;
+        color: var(--muted);
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 28px;
+        color: var(--dark);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #bdceca;
+        border-radius: 7px;
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 75px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: #edf5f2;
+      }
+
+      .notice {
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 7px;
+        background: #fff3d3;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 15px;
+        background: #fff0c9;
+        font-size: 12px;
+      }
+
+      .status.completed {
+        background: #d8f2df;
+      }
+      .status.late {
+        background: #ffe0e0;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .muted,
+      .empty {
+        color: var(--muted);
+      }
+      .empty {
+        padding: 12px 0;
+      }
+
+      #mensagem-global {
+        min-height: 22px;
+        color: var(--dark);
+      }
+
+      @media (max-width: 600px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .full {
+          grid-column: auto;
+        }
+        main {
+          padding: 10px;
+        }
+        .panel {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>🐾 PetCare</h1>
+      <p>Gestão de cuidados veterinários</p>
+    </header>
+
+    <main>
+      <div class="notice">
+        <strong>Armazenamento local:</strong>
+        os dados ficam neste navegador e não são sincronizados automaticamente
+        com outros dispositivos. Faça backups regulares.
+      </div>
+
+      <div class="actions">
+        <button id="btn-exportar-backup" name="btn-exportar-backup">
+          Exportar backup
+        </button>
+        <button
+          id="btn-importar-backup"
+          name="btn-importar-backup"
+          class="secondary"
+        >
+          Restaurar backup
+        </button>
+        <input
+          id="arquivo-backup"
+          name="arquivo-backup"
+          type="file"
+          accept=".json,application/json"
+          class="hidden"
+        />
+      </div>
+
+      <nav aria-label="Menu principal">
+        <button id="nav-painel" data-page="painel" class="active">
+          Painel
+        </button>
+        <button id="nav-tutores" data-page="tutores">Tutores</button>
+        <button id="nav-animais" data-page="animais">Animais</button>
+        <button id="nav-clinicas" data-page="clinicas">Clínicas</button>
+        <button id="nav-lembretes" data-page="lembretes">Lembretes</button>
+      </nav>
+
+      <section id="pagina-painel" class="page">
+        <div class="stats">
+          <div class="stat">
+            <span>Tutores</span><strong id="contador-tutores">0</strong>
+          </div>
+          <div class="stat">
+            <span>Animais</span><strong id="contador-animais">0</strong>
+          </div>
+          <div class="stat">
+            <span>Clínicas</span><strong id="contador-clinicas">0</strong>
+          </div>
+          <div class="stat">
+            <span>Cuidados pendentes</span>
+            <strong id="contador-lembretes">0</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Próximos cuidados</h2>
+          <div id="painel-proximos"></div>
+        </div>
+      </section>
+
+      <section id="pagina-tutores" class="page hidden">
+        <div class="panel">
+          <h2 id="titulo-form-tutor">Cadastrar tutor</h2>
+          <form id="form-tutor" name="form-tutor">
+            <input type="hidden" id="tutor-id" name="tutor-id" />
+            <div class="grid">
+              <div class="field">
+                <label for="tutor-nome">Nome *</label>
+                <input
+                  id="tutor-nome"
+                  name="tutor-nome"
+                  maxlength="120"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="tutor-telefone">Telefone</label>
+                <input
+                  id="tutor-telefone"
+                  name="tutor-telefone"
+                  type="tel"
+                  maxlength="30"
+                />
+              </div>
+              <div class="field full">
+                <label for="tutor-email">E-mail</label>
+                <input
+                  id="tutor-email"
+                  name="tutor-email"
+                  type="email"
+                  maxlength="160"
+                />
+              </div>
+            </div>
+            <div class="actions" style="margin-top: 12px">
+              <button id="btn-salvar-tutor" type="submit">Salvar tutor</button>
+              <button
+                id="btn-cancelar-tutor"
+                type="button"
+                class="secondary hidden"
+              >
+                Cancelar edição
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Tutores cadastrados</h2>
+          <div id="tabela-tutores"></div>
+        </div>
+      </section>
+
+      <section id="pagina-animais" class="page hidden">
+        <div class="panel">
+          <h2 id="titulo-form-animal">Cadastrar animal</h2>
+          <form id="form-animal" name="form-animal">
+            <input type="hidden" id="animal-id" name="animal-id" />
+            <div class="grid">
+              <div class="field">
+                <label for="animal-nome">Nome *</label>
+                <input
+                  id="animal-nome"
+                  name="animal-nome"
+                  maxlength="100"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="animal-especie">Espécie *</label>
+                <select id="animal-especie" name="animal-especie" required>
+                  <option value="">Selecione</option>
+                  <option>Cachorro</option>
+                  <option>Gato</option>
+                  <option>Ave</option>
+                  <option>Coelho</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="animal-raca">Raça</label>
+                <input id="animal-raca" name="animal-raca" maxlength="100" />
+              </div>
+              <div class="field">
+                <label for="animal-nascimento">Data de nascimento</label>
+                <input
+                  id="animal-nascimento"
+                  name="animal-nascimento"
+                  type="date"
+                />
+              </div>
+              <div class="field full">
+                <label for="animal-tutor-id">Tutor responsável *</label>
+                <select id="animal-tutor-id" name="animal-tutor-id" required>
+                  <option value="">Selecione um tutor</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label for="animal-observacoes">Observações</label>
+                <textarea
+                  id="animal-observacoes"
+                  name="animal-observacoes"
+                ></textarea>
+              </div>
+            </div>
+            <div class="actions" style="margin-top: 12px">
+              <button id="btn-salvar-animal" type="submit">
+                Salvar animal
+              </button>
+              <button
+                id="btn-cancelar-animal"
+                type="button"
+                class="secondary hidden"
+              >
+                Cancelar edição
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Animais cadastrados</h2>
+          <div id="tabela-animais"></div>
+        </div>
+      </section>
+
+      <section id="pagina-clinicas" class="page hidden">
+        <div class="panel">
+          <h2 id="titulo-form-clinica">Cadastrar clínica</h2>
+          <form id="form-clinica" name="form-clinica">
+            <input type="hidden" id="clinica-id" name="clinica-id" />
+            <div class="grid">
+              <div class="field">
+                <label for="clinica-nome">Nome da clínica *</label>
+                <input
+                  id="clinica-nome"
+                  name="clinica-nome"
+                  maxlength="150"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="clinica-veterinario">Veterinário responsável</label>
+                <input
+                  id="clinica-veterinario"
+                  name="clinica-veterinario"
+                  maxlength="120"
+                />
+              </div>
+              <div class="field">
+                <label for="clinica-telefone">Telefone</label>
+                <input
+                  id="clinica-telefone"
+                  name="clinica-telefone"
+                  type="tel"
+                />
+              </div>
+              <div class="field">
+                <label for="clinica-email">E-mail</label>
+                <input id="clinica-email" name="clinica-email" type="email" />
+              </div>
+              <div class="field full">
+                <label for="clinica-endereco">Endereço</label>
+                <input id="clinica-endereco" name="clinica-endereco" />
+              </div>
+            </div>
+            <div class="actions" style="margin-top: 12px">
+              <button id="btn-salvar-clinica" type="submit">
+                Salvar clínica
+              </button>
+              <button
+                id="btn-cancelar-clinica"
+                type="button"
+                class="secondary hidden"
+              >
+                Cancelar edição
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Clínicas cadastradas</h2>
+          <div id="tabela-clinicas"></div>
+        </div>
+      </section>
+
+      <section id="pagina-lembretes" class="page hidden">
+        <div class="panel">
+          <h2 id="titulo-form-lembrete">Criar lembrete</h2>
+          <form id="form-lembrete" name="form-lembrete">
+            <input type="hidden" id="lembrete-id" name="lembrete-id" />
+            <div class="grid">
+              <div class="field">
+                <label for="lembrete-animal-id">Animal *</label>
+                <select
+                  id="lembrete-animal-id"
+                  name="lembrete-animal-id"
+                  required
+                >
+                  <option value="">Selecione um animal</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="lembrete-tipo">Tipo de cuidado *</label>
+                <select id="lembrete-tipo" name="lembrete-tipo" required>
+                  <option value="">Selecione</option>
+                  <option>Vacinação</option>
+                  <option>Consulta</option>
+                  <option>Vermifugação</option>
+                  <option>Antipulgas</option>
+                  <option>Exame</option>
+                  <option>Medicação</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="lembrete-data">Data *</label>
+                <input
+                  id="lembrete-data"
+                  name="lembrete-data"
+                  type="date"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="lembrete-horario">Horário</label>
+                <input
+                  id="lembrete-horario"
+                  name="lembrete-horario"
+                  type="time"
+                />
+              </div>
+              <div class="field">
+                <label for="lembrete-clinica-id">Clínica</label>
+                <select id="lembrete-clinica-id" name="lembrete-clinica-id">
+                  <option value="">Não definida</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="lembrete-canal">Canal preferido</label>
+                <select id="lembrete-canal" name="lembrete-canal">
+                  <option>Aplicativo</option>
+                  <option>E-mail</option>
+                  <option>WhatsApp</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label for="lembrete-descricao">Descrição</label>
+                <textarea
+                  id="lembrete-descricao"
+                  name="lembrete-descricao"
+                ></textarea>
+              </div>
+            </div>
+            <div class="actions" style="margin-top: 12px">
+              <button id="btn-salvar-lembrete" type="submit">
+                Salvar lembrete
+              </button>
+              <button
+                id="btn-cancelar-lembrete"
+                type="button"
+                class="secondary hidden"
+              >
+                Cancelar edição
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Lembretes cadastrados</h2>
+          <div class="field" style="max-width: 280px; margin-bottom: 12px">
+            <label for="filtro-lembrete-status">Filtrar situação</label>
+            <select id="filtro-lembrete-status" name="filtro-lembrete-status">
+              <option value="todos">Todos</option>
+              <option value="pendente">Pendentes</option>
+              <option value="atrasado">Atrasados</option>
+              <option value="concluido">Concluídos</option>
+            </select>
+          </div>
+          <div id="tabela-lembretes"></div>
+        </div>
+      </section>
+
+      <p id="mensagem-global" role="status" aria-live="polite"></p>
+    </main>
+
+    <script>
+      "use strict";
+
+      const STORAGE_KEY = "petcare_dados_v1";
+
+      function dadosVazios() {
+        return { tutores: [], animais: [], clinicas: [], lembretes: [] };
+      }
+
+      function carregarDados() {
+        const salvo = localStorage.getItem(STORAGE_KEY);
+        if (!salvo) return dadosVazios();
+
+        try {
+          const d = JSON.parse(salvo);
+          for (const k of ["tutores", "animais", "clinicas", "lembretes"]) {
+            if (!Array.isArray(d[k])) throw new Error("Estrutura inválida");
+          }
+          return d;
+        } catch {
+          alert(
+            "Os dados locais não puderam ser lidos. Não salve novos dados antes de verificar o armazenamento.",
+          );
+          return dadosVazios();
+        }
+      }
+
+      let dados = carregarDados();
+      const $ = (id) => document.getElementById(id);
+      const val = (id) => $(id).value.trim();
+
+      function novoId() {
+        if (crypto.randomUUID) return crypto.randomUUID();
+        return "pc-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      }
+
+      function esc(s) {
+        return String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+
+      function persistir() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+          $("mensagem-global").textContent = "Dados salvos localmente.";
+          renderizar();
+          return true;
+        } catch {
+          alert(
+            "Não foi possível salvar. Verifique o espaço do navegador e exporte um backup.",
+          );
+          return false;
+        }
+      }
+
+      function achar(lista, id) {
+        return lista.find((x) => x.id === id);
+      }
+
+      function nomeAnimal(id) {
+        return achar(dados.animais, id)?.nome || "—";
+      }
+
+      function nomeTutor(id) {
+        return achar(dados.tutores, id)?.nome || "—";
+      }
+
+      function nomeClinica(id) {
+        return achar(dados.clinicas, id)?.nome || "—";
+      }
+
+      function hoje() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      }
+
+      function dataBR(data) {
+        if (!data) return "—";
+        const p = data.split("-");
+        return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : data;
+      }
+
+      function situacao(x) {
+        if (x.concluido) return "concluido";
+        return x.data < hoje() ? "atrasado" : "pendente";
+      }
+
+      function selo(s) {
+        const rotulo = {
+          pendente: "Pendente",
+          atrasado: "Atrasado",
+          concluido: "Concluído",
+        }[s];
+        return `<span class="status ${s === "concluido" ? "completed" : s === "atrasado" ? "late" : ""}">${rotulo}</span>`;
+      }
+
+      function abrirPagina(nome) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.add("hidden"));
+        $("pagina-" + nome).classList.remove("hidden");
+        document.querySelectorAll("nav button").forEach((b) => {
+          b.classList.toggle("active", b.dataset.page === nome);
+        });
+      }
+
+      document.querySelectorAll("nav button").forEach((b) => {
+        b.addEventListener("click", () => abrirPagina(b.dataset.page));
+      });
+
+      function preencherSelect(id, lista, rotulo, vazio) {
+        const campo = $(id);
+        const anterior = campo.value;
+        campo.replaceChildren(new Option(vazio, ""));
+        lista.forEach((x) => campo.add(new Option(rotulo(x), x.id)));
+        if (lista.some((x) => x.id === anterior)) campo.value = anterior;
+      }
+
+      function tabela(cabecalhos, linhas) {
+        if (!linhas.length)
+          return '<p class="empty">Nenhum registro cadastrado.</p>';
+        return `<div class="table-wrap"><table>
+    <thead><tr>${cabecalhos.map((x) => `<th>${esc(x)}</th>`).join("")}</tr></thead>
+    <tbody>${linhas.join("")}</tbody>
+  </table></div>`;
+      }
+
+      function acoes(tipo, id) {
+        return `<div class="actions">
+    <button type="button" class="secondary" data-action="editar-${tipo}" data-id="${esc(id)}">Editar</button>
+    <button type="button" class="danger" data-action="excluir-${tipo}" data-id="${esc(id)}">Excluir</button>
+  </div>`;
+      }
+
+      function renderizar() {
+        $("contador-tutores").textContent = dados.tutores.length;
+        $("contador-animais").textContent = dados.animais.length;
+        $("contador-clinicas").textContent = dados.clinicas.length;
+        $("contador-lembretes").textContent = dados.lembretes.filter(
+          (x) => !x.concluido,
+        ).length;
+
+        preencherSelect(
+          "animal-tutor-id",
+          dados.tutores,
+          (x) => x.nome,
+          "Selecione um tutor",
+        );
+        preencherSelect(
+          "lembrete-animal-id",
+          dados.animais,
+          (x) => `${x.nome} (${x.especie})`,
+          "Selecione um animal",
+        );
+        preencherSelect(
+          "lembrete-clinica-id",
+          dados.clinicas,
+          (x) => x.nome,
+          "Não definida",
+        );
+
+        $("tabela-tutores").innerHTML = tabela(
+          ["Nome", "Telefone", "E-mail", "Ações"],
+          dados.tutores.map(
+            (x) => `<tr>
+      <td>${esc(x.nome)}</td><td>${esc(x.telefone || "—")}</td>
+      <td>${esc(x.email || "—")}</td><td>${acoes("tutor", x.id)}</td>
+    </tr>`,
+          ),
+        );
+
+        $("tabela-animais").innerHTML = tabela(
+          ["Animal", "Espécie", "Tutor", "Ações"],
+          dados.animais.map(
+            (x) => `<tr>
+      <td>${esc(x.nome)}</td>
+      <td>${esc(x.especie)} — ${esc(x.raca || "Sem raça")}</td>
+      <td>${esc(nomeTutor(x.tutorId))}</td>
+      <td>${acoes("animal", x.id)}</td>
+    </tr>`,
+          ),
+        );
+
+        $("tabela-clinicas").innerHTML = tabela(
+          ["Clínica", "Veterinário", "Contato", "Ações"],
+          dados.clinicas.map(
+            (x) => `<tr>
+      <td>${esc(x.nome)}<br>${esc(x.endereco || "")}</td>
+      <td>${esc(x.veterinario || "—")}</td>
+      <td>${esc(x.telefone || "—")}<br>${esc(x.email || "")}</td>
+      <td>${acoes("clinica", x.id)}</td>
+    </tr>`,
+          ),
+        );
+
+        const ordenados = [...dados.lembretes].sort((a, b) =>
+          (a.data + (a.horario || "")).localeCompare(
+            b.data + (b.horario || ""),
+          ),
+        );
+        const filtro = $("filtro-lembrete-status").value;
+        const filtrados = ordenados.filter(
+          (x) => filtro === "todos" || situacao(x) === filtro,
+        );
+
+        $("tabela-lembretes").innerHTML = tabela(
+          ["Data", "Animal", "Cuidado", "Clínica", "Situação", "Ações"],
+          filtrados.map(
+            (x) => `<tr>
+      <td>${dataBR(x.data)} ${esc(x.horario || "")}</td>
+      <td>${esc(nomeAnimal(x.animalId))}</td>
+      <td>${esc(x.tipo)}<br>${esc(x.descricao || "")}</td>
+      <td>${esc(nomeClinica(x.clinicaId))}</td>
+      <td>${selo(situacao(x))}</td>
+      <td>
+        <div class="actions">
+          <button type="button" class="secondary" data-action="editar-lembrete" data-id="${esc(x.id)}">Editar</button>
+          <button type="button" data-action="alternar-lembrete" data-id="${esc(x.id)}">${x.concluido ? "Reabrir" : "Concluir"}</button>
+          <button type="button" class="danger" data-action="excluir-lembrete" data-id="${esc(x.id)}">Excluir</button>
+        </div>
+      </td>
+    </tr>`,
+          ),
+        );
+
+        $("painel-proximos").innerHTML = tabela(
+          ["Data", "Animal", "Cuidado", "Situação"],
+          ordenados
+            .filter((x) => !x.concluido)
+            .slice(0, 8)
+            .map(
+              (x) => `<tr>
+      <td>${dataBR(x.data)} ${esc(x.horario || "")}</td>
+      <td>${esc(nomeAnimal(x.animalId))}</td>
+      <td>${esc(x.tipo)}</td><td>${selo(situacao(x))}</td>
+    </tr>`,
+            ),
+        );
+      }
+
+      const cfg = {
+        tutor: {
+          lista: "tutores",
+          form: "form-tutor",
+          titulo: "titulo-form-tutor",
+          cancelar: "btn-cancelar-tutor",
+          novo: "Cadastrar tutor",
+          editar: "Editar tutor",
+          campos: {
+            nome: "tutor-nome",
+            telefone: "tutor-telefone",
+            email: "tutor-email",
+          },
+        },
+        animal: {
+          lista: "animais",
+          form: "form-animal",
+          titulo: "titulo-form-animal",
+          cancelar: "btn-cancelar-animal",
+          novo: "Cadastrar animal",
+          editar: "Editar animal",
+          campos: {
+            nome: "animal-nome",
+            especie: "animal-especie",
+            raca: "animal-raca",
+            nascimento: "animal-nascimento",
+            tutorId: "animal-tutor-id",
+            observacoes: "animal-observacoes",
+          },
+        },
+        clinica: {
+          lista: "clinicas",
+          form: "form-clinica",
+          titulo: "titulo-form-clinica",
+          cancelar: "btn-cancelar-clinica",
+          novo: "Cadastrar clínica",
+          editar: "Editar clínica",
+          campos: {
+            nome: "clinica-nome",
+            veterinario: "clinica-veterinario",
+            telefone: "clinica-telefone",
+            email: "clinica-email",
+            endereco: "clinica-endereco",
+          },
+        },
+        lembrete: {
+          lista: "lembretes",
+          form: "form-lembrete",
+          titulo: "titulo-form-lembrete",
+          cancelar: "btn-cancelar-lembrete",
+          novo: "Criar lembrete",
+          editar: "Editar lembrete",
+          campos: {
+            animalId: "lembrete-animal-id",
+            tipo: "lembrete-tipo",
+            data: "lembrete-data",
+            horario: "lembrete-horario",
+            clinicaId: "lembrete-clinica-id",
+            canal: "lembrete-canal",
+            descricao: "lembrete-descricao",
+          },
+        },
+      };
+
+      function limparFormulario(tipo) {
+        const c = cfg[tipo];
+        $(c.form).reset();
+        $(`${tipo}-id`).value = "";
+        $(c.titulo).textContent = c.novo;
+        $(c.cancelar).classList.add("hidden");
+      }
+
+      function salvarFormulario(tipo, evento) {
+        evento.preventDefault();
+        const c = cfg[tipo];
+        const id = val(`${tipo}-id`);
+        const lista = dados[c.lista];
+        const antigo = id ? achar(lista, id) : null;
+        const item = { id: id || novoId() };
+
+        Object.entries(c.campos).forEach(([propriedade, campo]) => {
+          item[propriedade] = $(campo).value.trim();
+        });
+
+        if (tipo === "lembrete") item.concluido = antigo?.concluido ?? false;
+
+        if (tipo === "animal") {
+          if (!achar(dados.tutores, item.tutorId)) {
+            alert("Selecione um tutor válido.");
+            return;
+          }
+          if (item.nascimento && item.nascimento > hoje()) {
+            alert("A data de nascimento não pode estar no futuro.");
+            return;
+          }
+        }
+
+        if (tipo === "lembrete") {
+          if (!achar(dados.animais, item.animalId)) {
+            alert("Selecione um animal válido.");
+            return;
+          }
+          if (item.clinicaId && !achar(dados.clinicas, item.clinicaId)) {
+            alert("Selecione uma clínica válida.");
+            return;
+          }
+        }
+
+        const i = lista.findIndex((x) => x.id === item.id);
+        if (i >= 0) lista[i] = item;
+        else lista.push(item);
+
+        if (persistir()) limparFormulario(tipo);
+      }
+
+      Object.keys(cfg).forEach((tipo) => {
+        $(cfg[tipo].form).addEventListener("submit", (e) =>
+          salvarFormulario(tipo, e),
+        );
+        $(cfg[tipo].cancelar).addEventListener("click", () =>
+          limparFormulario(tipo),
+        );
+      });
+
+      function editar(tipo, id) {
+        const c = cfg[tipo];
+        const item = achar(dados[c.lista], id);
+        if (!item) {
+          alert("Registro não encontrado.");
+          return;
+        }
+
+        renderizar();
+        $(`${tipo}-id`).value = item.id;
+        Object.entries(c.campos).forEach(([p, campo]) => {
+          $(campo).value = item[p] ?? "";
+        });
+
+        $(c.titulo).textContent = c.editar;
+        $(c.cancelar).classList.remove("hidden");
+        abrirPagina(
+          tipo === "lembrete"
+            ? "lembretes"
+            : tipo === "clinica"
+              ? "clinicas"
+              : tipo === "animal"
+                ? "animais"
+                : "tutores",
+        );
+      }
+
+      function excluir(tipo, id) {
+        if (tipo === "tutor" && dados.animais.some((x) => x.tutorId === id)) {
+          alert(
+            "Este tutor possui animais vinculados. Exclua ou transfira os animais primeiro.",
+          );
+          return;
+        }
+        if (
+          tipo === "animal" &&
+          dados.lembretes.some((x) => x.animalId === id)
+        ) {
+          alert("Este animal possui lembretes. Exclua os lembretes primeiro.");
+          return;
+        }
+        if (
+          tipo === "clinica" &&
+          dados.lembretes.some((x) => x.clinicaId === id)
+        ) {
+          alert("Esta clínica está vinculada a lembretes. Edite-os primeiro.");
+          return;
+        }
+        if (!confirm("Deseja realmente excluir este registro?")) return;
+
+        dados[cfg[tipo].lista] = dados[cfg[tipo].lista].filter(
+          (x) => x.id !== id,
+        );
+        persistir();
+      }
+
+      document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-action]");
+        if (!b) return;
+        const acao = b.dataset.action;
+        const id = b.dataset.id;
+
+        if (acao.startsWith("editar-")) editar(acao.slice(7), id);
+        else if (acao.startsWith("excluir-")) excluir(acao.slice(8), id);
+        else if (acao === "alternar-lembrete") {
+          const x = achar(dados.lembretes, id);
+          if (!x) return;
+          x.concluido = !x.concluido;
+          persistir();
+        }
+      });
+
+      $("filtro-lembrete-status").addEventListener("change", renderizar);
+
+      $("btn-exportar-backup").addEventListener("click", () => {
+        const conteudo = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          data: dados,
+        };
+        const blob = new Blob([JSON.stringify(conteudo, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "petcare-backup.json";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+
+      $("btn-importar-backup").addEventListener("click", () =>
+        $("arquivo-backup").click(),
+      );
+
+      $("arquivo-backup").addEventListener("change", async (e) => {
+        const arquivo = e.target.files[0];
+        if (!arquivo) return;
+
+        try {
+          const json = JSON.parse(await arquivo.text());
+          const d = json.data || json;
+          for (const k of ["tutores", "animais", "clinicas", "lembretes"]) {
+            if (!Array.isArray(d[k]))
+              throw new Error("Estrutura de backup inválida.");
+          }
+
+          const unicos = (lista) => {
+            const ids = lista.map((x) => x.id);
+            return ids.every(Boolean) && new Set(ids).size === ids.length;
+          };
+
+          if (![d.tutores, d.animais, d.clinicas, d.lembretes].every(unicos)) {
+            throw new Error("Há identificadores ausentes ou duplicados.");
+          }
+
+          const tutores = new Set(d.tutores.map((x) => x.id));
+          const animais = new Set(d.animais.map((x) => x.id));
+          const clinicas = new Set(d.clinicas.map((x) => x.id));
+
+          if (d.animais.some((x) => !tutores.has(x.tutorId))) {
+            throw new Error("Há animais com tutor inexistente.");
+          }
+          if (
+            d.lembretes.some(
+              (x) =>
+                !animais.has(x.animalId) ||
+                (x.clinicaId && !clinicas.has(x.clinicaId)),
+            )
+          ) {
+            throw new Error("Há lembretes com vínculos inexistentes.");
+          }
+
+          if (
+            !confirm("O backup substituirá os dados atuais. Deseja continuar?")
+          )
+            return;
+
+          const anterior = dados;
+          dados = d;
+          if (!persistir()) dados = anterior;
+          else alert("Backup restaurado com sucesso.");
+        } catch (erro) {
+          alert("Erro ao restaurar backup: " + erro.message);
+        } finally {
+          e.target.value = "";
+        }
+      });
+
+      renderizar();
+    </script>
+  </body>
+</html>

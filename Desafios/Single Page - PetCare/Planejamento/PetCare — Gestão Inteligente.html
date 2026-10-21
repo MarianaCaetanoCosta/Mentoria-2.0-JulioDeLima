@@ -1,0 +1,2269 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101a20" />
+    <title>PetCare — Gestão Inteligente</title>
+
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #101a20;
+        --panel: #18262e;
+        --panel-soft: #20333d;
+        --border: #304650;
+        --text: #edf6f7;
+        --muted: #9db1b9;
+        --primary: #42d6bd;
+        --primary-dark: #183e3c;
+        --blue: #71b9ff;
+        --warning: #ffc66d;
+        --danger: #ff8585;
+        --success: #7ce1a1;
+        --radius: 16px;
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            ellipse at 85% 0%,
+            rgba(66, 214, 189, 0.09),
+            transparent 35%
+          ),
+          var(--bg);
+        color: var(--text);
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      a:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 15px clamp(16px, 4vw, 44px);
+        background: rgba(16, 26, 32, 0.94);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--primary);
+        color: #102321;
+        font-size: 25px;
+      }
+      .brand h1 {
+        font-size: 19px;
+        margin: 0;
+      }
+      .brand p {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 2px 0 0;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      main {
+        width: min(1440px, 100%);
+        margin: auto;
+        padding: 28px clamp(16px, 4vw, 44px) 48px;
+      }
+
+      .hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: clamp(22px, 4vw, 38px);
+        border: 1px solid #31544f;
+        border-radius: 24px;
+        background: linear-gradient(115deg, #1b3939, #1a2a35 65%, #1e3542);
+        box-shadow: var(--shadow);
+        margin-bottom: 26px;
+      }
+      .hero h2 {
+        font-size: clamp(25px, 4vw, 36px);
+        line-height: 1.15;
+        margin: 8px 0 12px;
+      }
+      .hero p {
+        color: #c1d4d8;
+        max-width: 620px;
+        margin: 0;
+      }
+      .hero-art {
+        font-size: clamp(48px, 8vw, 86px);
+        opacity: 0.9;
+      }
+
+      .eyebrow {
+        color: var(--primary);
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 1.7px;
+        font-weight: 800;
+      }
+
+      .nav {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 0 0 25px;
+      }
+      .nav button {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--muted);
+        border-radius: 11px;
+        padding: 10px 14px;
+        font-weight: 650;
+      }
+      .nav button.active {
+        background: var(--primary-dark);
+        color: var(--primary);
+        border-color: #347f75;
+      }
+      .nav button:hover {
+        border-color: var(--primary);
+        color: var(--text);
+      }
+
+      .page-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin: 0 0 18px;
+      }
+      .page-title h2 {
+        margin: 0;
+        font-size: 23px;
+      }
+      .page-title p {
+        color: var(--muted);
+        margin: 4px 0 0;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-bottom: 25px;
+      }
+      .two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        min-width: 0;
+        background: linear-gradient(145deg, var(--panel), #16232a);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+      .stat-label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .stat-value {
+        font-size: clamp(25px, 3vw, 34px);
+        font-weight: 800;
+        margin: 9px 0 2px;
+      }
+      .stat-note {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .stat-icon {
+        font-size: 22px;
+        float: right;
+      }
+
+      .card h3 {
+        font-size: 17px;
+        margin: 0 0 15px;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .card-header h3 {
+        margin: 0;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-weight: 750;
+        background: var(--primary);
+        color: #102421;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .btn-secondary {
+        background: var(--panel-soft);
+        color: var(--text);
+        border-color: var(--border);
+      }
+      .btn-danger {
+        background: #542b32;
+        color: #ffb1b1;
+        border-color: #7e414b;
+      }
+      .btn-small {
+        padding: 6px 9px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--muted);
+        border-color: var(--border);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        align-items: center;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+      }
+      .field.full {
+        grid-column: 1 / -1;
+      }
+      .field label {
+        font-size: 13px;
+        color: #c8d8dc;
+        font-weight: 650;
+      }
+      .field input,
+      .field select,
+      .field textarea,
+      .search-input {
+        width: 100%;
+        min-width: 0;
+        padding: 11px 12px;
+        color: var(--text);
+        background: #101b21;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+      }
+      .field textarea {
+        min-height: 88px;
+        resize: vertical;
+      }
+      .field input::placeholder,
+      .field textarea::placeholder,
+      .search-input::placeholder {
+        color: #718791;
+      }
+      .field input:disabled,
+      .field select:disabled {
+        opacity: 0.6;
+      }
+      .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 17px;
+      }
+      .form-help {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 12px 0 0;
+      }
+
+      .list {
+        display: grid;
+        gap: 10px;
+      }
+      .list-item {
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.018);
+      }
+      .list-item h4 {
+        margin: 0 0 5px;
+        font-size: 15px;
+      }
+      .list-item p {
+        margin: 3px 0;
+        color: var(--muted);
+        font-size: 13px;
+        overflow-wrap: anywhere;
+      }
+      .item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .item-top > div:first-child {
+        min-width: 0;
+      }
+      .item-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 99px;
+        font-size: 11px;
+        font-weight: 800;
+        background: #293b43;
+        color: #d2e0e4;
+      }
+      .badge-success {
+        background: #1b4237;
+        color: #8be9b5;
+      }
+      .badge-warning {
+        background: #4c3c24;
+        color: #ffd28c;
+      }
+      .badge-danger {
+        background: #4c2d35;
+        color: #ffaaaa;
+      }
+      .badge-blue {
+        background: #243c54;
+        color: #a7d4ff;
+      }
+
+      .empty {
+        padding: 28px 15px;
+        text-align: center;
+        color: var(--muted);
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+      }
+      .empty strong {
+        display: block;
+        color: var(--text);
+        margin-bottom: 5px;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .toolbar > * {
+        flex: 1 1 160px;
+      }
+      .toolbar .btn {
+        flex: 0 0 auto;
+      }
+
+      .notice {
+        padding: 12px 14px;
+        border: 1px solid #365b58;
+        background: #1b3535;
+        color: #c4f1e8;
+        border-radius: 11px;
+        font-size: 13px;
+        margin-bottom: 18px;
+      }
+      .notice.warning {
+        border-color: #725a32;
+        background: #3c3120;
+        color: #ffdda3;
+      }
+      .toast {
+        position: fixed;
+        z-index: 50;
+        right: 18px;
+        bottom: 18px;
+        max-width: min(440px, calc(100vw - 36px));
+        background: #21453f;
+        color: #e9fff9;
+        border: 1px solid #478c7d;
+        border-radius: 12px;
+        padding: 14px 18px;
+        box-shadow: var(--shadow);
+      }
+      .toast.error {
+        background: #4b2c33;
+        border-color: #95505d;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .section {
+        margin-bottom: 22px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .amount {
+        color: var(--primary);
+        font-weight: 800;
+      }
+      footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        padding: 24px 10px;
+      }
+
+      @media (max-width: 900px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .hero-art {
+          display: none;
+        }
+      }
+      @media (max-width: 600px) {
+        header {
+          align-items: flex-start;
+        }
+        .header-actions {
+          justify-content: flex-end;
+        }
+        .brand p {
+          display: none;
+        }
+        .brand h1 {
+          font-size: 16px;
+        }
+        .nav {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .nav button {
+          text-align: left;
+        }
+        .two-col,
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .field.full {
+          grid-column: auto;
+        }
+        .card {
+          padding: 15px;
+        }
+        .item-top {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🐾</div>
+        <div>
+          <h1>PetCare</h1>
+          <p>Gestão inteligente de cuidados e atendimentos</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="btn-exportar-topo" type="button">
+          ↓ Backup
+        </button>
+        <button class="btn btn-secondary" id="btn-importar-topo" type="button">
+          ↑ Restaurar
+        </button>
+        <input
+          id="arquivo-backup-topo"
+          type="file"
+          accept=".json,application/json"
+          hidden
+        />
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <span class="eyebrow">Seu cuidado, organizado</span>
+          <h2>Mais cuidado para os pets.<br />Mais organização para você.</h2>
+          <p>
+            Gerencie tutores, animais, clínicas, lembretes veterinários e
+            serviços de pet shop em um só lugar.
+          </p>
+        </div>
+        <div class="hero-art" aria-hidden="true">🐶 🐱</div>
+      </section>
+
+      <nav class="nav" id="navegacao" aria-label="Navegação principal">
+        <button type="button" data-page="dashboard" class="active">
+          ⌂ Painel
+        </button>
+        <button type="button" data-page="tutores">👥 Tutores</button>
+        <button type="button" data-page="animais">🐾 Animais</button>
+        <button type="button" data-page="clinicas">🏥 Clínicas</button>
+        <button type="button" data-page="lembretes">🔔 Lembretes</button>
+        <button type="button" data-page="agendamentos">📅 Agendamentos</button>
+        <button type="button" data-page="historico">📋 Histórico</button>
+        <button type="button" data-page="backup">💾 Backup e dados</button>
+      </nav>
+
+      <div
+        id="mensagem-armazenamento"
+        class="notice hidden"
+        role="status"
+      ></div>
+      <section id="conteudo" aria-live="polite"></section>
+    </main>
+
+    <footer>
+      PetCare — Protótipo local. Os dados ficam neste navegador e neste
+      dispositivo. Este protótipo não envia notificações reais por e-mail ou
+      WhatsApp.
+    </footer>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script>
+      "use strict";
+
+      const STORAGE_KEY = "petcare_gestao_v1";
+      const LEGACY_KEYS = ["petcare_dados_v1", "petshop.v1"];
+
+      const SERVICOS = {
+        Banho: 50,
+        Tosa: 60,
+        "Banho e Tosa": 100,
+        "Corte de unhas": 25,
+        "Limpeza de ouvidos": 30,
+      };
+
+      const STATUS_AGENDAMENTO = [
+        "Agendado",
+        "Em Atendimento",
+        "Concluído",
+        "Cancelado",
+      ];
+
+      const TIPOS_LEMBRETE = [
+        "Vacinação",
+        "Consulta",
+        "Vermífugo",
+        "Antipulgas",
+        "Exame",
+        "Retorno",
+        "Banho",
+        "Tosa",
+        "Outro",
+      ];
+
+      const CANAIS = ["Aplicativo", "E-mail", "WhatsApp"];
+
+      const estadoInicial = () => ({
+        tutores: [],
+        animais: [],
+        clinicas: [],
+        lembretes: [],
+        agendamentos: [],
+      });
+
+      let dados = estadoInicial();
+      let paginaAtual = "dashboard";
+      let buscaAtual = "";
+      let filtroStatusLembrete = "todos";
+      let filtroStatusAgendamento = "todos";
+      let filtroDataAgendamento = "";
+      let filtroServicoAgendamento = "todos";
+      let filtroHistoricoAnimal = "todos";
+      let editando = { tipo: null, id: null };
+      let toastTimer = null;
+      let armazenamentoDisponivel = true;
+
+      const conteudo = document.getElementById("conteudo");
+
+      function esc(valor) {
+        return String(valor ?? "").replace(
+          /[&<>"']/g,
+          (caractere) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[caractere],
+        );
+      }
+
+      function novoId() {
+        return typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : "id-" +
+              Date.now().toString(36) +
+              "-" +
+              Math.random().toString(36).slice(2, 10);
+      }
+
+      function hojeISO() {
+        const agora = new Date();
+        const local = new Date(
+          agora.getTime() - agora.getTimezoneOffset() * 60000,
+        );
+        return local.toISOString().slice(0, 10);
+      }
+
+      function dataValida(valor, opcional = false) {
+        if (opcional && !valor) return true;
+        if (typeof valor !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(valor))
+          return false;
+        const data = new Date(valor + "T12:00:00");
+        return (
+          !Number.isNaN(data.getTime()) &&
+          data.toISOString().slice(0, 10) === valor
+        );
+      }
+
+      function formatarData(valor) {
+        if (!valor) return "Não informada";
+        if (!dataValida(valor)) return "Data inválida";
+        return new Date(valor + "T12:00:00").toLocaleDateString("pt-BR");
+      }
+
+      function formatarMoeda(valor) {
+        return Number(valor || 0).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+
+      function normalizarTexto(valor) {
+        return String(valor ?? "").trim();
+      }
+
+      function porDataHora(a, b) {
+        return `${a.data || ""}T${a.horario || "00:00"}`.localeCompare(
+          `${b.data || ""}T${b.horario || "00:00"}`,
+        );
+      }
+
+      function nomeAnimal(id) {
+        return (
+          dados.animais.find((item) => item.id === id)?.nome ||
+          "Animal não encontrado"
+        );
+      }
+
+      function nomeTutor(id) {
+        return (
+          dados.tutores.find((item) => item.id === id)?.nome ||
+          "Tutor não encontrado"
+        );
+      }
+
+      function nomeClinica(id) {
+        if (!id) return "Não informada";
+        return (
+          dados.clinicas.find((item) => item.id === id)?.nome ||
+          "Clínica não encontrada"
+        );
+      }
+
+      function idadeDoAnimal(animal) {
+        if (!animal.nascimento || !dataValida(animal.nascimento)) {
+          return animal.idade ? `${animal.idade} ano(s)` : "Não informada";
+        }
+        const nascimento = new Date(animal.nascimento + "T12:00:00");
+        const hoje = new Date();
+        let anos = hoje.getFullYear() - nascimento.getFullYear();
+        const aindaNaoFezAniversario =
+          hoje.getMonth() < nascimento.getMonth() ||
+          (hoje.getMonth() === nascimento.getMonth() &&
+            hoje.getDate() < nascimento.getDate());
+        if (aindaNaoFezAniversario) anos--;
+        if (anos < 0) return "Data futura";
+        return anos === 0 ? "Menos de 1 ano" : `${anos} ano(s)`;
+      }
+
+      function tamanhoDoAnimal(peso) {
+        const n = Number(peso);
+        if (!Number.isFinite(n) || n <= 0) return "Não informado";
+        if (n <= 10) return "Pequeno";
+        if (n <= 25) return "Médio";
+        return "Grande";
+      }
+
+      function statusLembrete(lembrete) {
+        if (lembrete.concluido) return "Concluído";
+        return lembrete.data < hojeISO() ? "Atrasado" : "Pendente";
+      }
+
+      function classeStatus(status) {
+        if (status === "Concluído") return "badge-success";
+        if (status === "Atrasado" || status === "Cancelado")
+          return "badge-danger";
+        if (status === "Em Atendimento") return "badge-blue";
+        if (status === "Pendente") return "badge-warning";
+        return "";
+      }
+
+      function badge(status) {
+        return `<span class="badge ${classeStatus(status)}">${esc(status)}</span>`;
+      }
+
+      function toast(mensagem, erro = false) {
+        const el = document.getElementById("toast");
+        el.textContent = mensagem;
+        el.classList.toggle("error", erro);
+        el.classList.remove("hidden");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.add("hidden"), 4000);
+      }
+
+      function persistir() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+          armazenamentoDisponivel = true;
+          document
+            .getElementById("mensagem-armazenamento")
+            .classList.add("hidden");
+          return true;
+        } catch (erro) {
+          armazenamentoDisponivel = false;
+          const aviso = document.getElementById("mensagem-armazenamento");
+          aviso.textContent =
+            "Não foi possível salvar os dados neste navegador. Verifique o espaço disponível e as permissões. Faça um backup antes de fechar a página.";
+          aviso.classList.remove("hidden");
+          toast("Falha ao salvar os dados localmente.", true);
+          return false;
+        }
+      }
+
+      function carregar() {
+        try {
+          const salvo = localStorage.getItem(STORAGE_KEY);
+          if (salvo !== null) {
+            const parsed = JSON.parse(salvo);
+            const validacao = validarDados(parsed);
+            if (!validacao.ok) throw new Error(validacao.erro);
+            dados = parsed;
+            return;
+          }
+
+          // Migração best-effort dos protótipos anteriores.
+          for (const key of LEGACY_KEYS) {
+            const legado = localStorage.getItem(key);
+            if (!legado) continue;
+            const parsed = JSON.parse(legado);
+            const migrado = migrarDadosAntigos(parsed);
+            if (migrado) {
+              const validacao = validarDados(migrado);
+              if (validacao.ok) {
+                dados = migrado;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+                return;
+              }
+            }
+          }
+          dados = estadoInicial();
+        } catch (erro) {
+          armazenamentoDisponivel = false;
+          const aviso = document.getElementById("mensagem-armazenamento");
+          aviso.textContent =
+            "Os dados salvos não puderam ser carregados ou validados. Para evitar sobrescrever informações, a gravação foi bloqueada nesta sessão. Exporte ou recupere uma cópia válida antes de continuar.";
+          aviso.classList.remove("hidden");
+          dados = estadoInicial();
+          persistir = () => {
+            toast(
+              "Gravação bloqueada devido a um erro nos dados existentes.",
+              true,
+            );
+            return false;
+          };
+        }
+      }
+
+      function migrarDadosAntigos(origem) {
+        if (!origem || typeof origem !== "object") return null;
+
+        // Formato antigo PetCare.
+        if (Array.isArray(origem.tutores) && Array.isArray(origem.animais)) {
+          return {
+            tutores: origem.tutores.map((t) => ({
+              id: String(t.id || novoId()),
+              nome: String(t.nome || ""),
+              telefone: String(t.telefone || ""),
+              email: String(t.email || ""),
+              endereco: String(t.endereco || ""),
+            })),
+            animais: origem.animais.map((a) => ({
+              id: String(a.id || novoId()),
+              tutorId: String(a.tutorId || ""),
+              nome: String(a.nome || ""),
+              especie: String(a.especie || ""),
+              raca: String(a.raca || ""),
+              nascimento: String(a.nascimento || ""),
+              idade: String(a.idade || ""),
+              peso: String(a.peso || ""),
+              matted: false,
+              observacoes: String(a.observacoes || ""),
+            })),
+            clinicas: (origem.clinicas || []).map((c) => ({
+              id: String(c.id || novoId()),
+              nome: String(c.nome || ""),
+              veterinario: String(c.veterinario || ""),
+              telefone: String(c.telefone || ""),
+              email: String(c.email || ""),
+              endereco: String(c.endereco || ""),
+            })),
+            lembretes: (origem.lembretes || []).map((l) => ({
+              id: String(l.id || novoId()),
+              animalId: String(l.animalId || ""),
+              clinicaId: String(l.clinicaId || ""),
+              tipo: String(l.tipo || "Outro"),
+              data: String(l.data || ""),
+              horario: String(l.horario || ""),
+              canal: String(l.canal || "Aplicativo"),
+              descricao: String(l.descricao || ""),
+              concluido: Boolean(l.concluido),
+            })),
+            agendamentos: [],
+          };
+        }
+
+        // Formato antigo PetQA.
+        if (Array.isArray(origem.clients) && Array.isArray(origem.pets)) {
+          const tutores = origem.clients.map((c) => ({
+            id: String(c.id || novoId()),
+            nome: String(c.name || ""),
+            telefone: String(c.phone || ""),
+            email: String(c.email || ""),
+            endereco: String(c.address || ""),
+          }));
+          const animais = origem.pets.map((a) => ({
+            id: String(a.id || novoId()),
+            tutorId: String(a.clientId || ""),
+            nome: String(a.name || ""),
+            especie: String(a.species || ""),
+            raca: String(a.breed || ""),
+            nascimento: "",
+            idade: String(a.age || ""),
+            peso: String(a.weight || ""),
+            matted: Boolean(a.matted),
+            observacoes: String(a.notes || ""),
+          }));
+          const agendamentos = (origem.appts || []).map((a) => ({
+            id: String(a.id || novoId()),
+            animalId: String(a.petId || ""),
+            servico: String(a.service || "Banho"),
+            data: String(a.date || ""),
+            horario: String(a.time || ""),
+            valor: Number(a.value || 0),
+            status: STATUS_AGENDAMENTO.includes(a.status)
+              ? a.status
+              : "Agendado",
+            valorCobrado: a.charged == null ? null : Number(a.charged),
+            dataConclusao: String(a.doneDate || ""),
+          }));
+          return {
+            tutores,
+            animais,
+            clinicas: [],
+            lembretes: [],
+            agendamentos,
+          };
+        }
+        return null;
+      }
+
+      function validarDados(obj) {
+        if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+          return {
+            ok: false,
+            erro: "O arquivo não contém um objeto de dados.",
+          };
+        }
+
+        const chaves = [
+          "tutores",
+          "animais",
+          "clinicas",
+          "lembretes",
+          "agendamentos",
+        ];
+        for (const chave of chaves) {
+          if (!Array.isArray(obj[chave])) {
+            return {
+              ok: false,
+              erro: `A seção "${chave}" precisa ser uma lista.`,
+            };
+          }
+        }
+
+        const todas = [];
+        for (const chave of chaves) {
+          for (const item of obj[chave]) {
+            if (
+              !item ||
+              typeof item !== "object" ||
+              Array.isArray(item) ||
+              typeof item.id !== "string" ||
+              !item.id.trim()
+            ) {
+              return {
+                ok: false,
+                erro: `Há um registro inválido na seção "${chave}".`,
+              };
+            }
+            todas.push(item.id);
+          }
+        }
+        if (new Set(todas).size !== todas.length) {
+          return { ok: false, erro: "Existem IDs duplicados no arquivo." };
+        }
+
+        const idsTutores = new Set(obj.tutores.map((x) => x.id));
+        const idsAnimais = new Set(obj.animais.map((x) => x.id));
+        const idsClinicas = new Set(obj.clinicas.map((x) => x.id));
+
+        for (const t of obj.tutores) {
+          if (typeof t.nome !== "string" || !t.nome.trim()) {
+            return { ok: false, erro: "Há um tutor sem nome válido." };
+          }
+        }
+        for (const a of obj.animais) {
+          if (
+            typeof a.nome !== "string" ||
+            !a.nome.trim() ||
+            !idsTutores.has(a.tutorId)
+          ) {
+            return {
+              ok: false,
+              erro: "Há um animal com nome ou tutor inválido.",
+            };
+          }
+          if (a.nascimento && !dataValida(a.nascimento)) {
+            return {
+              ok: false,
+              erro: `Data de nascimento inválida no animal "${a.nome}".`,
+            };
+          }
+          if (
+            a.peso !== "" &&
+            a.peso != null &&
+            (!Number.isFinite(Number(a.peso)) || Number(a.peso) < 0)
+          ) {
+            return { ok: false, erro: `Peso inválido no animal "${a.nome}".` };
+          }
+        }
+        for (const c of obj.clinicas) {
+          if (typeof c.nome !== "string" || !c.nome.trim()) {
+            return { ok: false, erro: "Há uma clínica sem nome válido." };
+          }
+        }
+        for (const l of obj.lembretes) {
+          if (
+            !idsAnimais.has(l.animalId) ||
+            !dataValida(l.data) ||
+            typeof l.concluido !== "boolean" ||
+            !TIPOS_LEMBRETE.includes(l.tipo) ||
+            !CANAIS.includes(l.canal)
+          ) {
+            return {
+              ok: false,
+              erro: "Há um lembrete com dados ou vínculos inválidos.",
+            };
+          }
+          if (l.clinicaId && !idsClinicas.has(l.clinicaId)) {
+            return {
+              ok: false,
+              erro: "Um lembrete referencia uma clínica inexistente.",
+            };
+          }
+        }
+        for (const a of obj.agendamentos) {
+          if (
+            !idsAnimais.has(a.animalId) ||
+            !dataValida(a.data) ||
+            !STATUS_AGENDAMENTO.includes(a.status) ||
+            !Object.prototype.hasOwnProperty.call(SERVICOS, a.servico) ||
+            !Number.isFinite(Number(a.valor)) ||
+            Number(a.valor) < 0
+          ) {
+            return {
+              ok: false,
+              erro: "Há um agendamento com dados ou vínculos inválidos.",
+            };
+          }
+          if (
+            a.valorCobrado != null &&
+            (!Number.isFinite(Number(a.valorCobrado)) ||
+              Number(a.valorCobrado) < 0)
+          ) {
+            return { ok: false, erro: "Há um valor cobrado inválido." };
+          }
+        }
+
+        return { ok: true };
+      }
+
+      function salvarRegistro(tipo, registro) {
+        const chave = {
+          tutor: "tutores",
+          animal: "animais",
+          clinica: "clinicas",
+          lembrete: "lembretes",
+          agendamento: "agendamentos",
+        }[tipo];
+
+        if (!chave) return false;
+
+        const lista = dados[chave];
+        const indice = lista.findIndex((item) => item.id === registro.id);
+        if (indice >= 0) lista[indice] = registro;
+        else lista.push(registro);
+
+        if (!persistir()) return false;
+        editando = { tipo: null, id: null };
+        renderizar();
+        toast(indice >= 0 ? "Registro atualizado." : "Registro cadastrado.");
+        return true;
+      }
+
+      function cancelarEdicao() {
+        editando = { tipo: null, id: null };
+        renderizar();
+      }
+
+      function editar(tipo, id) {
+        editando = { tipo, id };
+        renderizar();
+        const primeiro = conteudo.querySelector(
+          "form input, form select, form textarea",
+        );
+        if (primeiro) primeiro.focus();
+      }
+
+      function confirmarExcluir(tipo, id) {
+        const configuracao = {
+          tutor: ["tutores", "este tutor"],
+          animal: ["animais", "este animal"],
+          clinica: ["clinicas", "esta clínica"],
+          lembrete: ["lembretes", "este lembrete"],
+          agendamento: ["agendamentos", "este agendamento"],
+        }[tipo];
+
+        if (!configuracao) return;
+        const [chave, rotulo] = configuracao;
+
+        if (tipo === "tutor" && dados.animais.some((a) => a.tutorId === id)) {
+          toast(
+            "Não é possível excluir: este tutor possui animais cadastrados.",
+            true,
+          );
+          return;
+        }
+        if (
+          tipo === "animal" &&
+          (dados.lembretes.some((l) => l.animalId === id) ||
+            dados.agendamentos.some((a) => a.animalId === id))
+        ) {
+          toast(
+            "Este animal tem histórico ou registros vinculados. Remova os registros vinculados primeiro.",
+            true,
+          );
+          return;
+        }
+        if (
+          tipo === "clinica" &&
+          dados.lembretes.some((l) => l.clinicaId === id)
+        ) {
+          toast(
+            "Não é possível excluir: há lembretes vinculados a esta clínica.",
+            true,
+          );
+          return;
+        }
+
+        if (
+          !confirm(
+            `Deseja realmente excluir ${rotulo}? Esta ação não pode ser desfeita.`,
+          )
+        )
+          return;
+        dados[chave] = dados[chave].filter((item) => item.id !== id);
+        if (!persistir()) return;
+        renderizar();
+        toast("Registro excluído.");
+      }
+
+      function formField(id, label, value = "", type = "text", options = {}) {
+        const required = options.required ? "required" : "";
+        const placeholder = options.placeholder
+          ? `placeholder="${esc(options.placeholder)}"`
+          : "";
+        const min = options.min != null ? `min="${esc(options.min)}"` : "";
+        const max = options.max != null ? `max="${esc(options.max)}"` : "";
+        const step = options.step != null ? `step="${esc(options.step)}"` : "";
+        const autocomplete = options.autocomplete
+          ? `autocomplete="${esc(options.autocomplete)}"`
+          : "";
+        const cls = options.full ? "field full" : "field";
+        const labelHtml = `<label for="${esc(id)}">${esc(label)}${options.required ? " *" : ""}</label>`;
+
+        if (type === "textarea") {
+          return `<div class="${cls}">${labelHtml}<textarea id="${esc(id)}" name="${esc(id)}" ${required} ${placeholder}>${esc(value)}</textarea></div>`;
+        }
+        return `<div class="${cls}">${labelHtml}<input id="${esc(id)}" name="${esc(id)}" type="${esc(type)}" value="${esc(value)}" ${required} ${placeholder} ${min} ${max} ${step} ${autocomplete}></div>`;
+      }
+
+      function formSelect(
+        id,
+        label,
+        value,
+        options,
+        required = true,
+        full = false,
+      ) {
+        const lista = options
+          .map((opt) => {
+            const selected =
+              String(opt.value) === String(value) ? "selected" : "";
+            return `<option value="${esc(opt.value)}" ${selected}>${esc(opt.label)}</option>`;
+          })
+          .join("");
+        return `<div class="field ${full ? "full" : ""}">
+    <label for="${esc(id)}">${esc(label)}${required ? " *" : ""}</label>
+    <select id="${esc(id)}" name="${esc(id)}" ${required ? "required" : ""}>${lista}</select>
+  </div>`;
+      }
+
+      function optionsDe(
+        lista,
+        valueField,
+        labelField,
+        placeholder = "Selecione",
+      ) {
+        return [
+          { value: "", label: placeholder },
+          ...lista.map((item) => ({
+            value: item[valueField],
+            label: item[labelField],
+          })),
+        ];
+      }
+
+      function botoesFormulario(tipo, registro) {
+        return `<div class="form-actions">
+    <button class="btn" type="submit" id="btn-salvar-${esc(tipo)}">Salvar</button>
+    <button class="btn btn-secondary" type="button" data-action="cancelar-edicao">Cancelar</button>
+  </div>`;
+      }
+
+      function cabecalhoPagina(titulo, descricao, acao = "") {
+        return `<div class="page-title"><div><h2>${esc(titulo)}</h2><p>${esc(descricao)}</p></div>${acao}</div>`;
+      }
+
+      function formularioTutor(tutor = {}) {
+        const edit = Boolean(tutor.id);
+        return `<section class="card section" id="formulario-tutor-container">
+    <h3>${edit ? "Editar tutor" : "Cadastrar tutor"}</h3>
+    <form id="form-tutor" data-form="tutor" novalidate>
+      <div class="form-grid">
+        ${formField("tutor-nome", "Nome completo", tutor.nome || "", "text", { required: true, autocomplete: "name" })}
+        ${formField("tutor-telefone", "Telefone", tutor.telefone || "", "tel", { placeholder: "(31) 99999-9999", autocomplete: "tel" })}
+        ${formField("tutor-email", "E-mail", tutor.email || "", "email", { autocomplete: "email" })}
+        ${formField("tutor-endereco", "Endereço", tutor.endereco || "", "text", { full: true, autocomplete: "street-address" })}
+      </div>
+      <input type="hidden" id="tutor-id" name="id" value="${esc(tutor.id || "")}">
+      ${botoesFormulario("tutor", tutor)}
+    </form>
+  </section>`;
+      }
+
+      function formularioAnimal(animal = {}) {
+        const edit = Boolean(animal.id);
+        return `<section class="card section" id="formulario-animal-container">
+    <h3>${edit ? "Editar animal" : "Cadastrar animal"}</h3>
+    ${dados.tutores.length ? "" : '<p class="form-help">Cadastre um tutor antes de cadastrar um animal.</p>'}
+    <form id="form-animal" data-form="animal" novalidate>
+      <div class="form-grid">
+        ${formField("animal-nome", "Nome do animal", animal.nome || "", "text", { required: true })}
+        ${formSelect("animal-tutorId", "Tutor responsável", animal.tutorId || "", optionsDe(dados.tutores, "id", "nome", "Selecione um tutor"))}
+        ${formSelect("animal-especie", "Espécie", animal.especie || "", [
+          { value: "", label: "Selecione" },
+          { value: "Cão", label: "Cão" },
+          { value: "Gato", label: "Gato" },
+          { value: "Ave", label: "Ave" },
+          { value: "Roedor", label: "Roedor" },
+          { value: "Réptil", label: "Réptil" },
+          { value: "Outro", label: "Outro" },
+        ])}
+        ${formField("animal-raca", "Raça", animal.raca || "")}
+        ${formField("animal-nascimento", "Data de nascimento", animal.nascimento || "", "date")}
+        ${formField("animal-peso", "Peso (kg)", animal.peso || "", "number", { min: 0, step: "0.1", placeholder: "Ex.: 8.5" })}
+        ${formField("animal-idade", "Idade em anos (se não souber a data)", animal.idade || "", "number", { min: 0, step: 1 })}
+        <div class="field">
+          <label for="animal-matted">Pelagem com nós?</label>
+          <select id="animal-matted" name="matted">
+            <option value="false" ${!animal.matted ? "selected" : ""}>Não</option>
+            <option value="true" ${animal.matted ? "selected" : ""}>Sim</option>
+          </select>
+        </div>
+        ${formField("animal-observacoes", "Observações", animal.observacoes || "", "textarea", { full: true })}
+      </div>
+      <input type="hidden" id="animal-id" name="id" value="${esc(animal.id || "")}">
+      ${botoesFormulario("animal", animal)}
+    </form>
+  </section>`;
+      }
+
+      function formularioClinica(clinica = {}) {
+        const edit = Boolean(clinica.id);
+        return `<section class="card section" id="formulario-clinica-container">
+    <h3>${edit ? "Editar clínica" : "Cadastrar clínica veterinária"}</h3>
+    <form id="form-clinica" data-form="clinica" novalidate>
+      <div class="form-grid">
+        ${formField("clinica-nome", "Nome da clínica", clinica.nome || "", "text", { required: true })}
+        ${formField("clinica-veterinario", "Veterinário responsável", clinica.veterinario || "")}
+        ${formField("clinica-telefone", "Telefone", clinica.telefone || "", "tel")}
+        ${formField("clinica-email", "E-mail", clinica.email || "", "email")}
+        ${formField("clinica-endereco", "Endereço", clinica.endereco || "", "text", { full: true })}
+      </div>
+      <input type="hidden" id="clinica-id" name="id" value="${esc(clinica.id || "")}">
+      ${botoesFormulario("clinica", clinica)}
+    </form>
+  </section>`;
+      }
+
+      function formularioLembrete(lembrete = {}) {
+        const edit = Boolean(lembrete.id);
+        return `<section class="card section" id="formulario-lembrete-container">
+    <h3>${edit ? "Editar lembrete" : "Cadastrar lembrete veterinário"}</h3>
+    ${dados.animais.length ? "" : '<p class="form-help">Cadastre um animal antes de criar um lembrete.</p>'}
+    <form id="form-lembrete" data-form="lembrete" novalidate>
+      <div class="form-grid">
+        ${formSelect("lembrete-animalId", "Animal", lembrete.animalId || "", optionsDe(dados.animais, "id", "nome", "Selecione um animal"))}
+        ${formSelect("lembrete-tipo", "Tipo de cuidado", lembrete.tipo || "", [
+          { value: "", label: "Selecione" },
+          ...TIPOS_LEMBRETE.map((x) => ({ value: x, label: x })),
+        ])}
+        ${formField("lembrete-data", "Data", lembrete.data || "", "date", { required: true })}
+        ${formField("lembrete-horario", "Horário", lembrete.horario || "", "time")}
+        ${formSelect("lembrete-clinicaId", "Clínica", lembrete.clinicaId || "", optionsDe(dados.clinicas, "id", "nome", "Não informada"), false)}
+        ${formSelect(
+          "lembrete-canal",
+          "Canal de aviso",
+          lembrete.canal || "Aplicativo",
+          CANAIS.map((x) => ({ value: x, label: x })),
+        )}
+        ${formField("lembrete-descricao", "Descrição / observações", lembrete.descricao || "", "textarea", { full: true })}
+      </div>
+      <input type="hidden" id="lembrete-id" name="id" value="${esc(lembrete.id || "")}">
+      ${botoesFormulario("lembrete", lembrete)}
+      <p class="form-help">O canal é apenas uma preferência registrada. O protótipo não dispara mensagens ou notificações reais.</p>
+    </form>
+  </section>`;
+      }
+
+      function formularioAgendamento(agendamento = {}) {
+        const edit = Boolean(agendamento.id);
+        const servicoSelecionado = agendamento.servico || "Banho";
+        return `<section class="card section" id="formulario-agendamento-container">
+    <h3>${edit ? "Editar agendamento" : "Novo agendamento de pet shop"}</h3>
+    ${dados.animais.length ? "" : '<p class="form-help">Cadastre um animal antes de criar um agendamento.</p>'}
+    <form id="form-agendamento" data-form="agendamento" novalidate>
+      <div class="form-grid">
+        ${formSelect("agendamento-animalId", "Animal", agendamento.animalId || "", optionsDe(dados.animais, "id", "nome", "Selecione um animal"))}
+        ${formSelect(
+          "agendamento-servico",
+          "Serviço",
+          servicoSelecionado,
+          Object.entries(SERVICOS).map(([nome, preco]) => ({
+            value: nome,
+            label: `${nome} — ${formatarMoeda(preco)}`,
+          })),
+        )}
+        ${formField("agendamento-data", "Data", agendamento.data || hojeISO(), "date", { required: true })}
+        ${formField("agendamento-horario", "Horário", agendamento.horario || "", "time")}
+        ${formField("agendamento-valor", "Valor previsto (R$)", agendamento.valor ?? SERVICOS[servicoSelecionado], "number", { required: true, min: 0, step: "0.01" })}
+        ${formSelect(
+          "agendamento-status",
+          "Status",
+          agendamento.status || "Agendado",
+          STATUS_AGENDAMENTO.map((x) => ({ value: x, label: x })),
+        )}
+        ${formField("agendamento-valorCobrado", "Valor efetivamente cobrado (R$)", agendamento.valorCobrado ?? "", "number", { min: 0, step: "0.01", placeholder: "Opcional" })}
+        ${formField("agendamento-dataConclusao", "Data de conclusão", agendamento.dataConclusao || "", "date")}
+      </div>
+      <input type="hidden" id="agendamento-id" name="id" value="${esc(agendamento.id || "")}">
+      ${botoesFormulario("agendamento", agendamento)}
+    </form>
+  </section>`;
+      }
+
+      function buscarFormulario(tipo) {
+        return editando.tipo === tipo
+          ? dados[
+              {
+                tutor: "tutores",
+                animal: "animais",
+                clinica: "clinicas",
+                lembrete: "lembretes",
+                agendamento: "agendamentos",
+              }[tipo]
+            ].find((item) => item.id === editando.id) || {}
+          : {};
+      }
+
+      function ler(form, id) {
+        const elemento = form.elements.namedItem(id);
+        return elemento ? elemento.value.trim() : "";
+      }
+
+      function validarFormulario(form) {
+        if (!form.reportValidity()) return false;
+        const email = form.querySelector('input[type="email"]');
+        if (email && email.value && !email.validity.valid) {
+          email.focus();
+          toast("Informe um endereço de e-mail válido.", true);
+          return false;
+        }
+        return true;
+      }
+
+      function processarFormulario(form) {
+        if (!validarFormulario(form)) return;
+        const tipo = form.dataset.form;
+        const id = ler(form, "id") || novoId();
+
+        if (tipo === "tutor") {
+          const nome = ler(form, "tutor-nome");
+          if (!nome) return toast("Informe o nome do tutor.", true);
+          salvarRegistro("tutor", {
+            id,
+            nome,
+            telefone: ler(form, "tutor-telefone"),
+            email: ler(form, "tutor-email"),
+            endereco: ler(form, "tutor-endereco"),
+          });
+          return;
+        }
+
+        if (tipo === "animal") {
+          const tutorId = ler(form, "animal-tutorId");
+          if (!dados.tutores.some((t) => t.id === tutorId)) {
+            return toast("Selecione um tutor válido.", true);
+          }
+          const nascimento = ler(form, "animal-nascimento");
+          if (nascimento && !dataValida(nascimento))
+            return toast("Data de nascimento inválida.", true);
+          const peso = ler(form, "animal-peso");
+          if (peso && (!Number.isFinite(Number(peso)) || Number(peso) < 0)) {
+            return toast("Informe um peso válido.", true);
+          }
+          salvarRegistro("animal", {
+            id,
+            tutorId,
+            nome: ler(form, "animal-nome"),
+            especie: ler(form, "animal-especie"),
+            raca: ler(form, "animal-raca"),
+            nascimento,
+            idade: ler(form, "animal-idade"),
+            peso,
+            matted: ler(form, "animal-matted") === "true",
+            observacoes: ler(form, "animal-observacoes"),
+          });
+          return;
+        }
+
+        if (tipo === "clinica") {
+          salvarRegistro("clinica", {
+            id,
+            nome: ler(form, "clinica-nome"),
+            veterinario: ler(form, "clinica-veterinario"),
+            telefone: ler(form, "clinica-telefone"),
+            email: ler(form, "clinica-email"),
+            endereco: ler(form, "clinica-endereco"),
+          });
+          return;
+        }
+
+        if (tipo === "lembrete") {
+          const animalId = ler(form, "lembrete-animalId");
+          const data = ler(form, "lembrete-data");
+          const clinicaId = ler(form, "lembrete-clinicaId");
+          if (!dados.animais.some((a) => a.id === animalId))
+            return toast("Selecione um animal válido.", true);
+          if (!dataValida(data)) return toast("Informe uma data válida.", true);
+          if (clinicaId && !dados.clinicas.some((c) => c.id === clinicaId)) {
+            return toast("A clínica selecionada não existe mais.", true);
+          }
+          const antigo = dados.lembretes.find((l) => l.id === id);
+          salvarRegistro("lembrete", {
+            id,
+            animalId,
+            clinicaId,
+            tipo: ler(form, "lembrete-tipo"),
+            data,
+            horario: ler(form, "lembrete-horario"),
+            canal: ler(form, "lembrete-canal"),
+            descricao: ler(form, "lembrete-descricao"),
+            concluido: antigo ? antigo.concluido : false,
+          });
+          return;
+        }
+
+        if (tipo === "agendamento") {
+          const animalId = ler(form, "agendamento-animalId");
+          const data = ler(form, "agendamento-data");
+          const valor = ler(form, "agendamento-valor");
+          const valorCobradoTexto = ler(form, "agendamento-valorCobrado");
+          const status = ler(form, "agendamento-status");
+          const dataConclusao = ler(form, "agendamento-dataConclusao");
+
+          if (!dados.animais.some((a) => a.id === animalId))
+            return toast("Selecione um animal válido.", true);
+          if (!dataValida(data)) return toast("Informe uma data válida.", true);
+          if (
+            valor === "" ||
+            !Number.isFinite(Number(valor)) ||
+            Number(valor) < 0
+          ) {
+            return toast("Informe um valor previsto válido.", true);
+          }
+          if (
+            valorCobradoTexto !== "" &&
+            (!Number.isFinite(Number(valorCobradoTexto)) ||
+              Number(valorCobradoTexto) < 0)
+          ) {
+            return toast("Informe um valor cobrado válido.", true);
+          }
+          if (dataConclusao && !dataValida(dataConclusao)) {
+            return toast("Informe uma data de conclusão válida.", true);
+          }
+
+          salvarRegistro("agendamento", {
+            id,
+            animalId,
+            servico: ler(form, "agendamento-servico"),
+            data,
+            horario: ler(form, "agendamento-horario"),
+            valor: Number(valor),
+            status,
+            valorCobrado:
+              valorCobradoTexto === "" ? null : Number(valorCobradoTexto),
+            dataConclusao:
+              dataConclusao || (status === "Concluído" ? hojeISO() : ""),
+          });
+        }
+      }
+
+      function caixaVazia(mensagem, detalhe = "") {
+        return `<div class="empty"><strong>${esc(mensagem)}</strong>${esc(detalhe)}</div>`;
+      }
+
+      function botoesRegistro(tipo, id) {
+        return `<div class="item-actions">
+    <button type="button" class="btn btn-secondary btn-small" data-action="editar" data-type="${esc(tipo)}" data-id="${esc(id)}">Editar</button>
+    <button type="button" class="btn btn-danger btn-small" data-action="excluir" data-type="${esc(tipo)}" data-id="${esc(id)}">Excluir</button>
+  </div>`;
+      }
+
+      function renderizarDashboard() {
+        const hoje = hojeISO();
+        const lembretesPendentes = dados.lembretes.filter(
+          (l) => !l.concluido,
+        ).length;
+        const atrasados = dados.lembretes.filter(
+          (l) => statusLembrete(l) === "Atrasado",
+        ).length;
+        const agendadosHoje = dados.agendamentos.filter(
+          (a) => a.data === hoje && a.status !== "Cancelado",
+        ).length;
+        const faturamento = dados.agendamentos
+          .filter((a) => a.status === "Concluído")
+          .reduce(
+            (soma, a) => soma + Number(a.valorCobrado ?? a.valor ?? 0),
+            0,
+          );
+
+        const proximosLembretes = [...dados.lembretes]
+          .filter((l) => !l.concluido)
+          .sort(porDataHora)
+          .slice(0, 5);
+
+        const proximosAgendamentos = [...dados.agendamentos]
+          .filter((a) => a.status !== "Cancelado" && a.data >= hoje)
+          .sort(porDataHora)
+          .slice(0, 5);
+
+        return `
+    ${cabecalhoPagina("Painel geral", "Visão rápida da rotina de cuidados e dos atendimentos.")}
+    <div class="grid stats">
+      <article class="card"><span class="stat-icon">👥</span><div class="stat-label">Tutores cadastrados</div><div class="stat-value">${dados.tutores.length}</div><div class="stat-note">Responsáveis pelos animais</div></article>
+      <article class="card"><span class="stat-icon">🐾</span><div class="stat-label">Animais cadastrados</div><div class="stat-value">${dados.animais.length}</div><div class="stat-note">Pets registrados</div></article>
+      <article class="card"><span class="stat-icon">📅</span><div class="stat-label">Agendamentos de hoje</div><div class="stat-value">${agendadosHoje}</div><div class="stat-note">${esc(formatarData(hoje))}</div></article>
+      <article class="card"><span class="stat-icon">💰</span><div class="stat-label">Receita registrada</div><div class="stat-value">${esc(formatarMoeda(faturamento))}</div><div class="stat-note">Serviços concluídos</div></article>
+    </div>
+
+    ${atrasados ? `<div class="notice warning">⚠️ Você tem ${atrasados} lembrete(s) veterinário(s) atrasado(s). Confira a lista de lembretes.</div>` : ""}
+
+    <div class="grid two-col section">
+      <section class="card">
+        <div class="card-header"><h3>🔔 Próximos cuidados</h3><button type="button" class="btn btn-secondary btn-small" data-page-link="lembretes">Ver todos</button></div>
+        <div class="list">
+          ${
+            proximosLembretes.length
+              ? proximosLembretes
+                  .map(
+                    (l) => `
+            <article class="list-item">
+              <div class="item-top"><div><h4>${esc(l.tipo)} · ${esc(nomeAnimal(l.animalId))}</h4><p>${esc(formatarData(l.data))}${l.horario ? " às " + esc(l.horario) : ""}</p><p>${esc(l.descricao || nomeClinica(l.clinicaId))}</p></div>${badge(statusLembrete(l))}</div>
+              <div class="item-actions"><button class="btn btn-secondary btn-small" data-action="concluir-lembrete" data-id="${esc(l.id)}" type="button">Marcar concluído</button></div>
+            </article>`,
+                  )
+                  .join("")
+              : caixaVazia(
+                  "Nenhum lembrete pendente",
+                  "Cadastre um cuidado veterinário para começar.",
+                )
+          }
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header"><h3>📅 Próximos agendamentos</h3><button type="button" class="btn btn-secondary btn-small" data-page-link="agendamentos">Ver todos</button></div>
+        <div class="list">
+          ${
+            proximosAgendamentos.length
+              ? proximosAgendamentos
+                  .map(
+                    (a) => `
+            <article class="list-item">
+              <div class="item-top"><div><h4>${esc(a.servico)} · ${esc(nomeAnimal(a.animalId))}</h4><p>${esc(formatarData(a.data))}${a.horario ? " às " + esc(a.horario) : ""}</p><p>${esc(formatarMoeda(a.valor))}</p></div>${badge(a.status)}</div>
+              <div class="item-actions"><button class="btn btn-secondary btn-small" data-action="editar" data-type="agendamento" data-id="${esc(a.id)}" type="button">Editar</button></div>
+            </article>`,
+                  )
+                  .join("")
+              : caixaVazia(
+                  "Nenhum agendamento futuro",
+                  "Cadastre um serviço de pet shop.",
+                )
+          }
+        </div>
+      </section>
+    </div>
+    <section class="card">
+      <h3>Comece por aqui</h3>
+      <div class="actions">
+        <button class="btn" type="button" data-page-link="tutores">+ Cadastrar tutor</button>
+        <button class="btn btn-secondary" type="button" data-page-link="animais">+ Cadastrar animal</button>
+        <button class="btn btn-secondary" type="button" data-page-link="lembretes">+ Criar lembrete</button>
+        <button class="btn btn-secondary" type="button" data-page-link="agendamentos">+ Novo agendamento</button>
+      </div>
+    </section>`;
+      }
+
+      function renderizarTutores() {
+        const lista = dados.tutores.filter((t) =>
+          `${t.nome} ${t.telefone} ${t.email} ${t.endereco}`
+            .toLowerCase()
+            .includes(buscaAtual.toLowerCase()),
+        );
+        const tutor = buscarFormulario("tutor");
+        return `${cabecalhoPagina("Tutores", "Cadastre e mantenha os dados dos responsáveis pelos animais.")}
+    ${formularioTutor(tutor)}
+    <section class="card">
+      <div class="card-header"><h3>Tutores cadastrados (${lista.length})</h3></div>
+      <div class="toolbar"><input class="search-input" id="busca-tutores" name="busca-tutores" placeholder="Buscar por nome, telefone ou e-mail..." value="${esc(buscaAtual)}" aria-label="Buscar tutores"></div>
+      <div class="list">
+        ${
+          lista.length
+            ? lista
+                .map(
+                  (t) => `
+          <article class="list-item" data-record-id="${esc(t.id)}">
+            <div class="item-top"><div><h4>${esc(t.nome)}</h4><p>☎ ${esc(t.telefone || "Telefone não informado")}</p><p>✉ ${esc(t.email || "E-mail não informado")}</p><p>⌂ ${esc(t.endereco || "Endereço não informado")}</p><p>${dados.animais.filter((a) => a.tutorId === t.id).length} animal(is) vinculado(s)</p></div></div>
+            ${botoesRegistro("tutor", t.id)}
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Nenhum tutor encontrado",
+                "Cadastre um tutor ou ajuste a busca.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarAnimais() {
+        const lista = dados.animais.filter((a) =>
+          `${a.nome} ${a.especie} ${a.raca} ${nomeTutor(a.tutorId)}`
+            .toLowerCase()
+            .includes(buscaAtual.toLowerCase()),
+        );
+        return `${cabecalhoPagina("Animais", "Dados dos pets, seus responsáveis e observações importantes.")}
+    ${formularioAnimal(buscarFormulario("animal"))}
+    <section class="card">
+      <div class="card-header"><h3>Animais cadastrados (${lista.length})</h3></div>
+      <div class="toolbar"><input class="search-input" id="busca-animais" name="busca-animais" placeholder="Buscar por animal, espécie, raça ou tutor..." value="${esc(buscaAtual)}" aria-label="Buscar animais"></div>
+      <div class="list">
+        ${
+          lista.length
+            ? lista
+                .map(
+                  (a) => `
+          <article class="list-item">
+            <div class="item-top"><div><h4>🐾 ${esc(a.nome)}</h4><p>${esc(a.especie || "Espécie não informada")}${a.raca ? " · " + esc(a.raca) : ""}</p><p>Tutor: ${esc(nomeTutor(a.tutorId))}</p><p>Idade: ${esc(idadeDoAnimal(a))} · Peso: ${a.peso ? esc(a.peso) + " kg" : "Não informado"}</p><p>Porte estimado: ${esc(tamanhoDoAnimal(a.peso))}${a.matted ? " · ⚠️ Pelagem com nós" : ""}</p>${a.observacoes ? `<p>Observações: ${esc(a.observacoes)}</p>` : ""}</div></div>
+            ${botoesRegistro("animal", a.id)}
+            <div class="item-actions"><button type="button" class="btn btn-ghost btn-small" data-action="ver-historico" data-id="${esc(a.id)}">Ver histórico</button></div>
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Nenhum animal encontrado",
+                "Cadastre um tutor e depois seu animal.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarClinicas() {
+        const lista = dados.clinicas.filter((c) =>
+          `${c.nome} ${c.veterinario} ${c.telefone} ${c.email} ${c.endereco}`
+            .toLowerCase()
+            .includes(buscaAtual.toLowerCase()),
+        );
+        return `${cabecalhoPagina("Clínicas veterinárias", "Organize os contatos de clínicas e profissionais.")}
+    ${formularioClinica(buscarFormulario("clinica"))}
+    <section class="card">
+      <div class="card-header"><h3>Clínicas cadastradas (${lista.length})</h3></div>
+      <div class="toolbar"><input class="search-input" id="busca-clinicas" name="busca-clinicas" placeholder="Buscar clínicas..." value="${esc(buscaAtual)}" aria-label="Buscar clínicas"></div>
+      <div class="list">
+        ${
+          lista.length
+            ? lista
+                .map(
+                  (c) => `
+          <article class="list-item">
+            <div class="item-top"><div><h4>🏥 ${esc(c.nome)}</h4><p>Veterinário: ${esc(c.veterinario || "Não informado")}</p><p>☎ ${esc(c.telefone || "Telefone não informado")}</p><p>✉ ${esc(c.email || "E-mail não informado")}</p><p>⌂ ${esc(c.endereco || "Endereço não informado")}</p></div></div>
+            ${botoesRegistro("clinica", c.id)}
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Nenhuma clínica encontrada",
+                "Cadastre uma clínica veterinária.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarLembretes() {
+        let lista = [...dados.lembretes].sort(porDataHora);
+        if (filtroStatusLembrete !== "todos") {
+          lista = lista.filter(
+            (l) => statusLembrete(l).toLowerCase() === filtroStatusLembrete,
+          );
+        }
+        const selectStatus = [
+          { value: "todos", label: "Todos os status" },
+          { value: "pendente", label: "Pendentes" },
+          { value: "atrasado", label: "Atrasados" },
+          { value: "concluído", label: "Concluídos" },
+        ];
+        return `${cabecalhoPagina("Lembretes veterinários", "Acompanhe vacinas, consultas, exames e outros cuidados.")}
+    ${formularioLembrete(buscarFormulario("lembrete"))}
+    <section class="card">
+      <div class="card-header"><h3>Lembretes (${lista.length})</h3></div>
+      <div class="toolbar">
+        ${formSelect("filtro-lembrete-status", "Filtrar por status", filtroStatusLembrete, selectStatus, false)}
+      </div>
+      <div class="list">
+        ${
+          lista.length
+            ? lista
+                .map(
+                  (l) => `
+          <article class="list-item">
+            <div class="item-top"><div><h4>🔔 ${esc(l.tipo)} · ${esc(nomeAnimal(l.animalId))}</h4><p>📅 ${esc(formatarData(l.data))}${l.horario ? " às " + esc(l.horario) : ""}</p><p>Clínica: ${esc(nomeClinica(l.clinicaId))}</p><p>Canal preferido: ${esc(l.canal)}</p>${l.descricao ? `<p>${esc(l.descricao)}</p>` : ""}</div>${badge(statusLembrete(l))}</div>
+            <div class="item-actions">
+              <button type="button" class="btn btn-secondary btn-small" data-action="editar" data-type="lembrete" data-id="${esc(l.id)}">Editar</button>
+              <button type="button" class="btn btn-small" data-action="concluir-lembrete" data-id="${esc(l.id)}">${l.concluido ? "Reabrir" : "Concluir"}</button>
+              <button type="button" class="btn btn-danger btn-small" data-action="excluir" data-type="lembrete" data-id="${esc(l.id)}">Excluir</button>
+            </div>
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Nenhum lembrete nesta lista",
+                "Tente outro filtro ou cadastre um novo lembrete.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarAgendamentos() {
+        let lista = [...dados.agendamentos].sort(porDataHora);
+        if (filtroStatusAgendamento !== "todos") {
+          lista = lista.filter((a) => a.status === filtroStatusAgendamento);
+        }
+        if (filtroDataAgendamento)
+          lista = lista.filter((a) => a.data === filtroDataAgendamento);
+        if (filtroServicoAgendamento !== "todos")
+          lista = lista.filter((a) => a.servico === filtroServicoAgendamento);
+
+        const opcoesStatus = [
+          { value: "todos", label: "Todos os status" },
+          ...STATUS_AGENDAMENTO.map((x) => ({ value: x, label: x })),
+        ];
+        const opcoesServico = [
+          { value: "todos", label: "Todos os serviços" },
+          ...Object.keys(SERVICOS).map((x) => ({ value: x, label: x })),
+        ];
+
+        return `${cabecalhoPagina("Agendamentos e serviços", "Controle banho, tosa, horários, status e valores.")}
+    ${formularioAgendamento(buscarFormulario("agendamento"))}
+    <section class="card">
+      <div class="card-header"><h3>Agenda (${lista.length})</h3></div>
+      <div class="toolbar">
+        ${formSelect("filtro-agendamento-status", "Status", filtroStatusAgendamento, opcoesStatus, false)}
+        ${formSelect("filtro-agendamento-servico", "Serviço", filtroServicoAgendamento, opcoesServico, false)}
+        <div class="field"><label for="filtro-agendamento-data">Data</label><input id="filtro-agendamento-data" name="filtro-agendamento-data" type="date" value="${esc(filtroDataAgendamento)}"></div>
+        <button type="button" class="btn btn-secondary" data-action="limpar-filtros-agendamento">Limpar filtros</button>
+      </div>
+      <div class="list">
+        ${
+          lista.length
+            ? lista
+                .map(
+                  (a) => `
+          <article class="list-item">
+            <div class="item-top"><div><h4>📅 ${esc(a.servico)} · ${esc(nomeAnimal(a.animalId))}</h4><p>Tutor: ${esc(nomeTutor(dados.animais.find((x) => x.id === a.animalId)?.tutorId))}</p><p>${esc(formatarData(a.data))}${a.horario ? " às " + esc(a.horario) : ""}</p><p>Valor previsto: <span class="amount">${esc(formatarMoeda(a.valor))}</span></p><p>Valor cobrado: ${a.valorCobrado == null ? "Não informado" : esc(formatarMoeda(a.valorCobrado))}</p>${a.dataConclusao ? `<p>Conclusão: ${esc(formatarData(a.dataConclusao))}</p>` : ""}</div>${badge(a.status)}</div>
+            <div class="item-actions">
+              <button type="button" class="btn btn-secondary btn-small" data-action="editar" data-type="agendamento" data-id="${esc(a.id)}">Editar</button>
+              ${a.status !== "Concluído" && a.status !== "Cancelado" ? `<button type="button" class="btn btn-small" data-action="status-agendamento" data-id="${esc(a.id)}" data-status="Concluído">Concluir</button>` : ""}
+              ${a.status !== "Cancelado" ? `<button type="button" class="btn btn-secondary btn-small" data-action="status-agendamento" data-id="${esc(a.id)}" data-status="Cancelado">Cancelar</button>` : ""}
+              ${a.status === "Cancelado" ? `<button type="button" class="btn btn-secondary btn-small" data-action="status-agendamento" data-id="${esc(a.id)}" data-status="Agendado">Reagendar</button>` : ""}
+              <button type="button" class="btn btn-danger btn-small" data-action="excluir" data-type="agendamento" data-id="${esc(a.id)}">Excluir</button>
+            </div>
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Nenhum agendamento encontrado",
+                "Cadastre um agendamento ou altere os filtros.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarHistorico() {
+        const opcoesAnimal = [
+          { value: "todos", label: "Todos os animais" },
+          ...dados.animais.map((a) => ({ value: a.id, label: a.nome })),
+        ];
+        const animais =
+          filtroHistoricoAnimal === "todos"
+            ? dados.animais
+            : dados.animais.filter((a) => a.id === filtroHistoricoAnimal);
+
+        const registros = [];
+        for (const animal of animais) {
+          for (const l of dados.lembretes.filter(
+            (x) => x.animalId === animal.id,
+          )) {
+            registros.push({
+              data: l.data,
+              horario: l.horario,
+              animal: animal.nome,
+              tipo: "Lembrete · " + l.tipo,
+              detalhe: `${nomeClinica(l.clinicaId)}${l.descricao ? " · " + l.descricao : ""}`,
+              status: statusLembrete(l),
+              categoria: "lembrete",
+            });
+          }
+          for (const a of dados.agendamentos.filter(
+            (x) => x.animalId === animal.id,
+          )) {
+            registros.push({
+              data: a.data,
+              horario: a.horario,
+              animal: animal.nome,
+              tipo: "Serviço · " + a.servico,
+              detalhe: `Previsto ${formatarMoeda(a.valor)} · Cobrado ${a.valorCobrado == null ? "não informado" : formatarMoeda(a.valorCobrado)}`,
+              status: a.status,
+              categoria: "agendamento",
+            });
+          }
+        }
+        registros.sort((a, b) =>
+          `${b.data}T${b.horario || ""}`.localeCompare(
+            `${a.data}T${a.horario || ""}`,
+          ),
+        );
+
+        const agendamentosConcluidos = dados.agendamentos.filter(
+          (a) =>
+            a.status === "Concluído" &&
+            (filtroHistoricoAnimal === "todos" ||
+              animais.some((p) => p.id === a.animalId)),
+        );
+        const totalFaturado = agendamentosConcluidos.reduce(
+          (s, a) => s + Number(a.valorCobrado ?? a.valor ?? 0),
+          0,
+        );
+        const totalPrevisto = dados.agendamentos
+          .filter(
+            (a) =>
+              a.status !== "Cancelado" &&
+              (filtroHistoricoAnimal === "todos" ||
+                animais.some((p) => p.id === a.animalId)),
+          )
+          .reduce((s, a) => s + Number(a.valor || 0), 0);
+
+        return `${cabecalhoPagina("Histórico e financeiro", "Consulte os registros dos animais e os valores dos serviços.")}
+    <section class="card section">
+      <div class="field">
+        <label for="filtro-historico-animal">Filtrar histórico por animal</label>
+        <select id="filtro-historico-animal" name="filtro-historico-animal">${opcoesAnimal.map((o) => `<option value="${esc(o.value)}" ${o.value === filtroHistoricoAnimal ? "selected" : ""}>${esc(o.label)}</option>`).join("")}</select>
+      </div>
+    </section>
+    <div class="grid stats">
+      <article class="card"><div class="stat-label">Serviços concluídos</div><div class="stat-value">${agendamentosConcluidos.length}</div></article>
+      <article class="card"><div class="stat-label">Receita registrada</div><div class="stat-value">${esc(formatarMoeda(totalFaturado))}</div><div class="stat-note">Concluídos; usa o valor cobrado quando informado</div></article>
+      <article class="card"><div class="stat-label">Valor previsto</div><div class="stat-value">${esc(formatarMoeda(totalPrevisto))}</div><div class="stat-note">Agendamentos não cancelados</div></article>
+      <article class="card"><div class="stat-label">Registros no histórico</div><div class="stat-value">${registros.length}</div></article>
+    </div>
+    <section class="card">
+      <div class="card-header"><h3>Histórico de cuidados e serviços</h3></div>
+      <div class="list">
+        ${
+          registros.length
+            ? registros
+                .map(
+                  (r) => `
+          <article class="list-item">
+            <div class="item-top"><div><h4>${esc(r.tipo)} · ${esc(r.animal)}</h4><p>${esc(formatarData(r.data))}${r.horario ? " às " + esc(r.horario) : ""}</p><p>${esc(r.detalhe)}</p></div>${badge(r.status)}</div>
+          </article>`,
+                )
+                .join("")
+            : caixaVazia(
+                "Ainda não há histórico",
+                "Os lembretes e agendamentos aparecerão aqui.",
+              )
+        }
+      </div>
+    </section>`;
+      }
+
+      function renderizarBackup() {
+        return `${cabecalhoPagina("Backup e dados", "Proteja suas informações e transfira os dados manualmente entre dispositivos.")}
+    <div class="notice warning"><strong>Importante:</strong> este protótipo guarda dados somente no navegador atual. Limpar os dados do navegador pode apagar os registros. Faça backups regulares.</div>
+    <div class="grid two-col">
+      <section class="card">
+        <h3>📤 Exportar backup</h3>
+        <p class="muted">Gera um arquivo JSON com tutores, animais, clínicas, lembretes e agendamentos.</p>
+        <button type="button" class="btn" id="btn-exportar">Exportar JSON</button>
+      </section>
+      <section class="card">
+        <h3>📥 Restaurar backup</h3>
+        <p class="muted">Selecione um arquivo JSON exportado pelo PetCare. A importação valida os registros e vínculos antes de substituir os dados atuais.</p>
+        <input type="file" id="arquivo-backup" name="arquivo-backup" accept=".json,application/json">
+        <div class="form-actions"><button type="button" class="btn btn-secondary" id="btn-importar">Selecionar arquivo e restaurar</button></div>
+      </section>
+      <section class="card">
+        <h3>📊 Resumo dos dados</h3>
+        <div class="list">
+          <div class="list-item">Tutores: <strong>${dados.tutores.length}</strong></div>
+          <div class="list-item">Animais: <strong>${dados.animais.length}</strong></div>
+          <div class="list-item">Clínicas: <strong>${dados.clinicas.length}</strong></div>
+          <div class="list-item">Lembretes: <strong>${dados.lembretes.length}</strong></div>
+          <div class="list-item">Agendamentos: <strong>${dados.agendamentos.length}</strong></div>
+        </div>
+      </section>
+      <section class="card">
+        <h3>ℹ️ Limites do protótipo</h3>
+        <ul class="muted">
+          <li>Não possui servidor nem banco de dados MySQL.</li>
+          <li>Não sincroniza entre celulares e computadores.</li>
+          <li>Não envia notificações reais por e-mail, aplicativo ou WhatsApp.</li>
+          <li>Não possui autenticação nem acesso multiusuário.</li>
+          <li>O faturamento é um resumo de serviços registrados, não um sistema contábil.</li>
+        </ul>
+      </section>
+    </div>`;
+      }
+
+      function renderizar() {
+        const renderizadores = {
+          dashboard: renderizarDashboard,
+          tutores: renderizarTutores,
+          animais: renderizarAnimais,
+          clinicas: renderizarClinicas,
+          lembretes: renderizarLembretes,
+          agendamentos: renderizarAgendamentos,
+          historico: renderizarHistorico,
+          backup: renderizarBackup,
+        };
+
+        conteudo.innerHTML = (
+          renderizadores[paginaAtual] || renderizarDashboard
+        )();
+
+        document.querySelectorAll("#navegacao [data-page]").forEach((botao) => {
+          const ativo = botao.dataset.page === paginaAtual;
+          botao.classList.toggle("active", ativo);
+          if (ativo) botao.setAttribute("aria-current", "page");
+          else botao.removeAttribute("aria-current");
+        });
+      }
+
+      function navegar(pagina) {
+        if (
+          ![
+            "dashboard",
+            "tutores",
+            "animais",
+            "clinicas",
+            "lembretes",
+            "agendamentos",
+            "historico",
+            "backup",
+          ].includes(pagina)
+        )
+          return;
+
+        paginaAtual = pagina;
+        buscaAtual = "";
+        editando = { tipo: null, id: null };
+        renderizar();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function exportarBackup() {
+        const envelope = {
+          app: "PetCare — Gestão Inteligente",
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          data: dados,
+        };
+        const blob = new Blob([JSON.stringify(envelope, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `petcare-backup-${hojeISO()}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        toast("Backup exportado.");
+      }
+
+      async function importarArquivo(input) {
+        const arquivo = input.files && input.files[0];
+        if (!arquivo) {
+          toast("Selecione um arquivo JSON primeiro.", true);
+          return;
+        }
+
+        if (arquivo.size > 10 * 1024 * 1024) {
+          input.value = "";
+          toast("O arquivo é muito grande. O limite é 10 MB.", true);
+          return;
+        }
+
+        try {
+          const texto = await arquivo.text();
+          const parsed = JSON.parse(texto);
+          const origem = parsed && parsed.data ? parsed.data : parsed;
+          const validacao = validarDados(origem);
+
+          if (!validacao.ok) throw new Error(validacao.erro);
+
+          if (
+            !confirm(
+              "A restauração substituirá todos os dados atuais do PetCare. Faça um backup antes de continuar. Deseja prosseguir?",
+            )
+          ) {
+            input.value = "";
+            return;
+          }
+
+          const anterior = dados;
+          dados = JSON.parse(JSON.stringify(origem));
+          if (!persistir()) {
+            dados = anterior;
+            throw new Error(
+              "Não foi possível salvar os dados restaurados no navegador.",
+            );
+          }
+
+          editando = { tipo: null, id: null };
+          buscaAtual = "";
+          input.value = "";
+          navegar("dashboard");
+          toast("Backup restaurado com sucesso.");
+        } catch (erro) {
+          input.value = "";
+          toast(
+            "Não foi possível restaurar: " +
+              (erro.message || "arquivo inválido"),
+            true,
+          );
+        }
+      }
+
+      function concluirLembrete(id) {
+        const lembrete = dados.lembretes.find((l) => l.id === id);
+        if (!lembrete) return;
+        lembrete.concluido = !lembrete.concluido;
+        if (!persistir()) return;
+        renderizar();
+        toast(
+          lembrete.concluido ? "Lembrete concluído." : "Lembrete reaberto.",
+        );
+      }
+
+      function alterarStatusAgendamento(id, status) {
+        const agendamento = dados.agendamentos.find((a) => a.id === id);
+        if (!agendamento || !STATUS_AGENDAMENTO.includes(status)) return;
+
+        if (
+          status === "Cancelado" &&
+          !confirm("Deseja cancelar este agendamento?")
+        )
+          return;
+
+        agendamento.status = status;
+        if (status === "Concluído" && !agendamento.dataConclusao) {
+          agendamento.dataConclusao = hojeISO();
+        }
+        if (status !== "Concluído") agendamento.dataConclusao = "";
+
+        if (!persistir()) return;
+        renderizar();
+        toast("Status do agendamento atualizado.");
+      }
+
+      function verHistoricoAnimal(id) {
+        filtroHistoricoAnimal = id;
+        navegar("historico");
+      }
+
+      // Eventos de navegação e formulários.
+      document
+        .getElementById("navegacao")
+        .addEventListener("click", (evento) => {
+          const botao = evento.target.closest("[data-page]");
+          if (botao) navegar(botao.dataset.page);
+        });
+
+      conteudo.addEventListener("submit", (evento) => {
+        const form = evento.target.closest("form[data-form]");
+        if (!form) return;
+        evento.preventDefault();
+        processarFormulario(form);
+      });
+
+      conteudo.addEventListener("click", (evento) => {
+        const linkPagina = evento.target.closest("[data-page-link]");
+        if (linkPagina) {
+          navegar(linkPagina.dataset.pageLink);
+          return;
+        }
+
+        const botao = evento.target.closest("[data-action]");
+        if (!botao) return;
+
+        const { action, type, id, status } = botao.dataset;
+
+        if (action === "editar") editar(type, id);
+        else if (action === "excluir") confirmarExcluir(type, id);
+        else if (action === "cancelar-edicao") cancelarEdicao();
+        else if (action === "concluir-lembrete") concluirLembrete(id);
+        else if (action === "status-agendamento")
+          alterarStatusAgendamento(id, status);
+        else if (action === "ver-historico") verHistoricoAnimal(id);
+        else if (action === "limpar-filtros-agendamento") {
+          filtroStatusAgendamento = "todos";
+          filtroServicoAgendamento = "todos";
+          filtroDataAgendamento = "";
+          renderizar();
+        }
+      });
+
+      conteudo.addEventListener("input", (evento) => {
+        const campo = evento.target;
+        if (campo.id && campo.id.startsWith("busca-")) {
+          const posicao = campo.selectionStart;
+          buscaAtual = campo.value;
+          const id = campo.id;
+          renderizar();
+          const novoCampo = document.getElementById(id);
+          if (novoCampo) {
+            novoCampo.focus();
+            try {
+              novoCampo.setSelectionRange(posicao, posicao);
+            } catch (_) {}
+          }
+        }
+      });
+
+      conteudo.addEventListener("change", (evento) => {
+        const campo = evento.target;
+        if (campo.id === "filtro-lembrete-status") {
+          filtroStatusLembrete = campo.value;
+          renderizar();
+        } else if (campo.id === "filtro-agendamento-status") {
+          filtroStatusAgendamento = campo.value;
+          renderizar();
+        } else if (campo.id === "filtro-agendamento-servico") {
+          filtroServicoAgendamento = campo.value;
+          renderizar();
+        } else if (campo.id === "filtro-agendamento-data") {
+          filtroDataAgendamento = campo.value;
+          renderizar();
+        } else if (campo.id === "filtro-historico-animal") {
+          filtroHistoricoAnimal = campo.value;
+          renderizar();
+        } else if (campo.id === "agendamento-servico") {
+          const valor = SERVICOS[campo.value];
+          const campoValor = document.getElementById("agendamento-valor");
+          if (
+            campoValor &&
+            valor !== undefined &&
+            !campoValor.dataset.alterado
+          ) {
+            campoValor.value = valor;
+          }
+        }
+      });
+
+      conteudo.addEventListener("input", (evento) => {
+        if (evento.target.id === "agendamento-valor") {
+          evento.target.dataset.alterado = "true";
+        }
+      });
+
+      document
+        .getElementById("btn-exportar-topo")
+        .addEventListener("click", exportarBackup);
+      document
+        .getElementById("btn-importar-topo")
+        .addEventListener("click", () => {
+          document.getElementById("arquivo-backup-topo").click();
+        });
+      document
+        .getElementById("arquivo-backup-topo")
+        .addEventListener("change", (evento) => {
+          importarArquivo(evento.target);
+        });
+
+      conteudo.addEventListener("click", (evento) => {
+        if (evento.target.closest("#btn-exportar")) exportarBackup;
+      });
+
+      conteudo.addEventListener("click", (evento) => {
+        if (evento.target.closest("#btn-exportar")) {
+          exportarBackup();
+        }
+        if (evento.target.closest("#btn-importar")) {
+          const input = document.getElementById("arquivo-backup");
+          if (input.files && input.files.length) importarArquivo(input);
+          else input.click();
+        }
+      });
+
+      conteudo.addEventListener("change", (evento) => {
+        if (evento.target.id === "arquivo-backup") {
+          importarArquivo(evento.target);
+        }
+      });
+
+      // Carregamento inicial.
+      carregar();
+      renderizar();
+    </script>
+  </body>
+</html>
