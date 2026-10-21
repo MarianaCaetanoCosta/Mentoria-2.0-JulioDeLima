@@ -65,7 +65,7 @@ Próximos passos sugeridos
 
 ## API GraphQL (Apollo Server)
 
-A API GraphQL está na pasta `graphql/` e utiliza Apollo Server + Express.
+A API GraphQL está na pasta `src/graphql/` e utiliza Apollo Server + Express.
 
 ### Instalação das dependências GraphQL
 
