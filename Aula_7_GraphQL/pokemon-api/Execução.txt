@@ -18,3 +18,7 @@ npm run start:graphql
 
 > Abrir Api
 https://studio.apollographql.com/sandbox/explorer
+
+
+6. Executar os testes
+npm run test:graphql

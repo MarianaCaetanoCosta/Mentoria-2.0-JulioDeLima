@@ -12,16 +12,44 @@ Principais pontos:
 
 Instalação e execução
 
-1. Instale dependências:
+1. Baixe o projeto no GitHub:
+
+```text
+https://github.com/igor-de-andrade/pokemon-api
+```
+
+2. Abra o projeto no Visual Studio Code:
+
+```powershell
+code .
+```
+
+3. Instale dependências:
 
 ```powershell
 npm install
 ```
 
-2. Execute a aplicação:
+4. Execute a API REST:
 
 ```powershell
-npm start
+npm run start:rest
+```
+
+> Abra a documentação Swagger em: http://localhost:3000/api-docs/
+
+5. Execute a API GraphQL:
+
+```powershell
+npm run start:graphql
+```
+
+> Abra o Apollo Studio em: https://studio.apollographql.com/sandbox/explorer
+
+6. Execute os testes:
+
+```powershell
+npm run test:graphql
 ```
 
 Endpoints principais
@@ -84,40 +112,39 @@ Acesse o playground em:
 
 ### Exemplos de Queries e Mutations
 
-#### Registrar usuário
+#### Login
 ```graphql
-mutation {
-  register(login: "ash2", password: "pikachu123", nickname: "Ash", sex: "M", initialPokemon: 1) {
+mutation Login($login: String!, $password: String!) {
+  login(login: $login, password: $password) {
     token
   }
 }
 ```
 
-#### Login
-```graphql
-mutation {
-  login(login: "ash", password: "pikachu123") {
-    token
-  }
+Variáveis:
+```json
+{
+  "login": "ash",
+  "password": "pikachu123"
 }
 ```
 
 #### Listar capturas (autenticado)
 ```graphql
-query {
+query Captures {
   captures {
-    captureId
-    pokemonId
     sex
     level
+    captureId
+    pokemonId
   }
 }
 ```
 
 #### Adicionar captura (autenticado)
 ```graphql
-mutation {
-  addCapture(pokemonId: 25, sex: "M", level: 5) {
+mutation AddCapture($pokemonId: Int!, $sex: String!, $level: Int!) {
+  addCapture(pokemonId: $pokemonId, sex: $sex, level: $level) {
     captureId
     pokemonId
     sex
@@ -126,12 +153,48 @@ mutation {
 }
 ```
 
+Variáveis:
+```json
+{
+  "pokemonId": 7,
+  "sex": "M",
+  "level": 5
+}
+```
+
 #### Atualizar nível de captura (autenticado)
 ```graphql
-mutation {
-  updateCaptureLevel(captureId: "<id>", level: 10) {
+mutation UpdateCaptureLevel($captureId: ID!, $level: Int!) {
+  updateCaptureLevel(captureId: $captureId, level: $level) {
     captureId
+    pokemonId
+    sex
     level
+  }
+}
+```
+
+Variáveis:
+```json
+{
+  "captureId": "init-1",
+  "level": 99
+}
+```
+
+#### Perfil do usuário (autenticado)
+```graphql
+query UserProfile {
+  captures {
+    sex
+    level
+    captureId
+    pokemonId
+  }
+  me {
+    login
+    nickname
+    sex
   }
 }
 ```
