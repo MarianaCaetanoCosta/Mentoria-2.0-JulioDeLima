@@ -1,0 +1,95 @@
+> Login
+
+* Operation
+
+mutation Login($login: String!, $password: String!){
+  login(login: $login, password: $password){
+    token
+  }
+}
+
+* Query
+
+{
+  "login": "ash",
+  "password": "pikachu123"
+}
+
+-----------------------------------------------------------------------------------------------
+> AddCapture
+
+* Operation
+
+mutation AddCapture($pokemonId: Int!, $sex: String!, $level: Int!){
+  addCapture(pokemonId: $pokemonId, sex: $sex, level: $level){
+    captureId
+    pokemonId
+    sex
+    level
+  }
+}
+
+* Query
+
+{
+  "pokemonId": 7,
+  "sex": "M",
+  "level": 5
+}
+
+-----------------------------------------------------------------------------------------------
+> UpdateCaptureLevel
+
+* Operation
+
+mutation UpdateCaptureLevel($captureId: ID!, $level: Int!){
+  updateCaptureLevel(captureId: $captureId, level: $level){
+    captureId
+    pokemonId
+    sex
+    level
+  }
+}
+
+* Query
+
+{
+  "captureId": "init-1",
+  "level": 99
+}
+
+-----------------------------------------------------------------------------------------------
+> Captures
+
+* Operation
+
+query Captures{
+  captures {
+    sex
+    level
+    captureId
+    pokemonId
+  }
+}
+
+-----------------------------------------------------------------------------------------------
+> UserProfile
+
+* Operation
+
+query UserProfile {
+  captures {
+    sex
+    level
+    captureId
+    pokemonId
+  }
+  me {
+    login
+    nickname
+    sex
+  }
+}
+
+
+-----------------------------------------------------------------------------------------------

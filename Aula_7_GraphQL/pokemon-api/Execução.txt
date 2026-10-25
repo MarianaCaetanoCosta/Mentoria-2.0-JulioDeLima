@@ -1,0 +1,24 @@
+1. Baixe o projeto no github
+https://github.com/igor-de-andrade/pokemon-api
+
+2. Abre o projeto no visual studio code
+code .
+
+3. Instalação
+npm install
+
+4. Executar Api Rest
+npm run start:rest
+
+> Abrir Api
+http://localhost:3000/api-docs/
+
+5. Executar Api graphql
+npm run start:graphql
+
+> Abrir Api
+https://studio.apollographql.com/sandbox/explorer
+
+
+6. Executar os testes
+npm run test:graphql

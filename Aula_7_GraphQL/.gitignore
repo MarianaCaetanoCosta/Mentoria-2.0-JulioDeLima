@@ -1,0 +1,22 @@
+# Dependencies
+**/node_modules/
+
+# Environment variables and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs and test output
+**/*.log
+**/coverage/
+
+# Generated build output
+**/dist/
+**/build/
+
+# Local files
+.DS_Store
+Thumbs.db
+
+# Downloaded project archive
+/pokemon-api-main.zip
